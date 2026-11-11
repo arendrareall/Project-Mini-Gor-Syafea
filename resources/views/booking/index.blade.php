@@ -3,56 +3,56 @@
 @section('title', 'Jadwal & Sewa Lapangan - Mini GOR Syafea')
 
 @section('content')
-<div class="max-w-6xl w-full mx-auto px-4 py-8 space-y-8" id="home">
+<div class="container py-4" id="home">
     
     <!-- BANNER STATUS PENGUNJUNG (GUEST / MEMBER) -->
-    <div id="bannerStatus" class="bg-gradient-to-r from-slate-900 to-slate-800 text-white p-4 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 shadow-md">
-        <div class="flex items-center gap-3">
-            <div id="bannerIcon" class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center border border-amber-500/30">
-                <i class="fa-solid fa-user-clock text-lg"></i>
+    <div id="bannerStatus" class="bg-gradient-banner text-white p-4 rounded-4 shadow-sm d-flex flex-column flex-sm-row align-items-center justify-content-between gap-3 mb-4">
+        <div class="d-flex align-items-center gap-3">
+            <div id="bannerIcon" class="rounded-3 bg-warning bg-opacity-25 text-warning d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                <i class="fa-solid fa-user-clock fs-4"></i>
             </div>
             <div>
-                <h3 id="bannerTitle" class="text-sm font-bold">Akses Tamu (Regular)</h3>
-                <p id="bannerDesc" class="text-xs text-slate-300">Anda dapat memesan jadwal yang tersedia dan mengecek riwayat pesanan.</p>
+                <h5 id="bannerTitle" class="fw-bold mb-1 fs-6">Akses Tamu (Regular)</h5>
+                <p id="bannerDesc" class="small text-white-50 mb-0">Anda dapat memesan jadwal yang tersedia dan mengecek riwayat pesanan.</p>
             </div>
         </div>
-        <button type="button" onclick="openLoginModal()" id="btnActionBanner" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold rounded-xl shadow transition-all whitespace-nowrap">
+        <button type="button" onclick="openLoginModal()" id="btnActionBanner" class="btn btn-primary btn-sm fw-bold px-3 py-2 rounded-3 text-nowrap shadow-sm">
             Login / Daftar Member
         </button>
     </div>
 
     <!-- HERO SECTION -->
-    <section class="relative rounded-3xl white-card p-8 md:p-14 text-center glow-effect-light overflow-hidden">
-        <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-96 bg-brand-50 rounded-full blur-3xl pointer-events-none"></div>
-        <div class="relative z-10 space-y-4 max-w-2xl mx-auto">
-            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-50 border border-brand-200 text-brand-700 text-xs font-semibold uppercase tracking-wider">
-                <span class="w-2 h-2 rounded-full bg-brand-600 animate-pulse"></span> Sistem Booking Online Lapangan
+    <section class="white-card p-4 p-md-5 text-center glow-effect-light mb-4 position-relative overflow-hidden">
+        <div class="position-relative" style="z-index: 2;">
+            <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-primary-subtle text-primary border border-primary-subtle small fw-bold text-uppercase mb-3">
+                <span class="dot-indicator online"></span> Sistem Booking Online Lapangan
             </div>
-            <h1 class="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 tracking-tight leading-tight">
+            <h1 class="display-5 fw-black text-dark tracking-tight mb-2 fw-bold">
                 SEWA LAPANGAN <br>
-                <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-600 via-indigo-600 to-blue-700">MINI GOR SYAFEA</span>
+                <span class="bg-gradient-hero">MINI GOR SYAFEA</span>
             </h1>
-            <p class="text-lg text-slate-600 font-medium pt-1">
-                <strong class="text-slate-800">Buka Pukul 08.00 - 22.00 WIB</strong> 
-                <span class="text-slate-500 text-base font-normal">Pilih paket atau jam sesuai kebutuhan Anda.</span>
+            <p class="lead text-secondary mb-0 pt-1 fs-6">
+                <strong class="text-dark">Buka Pukul 08.00 - 22.00 WIB</strong> — 
+                <span class="text-muted">Pilih paket atau jam sesuai kebutuhan Anda.</span>
             </p>
         </div>
     </section>
 
     <!-- KONTROL KHUSUS MEMBER: PANEL CUSTOM JADWAL -->
-    <div id="memberScheduleControl" class="hidden white-card p-6 rounded-2xl border border-brand-200 bg-brand-50/40 space-y-4">
-        <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
-            <i class="fa-solid fa-sliders text-brand-600"></i> Panel Custom Jadwal Member
-        </h3>
-        <p class="text-xs text-slate-600">Sebagai member, Anda bebas merancang tanggal dan jam sewa sesuai kebutuhan Anda.</p>
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div>
-                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Pilih Tanggal</label>
-                <input type="date" id="customDate" value="{{ date('Y-m-d') }}" class="form-control-modern">
+    <div id="memberScheduleControl" class="d-none white-card p-4 mb-4 border border-primary-subtle bg-primary-subtle bg-opacity-10">
+        <h5 class="fw-bold text-dark d-flex align-items-center gap-2 mb-2 fs-6">
+            <i class="fa-solid fa-sliders text-primary"></i> Panel Custom Jadwal Member
+        </h5>
+        <p class="small text-secondary mb-3">Sebagai member resmi, Anda bebas menentukan tanggal dan durasi jam sewa secara fleksibel.</p>
+        
+        <div class="row g-3">
+            <div class="col-12 col-md-4">
+                <label class="form-label small fw-bold text-uppercase text-secondary mb-1">Pilih Tanggal</label>
+                <input type="date" id="customDate" value="{{ date('Y-m-d') }}" class="form-control rounded-3">
             </div>
-            <div>
-                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Pilih Durasi / Jam</label>
-                <select id="customTime" class="form-control-modern">
+            <div class="col-12 col-md-5">
+                <label class="form-label small fw-bold text-uppercase text-secondary mb-1">Pilih Durasi / Jam</label>
+                <select id="customTime" class="form-select rounded-3">
                     <option value="08:00 - 11:00 (Paket 3 Jam)">Paket 3 Jam (08:00 - 11:00)</option>
                     <option value="13:00 - 16:00 (Paket 3 Jam)">Paket 3 Jam (13:00 - 16:00)</option>
                     <option value="16:00 - 19:00 (Paket 3 Jam)">Paket 3 Jam (16:00 - 19:00)</option>
@@ -61,48 +61,48 @@
                     <option value="09:00 - 10:00 (Per Jam)">Per Jam (09:00 - 10:00)</option>
                 </select>
             </div>
-            <div class="flex items-end">
-                <button type="button" onclick="applyCustomSchedule()" class="w-full py-2.5 btn-modern-primary text-xs uppercase tracking-wider">
-                    <i class="fa-solid fa-check mr-1"></i> Terapkan Jadwal
+            <div class="col-12 col-md-3 d-flex align-items-end">
+                <button type="button" onclick="applyCustomSchedule()" class="btn btn-primary w-100 rounded-3 py-2 fw-bold small text-uppercase shadow-sm">
+                    <i class="fa-solid fa-check me-1"></i> Terapkan Jadwal
                 </button>
             </div>
         </div>
     </div>
 
     <!-- SECTION JADWAL TERSEDIA & FILTER TANGGAL -->
-    <section id="jadwal" class="space-y-4">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <section id="jadwal" class="mb-4">
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-3">
             <div>
-                <h2 class="text-2xl font-bold text-slate-900 flex items-center gap-2">
-                    <i class="fa-solid fa-calendar-check text-brand-600"></i> Cek Ketersediaan & Jadwal
-                </h2>
-                <p class="text-sm text-slate-500">Pilih tanggal untuk melihat ketersediaan slot jam</p>
+                <h4 class="fw-bold text-dark d-flex align-items-center gap-2 mb-1 fs-5">
+                    <i class="fa-solid fa-calendar-check text-primary"></i> Cek Ketersediaan & Jadwal
+                </h4>
+                <p class="text-muted small mb-0">Pilih tanggal untuk melihat ketersediaan slot jam</p>
             </div>
             
             <!-- FILTER TANGGAL TABEL -->
-            <div class="flex items-center gap-2 bg-white p-2 rounded-2xl border border-slate-200 shadow-sm">
-                <span class="text-xs font-bold text-slate-600 pl-2">
-                    <i class="fa-regular fa-calendar text-brand-600 mr-1"></i> Tanggal Main:
+            <div class="d-flex align-items-center gap-2 bg-white p-2 rounded-3 border shadow-sm">
+                <span class="small fw-bold text-secondary ps-2 text-nowrap">
+                    <i class="fa-regular fa-calendar text-primary me-1"></i> Tanggal Main:
                 </span>
-                <input type="date" id="tableDateFilter" value="{{ date('Y-m-d') }}" onchange="renderScheduleTable()" class="px-3 py-1.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:border-brand-600">
+                <input type="date" id="tableDateFilter" value="{{ date('Y-m-d') }}" onchange="renderScheduleTable()" class="form-control form-control-sm border-0 bg-light rounded-2 fw-bold text-dark">
             </div>
         </div>
 
-        <!-- Tabel Jadwal -->
-        <div class="white-card rounded-2xl overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="modern-table">
-                    <thead>
+        <!-- Tabel Jadwal Bootstrap 5 -->
+        <div class="white-card overflow-hidden">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light text-uppercase small text-secondary">
                         <tr>
-                            <th>Tanggal</th>
-                            <th>Jam / Paket</th>
-                            <th>Harga</th>
-                            <th>Status Ketersediaan</th>
-                            <th class="text-center">Aksi</th>
+                            <th class="py-3 px-4">Tanggal</th>
+                            <th class="py-3 px-4">Jam / Paket</th>
+                            <th class="py-3 px-4">Harga</th>
+                            <th class="py-3 px-4">Status Ketersediaan</th>
+                            <th class="py-3 px-4 text-center">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody id="scheduleTableBody" class="divide-y divide-slate-200 text-sm">
-                        <!-- Data slot dinamis -->
+                    <tbody id="scheduleTableBody" class="small">
+                        <!-- Diisi secara dinamis via JS -->
                     </tbody>
                 </table>
             </div>
@@ -147,30 +147,30 @@
             if (isPaket3Jam) {
                 priceVal = isMember ? "Rp 40.000" : "Rp 50.000";
                 priceHtml = isMember 
-                    ? `<span class="line-through text-slate-400 text-xs mr-1">Rp 50.000</span> <span class="text-emerald-600 font-extrabold">Rp 40.000</span> <span class="badge badge-member">Member</span>`
-                    : `Rp 50.000 <span class="badge badge-slate">Umum</span>`;
+                    ? `<span class="text-decoration-line-through text-muted small me-1">Rp 50.000</span> <span class="text-success fw-bold">Rp 40.000</span> <span class="badge bg-success-subtle text-success border border-success-subtle">Member</span>`
+                    : `<span class="fw-bold text-dark">Rp 50.000</span> <span class="badge bg-secondary-subtle text-secondary">Umum</span>`;
             } else {
                 priceVal = isMember ? "Rp 15.000" : "Rp 20.000";
                 priceHtml = isMember 
-                    ? `<span class="line-through text-slate-400 text-xs mr-1">Rp 20.000</span> <span class="text-emerald-600 font-extrabold">Rp 15.000</span> <span class="badge badge-member">Member</span>`
-                    : `Rp 20.000 <span class="badge badge-slate">Umum</span>`;
+                    ? `<span class="text-decoration-line-through text-muted small me-1">Rp 20.000</span> <span class="text-success fw-bold">Rp 15.000</span> <span class="badge bg-success-subtle text-success border border-success-subtle">Member</span>`
+                    : `<span class="fw-bold text-dark">Rp 20.000</span> <span class="badge bg-secondary-subtle text-secondary">Umum</span>`;
             }
 
             let statusHtml = isBooked 
-                ? `<span class="badge badge-slate"><span class="dot-indicator busy"></span> Penuh</span>`
-                : `<span class="badge badge-success"><span class="dot-indicator online"></span> Tersedia</span>`;
+                ? `<span class="badge bg-secondary-subtle text-secondary px-3 py-1.5 rounded-pill"><span class="dot-indicator busy"></span> Penuh</span>`
+                : `<span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1.5 rounded-pill"><span class="dot-indicator online"></span> Tersedia</span>`;
 
             let actionHtml = isBooked
-                ? `<button disabled class="px-4 py-2 text-xs font-bold uppercase tracking-wider text-slate-400 bg-slate-200 border border-slate-300 rounded-xl cursor-not-allowed inline-flex items-center justify-center gap-2"><i class="fa-solid fa-lock text-xs"></i> Penuh</button>`
-                : `<button onclick="bookSpecificSlot('${formattedDate}', '${time}', '${priceVal}')" class="px-5 py-2 text-xs font-bold uppercase tracking-wider text-white bg-brand-600 hover:bg-brand-700 active:scale-95 rounded-xl shadow-md shadow-brand-600/20 transition-all inline-flex items-center justify-center gap-2"><i class="fa-solid fa-cart-plus"></i> PESAN SLOT</button>`;
+                ? `<button disabled class="btn btn-sm btn-secondary disabled px-3 py-1.5 rounded-3 fw-bold small text-uppercase"><i class="fa-solid fa-lock me-1"></i> Penuh</button>`
+                : `<button onclick="bookSpecificSlot('${formattedDate}', '${time}', '${priceVal}')" class="btn btn-sm btn-primary px-3 py-1.5 rounded-3 fw-bold small text-uppercase shadow-sm"><i class="fa-solid fa-cart-plus me-1"></i> PESAN SLOT</button>`;
 
             tbody.innerHTML += `
-                <tr class="${isBooked ? 'bg-slate-50/50' : ''}">
-                    <td class="font-medium text-slate-800"><div class="flex items-center gap-2"><i class="fa-regular fa-calendar-days text-brand-600"></i><span>${formattedDate}</span></div></td>
-                    <td class="font-semibold text-slate-900"><span class="bg-slate-100 text-slate-700 px-3 py-1 rounded-lg border border-slate-200">${time}</span></td>
-                    <td class="font-bold text-slate-900">${priceHtml}</td>
-                    <td>${statusHtml}</td>
-                    <td class="text-center">${actionHtml}</td>
+                <tr class="${isBooked ? 'table-light' : ''}">
+                    <td class="py-3 px-4"><div class="d-flex align-items-center gap-2"><i class="fa-regular fa-calendar-days text-primary"></i><span class="fw-semibold text-dark">${formattedDate}</span></div></td>
+                    <td class="py-3 px-4"><span class="badge bg-light text-dark border px-2.5 py-1.5 rounded-2 font-monospace">${time}</span></td>
+                    <td class="py-3 px-4">${priceHtml}</td>
+                    <td class="py-3 px-4">${statusHtml}</td>
+                    <td class="py-3 px-4 text-center">${actionHtml}</td>
                 </tr>
             `;
         });
@@ -222,9 +222,7 @@
         };
         localStorage.setItem('syafea_active_booking', JSON.stringify(bookingData));
 
-        // Redirect ke route pemesanan Laravel
         window.location.href = "{{ route('booking.create') }}";
     }
 </script>
 @endsection
-

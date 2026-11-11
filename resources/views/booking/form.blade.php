@@ -3,174 +3,178 @@
 @section('title', 'Formulir Pemesanan - Mini GOR Syafea')
 
 @section('content')
-<div class="max-w-lg mx-auto px-4 py-8">
-    
-    <!-- Form Card Container -->
-    <div class="w-full white-card rounded-3xl p-6 sm:p-8 relative overflow-hidden glow-effect-light">
-        
-        <!-- Header Decor Line -->
-        <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-brand-600 via-indigo-600 to-blue-500"></div>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6">
+            
+            <!-- Form Card Container -->
+            <div class="white-card rounded-4 p-4 p-md-5 position-relative overflow-hidden glow-effect-light">
+                
+                <!-- Header Decor Line -->
+                <div class="position-absolute top-0 start-0 end-0 bg-primary" style="height: 5px;"></div>
 
-        <!-- Tombol Kembali / Back -->
-        <div class="mb-4">
-            <a href="{{ route('booking.index') }}" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 border border-slate-200 transition-all">
-                <i class="fa-solid fa-arrow-left"></i> Kembali ke Jadwal
-            </a>
+                <!-- Tombol Kembali / Back -->
+                <div class="mb-4">
+                    <a href="{{ route('booking.index') }}" class="btn btn-sm btn-light border text-secondary fw-bold px-3 py-1.5 rounded-3 d-inline-flex align-items-center gap-2">
+                        <i class="fa-solid fa-arrow-left"></i> Kembali ke Jadwal
+                    </a>
+                </div>
+
+                <!-- Header Title -->
+                <div class="text-center mb-4">
+                    <div class="bg-primary-subtle text-primary rounded-4 d-inline-flex align-items-center justify-content-center mb-2" style="width: 50px; height: 50px;">
+                        <i class="fa-solid fa-file-invoice-dollar fs-4"></i>
+                    </div>
+                    <h3 class="fw-black text-dark mb-1 fw-bold fs-4">FORMULIR PEMESANAN</h3>
+                    <p class="text-muted small mb-0">Lengkapi data diri dan konfirmasi pembayaran sewa lapangan</p>
+                </div>
+
+                <!-- Form Elements -->
+                <form id="orderForm" action="{{ route('booking.store') }}" method="POST" enctype="multipart/form-data" onsubmit="handleSubmitBooking(event)" class="vstack gap-3">
+                    @csrf
+
+                    <!-- Hidden Field untuk Data Booking -->
+                    <input type="hidden" name="booking_date" id="inputBookingDate">
+                    <input type="hidden" name="booking_time" id="inputBookingTime">
+                    <input type="hidden" name="booking_price" id="inputBookingPrice">
+                    <input type="hidden" name="user_type" id="inputUserType">
+
+                    <!-- Input: Nama Lengkap -->
+                    <div>
+                        <label class="form-label small fw-bold text-uppercase text-secondary mb-1">
+                            Nama Lengkap <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-muted border-end-0 rounded-start-3"><i class="fa-regular fa-user"></i></span>
+                            <input type="text" name="full_name" id="fullName" required placeholder="Masukkan nama lengkap Anda" 
+                                class="form-control rounded-end-3 py-2 border-start-0" value="{{ old('full_name') }}">
+                        </div>
+                        @error('full_name')
+                            <span class="text-danger small mt-1 d-block">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <!-- Input: No Telepon -->
+                    <div>
+                        <label class="form-label small fw-bold text-uppercase text-secondary mb-1">
+                            No. Telepon / WhatsApp <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-muted border-end-0 rounded-start-3"><i class="fa-brands fa-whatsapp"></i></span>
+                            <input type="tel" name="phone_number" id="phone" required placeholder="08xxxxxxxxxx" 
+                                class="form-control rounded-end-3 py-2 border-start-0" value="{{ old('phone_number') }}">
+                        </div>
+                        @error('phone_number')
+                            <span class="text-danger small mt-1 d-block">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <!-- Input: Alamat -->
+                    <div>
+                        <label class="form-label small fw-bold text-uppercase text-secondary mb-1">
+                            Alamat Lengkap <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-muted border-end-0 rounded-start-3 align-items-start pt-2.5"><i class="fa-solid fa-location-dot"></i></span>
+                            <textarea name="address" id="address" rows="2" required placeholder="Masukkan alamat lengkap Anda" 
+                                class="form-control rounded-end-3 py-2 border-start-0">{{ old('address') }}</textarea>
+                        </div>
+                        @error('address')
+                            <span class="text-danger small mt-1 d-block">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <!-- Total Tagihan Box -->
+                    <div class="p-3 rounded-3 bg-primary-subtle border border-primary-subtle d-flex align-items-center justify-content-between my-2">
+                        <div>
+                            <span class="small text-muted d-block lh-1 mb-1">Total Tagihan</span>
+                            <span id="displayPrice" class="fs-4 fw-black text-primary fw-bold">Rp 50.000</span>
+                        </div>
+                        <div class="text-end">
+                            <span id="displayDate" class="badge bg-white text-primary border border-primary-subtle px-3 py-1.5 rounded-2 shadow-sm d-inline-block">
+                                {{ date('d-m-Y') }}
+                            </span>
+                            <small id="displayTime" class="text-muted d-block mt-1 font-monospace">08:00 - 11:00</small>
+                        </div>
+                    </div>
+
+                    <!-- Select: Metode Bayar -->
+                    <div>
+                        <label class="form-label small fw-bold text-uppercase text-secondary mb-1">
+                            Metode Pembayaran <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-muted border-end-0 rounded-start-3"><i class="fa-regular fa-credit-card"></i></span>
+                            <select name="payment_method" class="form-select rounded-end-3 py-2 border-start-0 cursor-pointer">
+                                <option value="bca">Transfer Bank - BCA (123-456-7890)</option>
+                                <option value="mandiri">Transfer Bank - Mandiri (987-654-3210)</option>
+                                <option value="qris">QRIS (Semua E-Wallet / Mobile Banking)</option>
+                                <option value="gopay">GoPay / DANA / OVO</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Upload Bukti Transfer -->
+                    <div>
+                        <label class="form-label small fw-bold text-uppercase text-secondary mb-1">
+                            Upload Bukti Transfer <span class="text-danger">*</span>
+                        </label>
+                        <div class="custom-file-dropzone" onclick="document.getElementById('fileInput').click()">
+                            <input type="file" name="payment_proof" id="fileInput" class="d-none" accept="image/*" onchange="updateFileName(this)">
+                            <div class="bg-white border rounded-3 d-inline-flex align-items-center justify-content-center text-muted mb-2 shadow-sm" style="width: 44px; height: 44px;">
+                                <i class="fa-solid fa-cloud-arrow-up fs-5 text-primary"></i>
+                            </div>
+                            <p id="fileNameText" class="small text-secondary mb-1">
+                                <span class="text-primary fw-bold">Pilih File...</span> atau seret gambar bukti bayar ke sini
+                            </p>
+                            <span class="text-muted" style="font-size: 11px;">Format: JPG, PNG, WEBP (Maks. 5MB)</span>
+                        </div>
+                        @error('payment_proof')
+                            <span class="text-danger small mt-1 d-block">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <!-- Tombol Konfirmasi -->
+                    <button type="submit" class="btn btn-primary w-100 py-3 rounded-3 fw-bold text-uppercase small shadow-sm d-flex align-items-center justify-content-center gap-2 mt-3">
+                        <i class="fa-solid fa-circle-check fs-5"></i>
+                        <span>KONFIRMASI PEMBAYARAN</span>
+                    </button>
+
+                </form>
+            </div>
+
         </div>
-
-        <!-- Header Title -->
-        <div class="text-center mb-8">
-            <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-brand-50 text-brand-600 border border-brand-100 mb-3 shadow-sm">
-                <i class="fa-solid fa-file-invoice-dollar text-xl"></i>
-            </div>
-            <h1 class="text-2xl font-black text-slate-900 tracking-tight">FORMULIR PEMESANAN</h1>
-            <p class="text-xs font-medium text-slate-500 mt-1">Lengkapi data diri dan konfirmasi pembayaran sewa lapangan</p>
-        </div>
-
-        <!-- Form Elements -->
-        <form id="orderForm" action="{{ route('booking.store') }}" method="POST" enctype="multipart/form-data" onsubmit="handleSubmitBooking(event)" class="space-y-4">
-            @csrf
-
-            <!-- Hidden Field untuk Data Booking -->
-            <input type="hidden" name="booking_date" id="inputBookingDate">
-            <input type="hidden" name="booking_time" id="inputBookingTime">
-            <input type="hidden" name="booking_price" id="inputBookingPrice">
-            <input type="hidden" name="user_type" id="inputUserType">
-
-            <!-- Input: Nama Lengkap -->
-            <div>
-                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                    Nama Lengkap <span class="text-rose-500">*</span>
-                </label>
-                <div class="relative">
-                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                        <i class="fa-regular fa-user text-sm"></i>
-                    </div>
-                    <input type="text" name="full_name" id="fullName" required placeholder="Masukkan nama lengkap Anda" 
-                        class="form-control-modern pl-10" value="{{ old('full_name') }}">
-                </div>
-                @error('full_name')
-                    <span class="text-xs text-rose-500 mt-1 block">{{ $message }}</span>
-                @enderror
-            </div>
-
-            <!-- Input: No Telepon -->
-            <div>
-                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                    No. Telepon / WhatsApp <span class="text-rose-500">*</span>
-                </label>
-                <div class="relative">
-                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                        <i class="fa-brands fa-whatsapp text-sm"></i>
-                    </div>
-                    <input type="tel" name="phone_number" id="phone" required placeholder="08xxxxxxxxxx" 
-                        class="form-control-modern pl-10" value="{{ old('phone_number') }}">
-                </div>
-                @error('phone_number')
-                    <span class="text-xs text-rose-500 mt-1 block">{{ $message }}</span>
-                @enderror
-            </div>
-
-            <!-- Input: Alamat -->
-            <div>
-                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                    Alamat Lengkap <span class="text-rose-500">*</span>
-                </label>
-                <div class="relative">
-                    <div class="absolute inset-y-0 left-0 pl-3.5 pt-3 pointer-events-none text-slate-400">
-                        <i class="fa-solid fa-location-dot text-sm"></i>
-                    </div>
-                    <textarea name="address" id="address" rows="2" required placeholder="Masukkan alamat lengkap Anda" 
-                        class="form-control-modern pl-10">{{ old('address') }}</textarea>
-                </div>
-                @error('address')
-                    <span class="text-xs text-rose-500 mt-1 block">{{ $message }}</span>
-                @enderror
-            </div>
-
-            <!-- Total Tagihan Box -->
-            <div class="p-4 rounded-2xl bg-brand-50/70 border border-brand-200 flex items-center justify-between">
-                <div>
-                    <span class="text-xs text-slate-500 font-medium block">Total Tagihan</span>
-                    <span id="displayPrice" class="text-2xl font-black text-brand-600">Rp 50.000</span>
-                </div>
-                <div class="text-right">
-                    <span id="displayDate" class="px-3 py-1 bg-white border border-brand-200 text-brand-700 text-xs font-bold rounded-lg shadow-sm block">
-                        {{ date('d-m-Y') }}
-                    </span>
-                    <span id="displayTime" class="text-[11px] font-semibold text-slate-500 mt-1 block">08:00 - 11:00</span>
-                </div>
-            </div>
-
-            <!-- Select: Metode Bayar -->
-            <div>
-                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                    Metode Pembayaran <span class="text-rose-500">*</span>
-                </label>
-                <div class="relative">
-                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                        <i class="fa-regular fa-credit-card text-sm"></i>
-                    </div>
-                    <select name="payment_method" class="form-control-modern pl-10 pr-10 appearance-none cursor-pointer">
-                        <option value="bca">Transfer Bank - BCA (123-456-7890)</option>
-                        <option value="mandiri">Transfer Bank - Mandiri (987-654-3210)</option>
-                        <option value="qris">QRIS (Semua E-Wallet / Mobile Banking)</option>
-                        <option value="gopay">GoPay / DANA / OVO</option>
-                    </select>
-                    <div class="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none text-slate-400">
-                        <i class="fa-solid fa-chevron-down text-xs"></i>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Upload Bukti Transfer -->
-            <div>
-                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                    Upload Bukti Transfer <span class="text-rose-500">*</span>
-                </label>
-                <div class="custom-file-dropzone group" onclick="document.getElementById('fileInput').click()">
-                    <input type="file" name="payment_proof" id="fileInput" class="hidden" accept="image/*" onchange="updateFileName(this)">
-                    <div class="w-10 h-10 mx-auto rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-500 group-hover:text-brand-600 group-hover:border-brand-300 shadow-sm transition-all mb-2">
-                        <i class="fa-solid fa-cloud-arrow-up text-lg"></i>
-                    </div>
-                    <p id="fileNameText" class="text-xs font-medium text-slate-600">
-                        <span class="text-brand-600 font-bold">Pilih File...</span> atau seret gambar bukti bayar ke sini
-                    </p>
-                    <p class="text-[10px] text-slate-400 mt-1">Format gambar: JPG, PNG, WEBP (Maks. 5MB)</p>
-                </div>
-                @error('payment_proof')
-                    <span class="text-xs text-rose-500 mt-1 block">{{ $message }}</span>
-                @enderror
-            </div>
-
-            <!-- Tombol Konfirmasi -->
-            <button type="submit" class="w-full mt-6 py-3.5 px-6 btn-modern-primary flex items-center justify-center gap-2 text-sm uppercase tracking-wider">
-                <i class="fa-solid fa-circle-check"></i>
-                <span>KONFIRMASI PEMBAYARAN</span>
-            </button>
-
-        </form>
     </div>
-
 </div>
 
-<!-- Modal Success -->
-<div id="successModal" class="fixed inset-0 modal-backdrop flex items-center justify-center p-4 hidden z-50">
-    <div class="bg-white rounded-3xl p-6 max-w-sm w-full text-center border border-slate-200 shadow-2xl">
-        <div class="w-14 h-14 bg-emerald-100 border border-emerald-200 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
-            <i class="fa-solid fa-check text-2xl"></i>
+<!-- Modal Success Bootstrap 5 -->
+<div class="modal fade" id="successModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content rounded-4 border-0 shadow-lg text-center p-4">
+            <div class="modal-body p-0">
+                <div class="bg-success-subtle text-success rounded-circle d-inline-flex align-items-center justify-content-center mx-auto mb-3" style="width: 60px; height: 60px;">
+                    <i class="fa-solid fa-check fs-2"></i>
+                </div>
+                <h5 class="fw-bold text-dark mb-2">Pembayaran Berhasil!</h5>
+                <p class="small text-muted mb-4">Pesanan Anda telah dikonfirmasi dan otomatis masuk ke dalam riwayat pemesanan sistem.</p>
+                <button type="button" onclick="finishBooking()" class="btn btn-dark w-100 rounded-3 py-2 fw-semibold small">
+                    Kembali ke Beranda
+                </button>
+            </div>
         </div>
-        <h3 class="text-xl font-bold text-slate-900 mb-2">Pembayaran Berhasil!</h3>
-        <p class="text-xs text-slate-500 mb-6 leading-relaxed">Pesanan Anda telah dikonfirmasi dan otomatis masuk ke dalam riwayat pemesanan sistem.</p>
-        <button type="button" onclick="finishBooking()" class="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs rounded-xl shadow-md transition-all">
-            Kembali ke Beranda
-        </button>
     </div>
 </div>
 @endsection
 
 @section('scripts')
 <script>
+    let bsSuccessModal = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const modalEl = document.getElementById('successModal');
+        if (modalEl) bsSuccessModal = new bootstrap.Modal(modalEl);
+    });
+
     let activeBooking = JSON.parse(localStorage.getItem('syafea_active_booking')) || {
         date: "{{ date('d-m-Y') }}",
         time: "08:00 - 11:00 (Paket 3 Jam)",
@@ -196,12 +200,11 @@
     function updateFileName(input) {
         const textElement = document.getElementById('fileNameText');
         if (input.files && input.files[0]) {
-            textElement.innerHTML = `<span class="text-emerald-600 font-bold"><i class="fa-solid fa-file-check mr-1"></i> ${input.files[0].name}</span>`;
+            textElement.innerHTML = `<span class="text-success fw-bold"><i class="fa-solid fa-file-check me-1"></i> ${input.files[0].name}</span>`;
         }
     }
 
     function handleSubmitBooking(e) {
-        // Simpan data transaksi secara real-time ke localStorage juga agar sinkron dengan client
         let history = JSON.parse(localStorage.getItem('syafea_history')) || [];
         
         history.unshift({
@@ -215,9 +218,10 @@
 
         localStorage.setItem('syafea_history', JSON.stringify(history));
 
-        // Jika form disubmit sebagai AJAX atau simulasi tampilan:
         e.preventDefault();
-        document.getElementById('successModal').classList.remove('hidden');
+        if (bsSuccessModal) {
+            bsSuccessModal.show();
+        }
     }
 
     function finishBooking() {
@@ -226,4 +230,3 @@
     }
 </script>
 @endsection
-

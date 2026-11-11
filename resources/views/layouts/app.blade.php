@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale() ?? 'id') }}" class="h-full bg-slate-50 text-slate-800">
+<html lang="{{ str_replace('_', '-', app()->getLocale() ?? 'id') }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,239 +7,236 @@
 
     <title>@yield('title', 'Mini GOR Syafea - Sewa Lapangan Modern')</title>
 
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Inter', 'sans-serif'] },
-                    colors: {
-                        brand: {
-                            50: '#eff6ff',
-                            100: '#dbeafe',
-                            500: '#3b82f6',
-                            600: '#2563eb',
-                            700: '#1d4ed8',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
     <!-- Google Fonts & Font Awesome Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Custom CSS (Laravel Asset) -->
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 
     @yield('styles')
 </head>
-<body class="h-full font-sans figma-grid antialiased flex flex-col justify-between selection:bg-brand-600 selection:text-white">
+<body class="figma-grid min-vh-100 d-flex flex-column justify-content-between">
 
-    <!-- Header / Navbar Utama -->
-    <header class="sticky top-0 z-40">
-        <div class="bg-white/90 backdrop-blur-md border-b border-slate-200 px-4 py-3 shadow-sm">
-            <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-                
-                <!-- Logo & Brand Name -->
-                <a href="{{ route('booking.index') }}" class="flex items-center gap-3 group">
-                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-brand-500/20 group-hover:scale-105 transition-transform duration-200">
-                        <i class="fa-solid fa-volleyball text-xl"></i>
-                    </div>
-                    <div>
-                        <span class="text-xs uppercase tracking-widest text-brand-600 font-bold block leading-none">Mini GOR</span>
-                        <span class="text-xl font-extrabold text-slate-900 tracking-tight">SYAFEA</span>
-                    </div>
-                </a>
+    <!-- Header / Navbar Utama Bootstrap 5 -->
+    <nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top shadow-sm py-2">
+        <div class="container">
+            <!-- Logo & Brand Name -->
+            <a class="navbar-brand d-flex align-items-center gap-2 text-decoration-none" href="{{ route('booking.index') }}">
+                <div class="bg-primary text-white rounded-3 d-flex align-items-center justify-content-center shadow-sm" style="width: 42px; height: 42px;">
+                    <i class="fa-solid fa-volleyball fs-5"></i>
+                </div>
+                <div class="lh-sm">
+                    <span class="d-block text-primary text-uppercase fw-bold" style="font-size: 10px; letter-spacing: 2px;">Mini GOR</span>
+                    <span class="fs-5 fw-extrabold text-dark fw-bold" style="letter-spacing: -0.5px;">SYAFEA</span>
+                </div>
+            </a>
 
-                <!-- Navigation Bar -->
-                <nav class="flex flex-wrap items-center gap-1 bg-slate-100 p-1.5 rounded-xl border border-slate-200 text-xs sm:text-sm">
-                    <a href="{{ route('booking.index') }}" class="px-3.5 py-2 font-semibold text-white bg-brand-600 rounded-lg shadow-sm hover:bg-brand-700 transition-all flex items-center gap-2">
-                        <i class="fa-solid fa-house text-xs"></i> Home
+            <!-- Toggle Mobile -->
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Nav Links -->
+            <div class="collapse navbar-collapse" id="navbarMain">
+                <div class="ms-auto d-flex flex-wrap align-items-center gap-2 bg-light p-1.5 rounded-3 border">
+                    <a href="{{ route('booking.index') }}" class="btn btn-sm btn-primary fw-semibold px-3 py-1.5 rounded-2 d-flex align-items-center gap-2">
+                        <i class="fa-solid fa-house"></i> Home
                     </a>
                     
-                    <a href="{{ route('booking.index') }}#jadwal" class="px-3.5 py-2 font-medium text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-200/70 transition-all flex items-center gap-2">
-                        <i class="fa-solid fa-calendar-days text-xs text-slate-500"></i> Jadwal
+                    <a href="{{ route('booking.index') }}#jadwal" class="btn btn-sm btn-light text-secondary fw-semibold px-3 py-1.5 rounded-2 d-flex align-items-center gap-2">
+                        <i class="fa-solid fa-calendar-days text-muted"></i> Jadwal
                     </a>
                     
-                    <button type="button" onclick="openHistoryModal()" class="px-3.5 py-2 font-medium text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-200/70 transition-all flex items-center gap-2">
-                        <i class="fa-solid fa-clock-rotate-left text-xs text-brand-600"></i> Riwayat Pesanan
+                    <button type="button" onclick="openHistoryModal()" class="btn btn-sm btn-light text-secondary fw-semibold px-3 py-1.5 rounded-2 d-flex align-items-center gap-2">
+                        <i class="fa-solid fa-clock-rotate-left text-primary"></i> Riwayat Pesanan
                     </button>
                     
                     <!-- Dynamic Member Nav / Auth Status -->
-                    <div id="authNavContainer" class="flex items-center gap-2 pl-2 border-l border-slate-300">
-                        <button type="button" onclick="openLoginModal()" id="btnLoginMember" class="px-3.5 py-2 font-bold text-brand-600 bg-brand-50 hover:bg-brand-100 border border-brand-200 rounded-lg transition-all flex items-center gap-2">
-                            <i class="fa-solid fa-user-lock text-xs"></i> Login Member
+                    <div id="authNavContainer" class="d-flex align-items-center gap-2 ps-2 border-start">
+                        <button type="button" onclick="openLoginModal()" id="btnLoginMember" class="btn btn-sm btn-outline-primary fw-bold px-3 py-1.5 rounded-2 d-flex align-items-center gap-2">
+                            <i class="fa-solid fa-user-lock"></i> Login Member
                         </button>
                         
-                        <div id="memberProfileBadge" class="hidden items-center gap-2 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-lg">
-                            <div class="w-7 h-7 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-bold">
+                        <div id="memberProfileBadge" class="d-none align-items-center gap-2 bg-success-subtle border border-success-subtle px-3 py-1 rounded-2">
+                            <div class="bg-success text-white rounded-circle d-flex align-items-center justify-center text-center" style="width: 26px; height: 26px; font-size: 11px;">
                                 <i class="fa-solid fa-user-check"></i>
                             </div>
-                            <div class="text-left">
-                                <span class="text-[10px] text-emerald-600 font-bold block uppercase leading-none">Member Aktif</span>
-                                <span id="memberNameDisplay" class="text-xs font-extrabold text-slate-800">Member</span>
+                            <div class="lh-1 text-start">
+                                <span class="d-block text-success fw-bold text-uppercase" style="font-size: 9px;">Member Aktif</span>
+                                <span id="memberNameDisplay" class="small fw-bold text-dark">Member</span>
                             </div>
-                            <button type="button" onclick="logoutMember()" class="ml-2 text-slate-400 hover:text-rose-600 text-xs" title="Keluar">
-                                <i class="fa-solid fa-right-from-bracket"></i>
+                            <button type="button" onclick="logoutMember()" class="btn btn-link text-muted hover-danger p-0 ms-1 text-decoration-none" title="Keluar">
+                                <i class="fa-solid fa-right-from-bracket small"></i>
                             </button>
                         </div>
                     </div>
 
-                    <!-- Link Navigasi Role: Admin & Pemilik -->
-                    <div class="flex items-center gap-1 pl-2 border-l border-slate-300">
-                        <a href="{{ route('admin.index') }}" class="px-3 py-2 text-xs font-semibold text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-200/70 transition-all flex items-center gap-1.5" title="Portal Admin">
-                            <i class="fa-solid fa-user-gear text-slate-500"></i> Admin
+                    <!-- Role Link: Admin & Pemilik -->
+                    <div class="d-flex align-items-center gap-1 ps-2 border-start">
+                        <a href="{{ route('admin.index') }}" class="btn btn-sm btn-light text-secondary px-2 py-1 rounded-2" title="Portal Admin">
+                            <i class="fa-solid fa-user-gear"></i> <span class="small">Admin</span>
                         </a>
-                        <a href="{{ route('owner.index') }}" class="px-3 py-2 text-xs font-semibold text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-200/70 transition-all flex items-center gap-1.5" title="Portal Pemilik">
-                            <i class="fa-solid fa-chart-line text-slate-500"></i> Pemilik
+                        <a href="{{ route('owner.index') }}" class="btn btn-sm btn-light text-secondary px-2 py-1 rounded-2" title="Portal Pemilik">
+                            <i class="fa-solid fa-chart-line"></i> <span class="small">Pemilik</span>
                         </a>
                     </div>
-                </nav>
-            </div>
-        </div>
-    </header>
-
-    <!-- Alert / Flash Messages dari Laravel Session -->
-    @if(session('success'))
-        <div class="max-w-6xl mx-auto px-4 mt-6 w-full">
-            <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-center justify-between shadow-sm">
-                <div class="flex items-center gap-3">
-                    <i class="fa-solid fa-circle-check text-emerald-600 text-xl"></i>
-                    <p class="text-sm font-semibold">{{ session('success') }}</p>
                 </div>
-                <button type="button" onclick="this.parentElement.remove()" class="text-emerald-500 hover:text-emerald-800 text-sm">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
             </div>
         </div>
-    @endif
+    </nav>
 
-    @if(session('error'))
-        <div class="max-w-6xl mx-auto px-4 mt-6 w-full">
-            <div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 flex items-center justify-between shadow-sm">
-                <div class="flex items-center gap-3">
-                    <i class="fa-solid fa-circle-exclamation text-rose-600 text-xl"></i>
-                    <p class="text-sm font-semibold">{{ session('error') }}</p>
-                </div>
-                <button type="button" onclick="this.parentElement.remove()" class="text-rose-500 hover:text-rose-800 text-sm">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
+    <!-- Flash Alert Messages -->
+    <div class="container mt-4">
+        @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show rounded-3 shadow-sm border-0 d-flex align-items-center gap-2" role="alert">
+                <i class="fa-solid fa-circle-check fs-5 text-success"></i>
+                <div class="fw-semibold small">{{ session('success') }}</div>
+                <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
             </div>
-        </div>
-    @endif
+        @endif
 
-    <!-- Main Dynamic Content -->
-    <main class="flex-grow">
+        @if(session('error'))
+            <div class="alert alert-danger alert-dismissible fade show rounded-3 shadow-sm border-0 d-flex align-items-center gap-2" role="alert">
+                <i class="fa-solid fa-circle-exclamation fs-5 text-danger"></i>
+                <div class="fw-semibold small">{{ session('error') }}</div>
+                <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
+            </div>
+        @endif
+    </div>
+
+    <!-- Main Content -->
+    <main class="flex-grow-1">
         @yield('content')
     </main>
 
-    <!-- Modal Riwayat Pemesanan (History Modal) -->
-    <div id="historyModal" class="fixed inset-0 modal-backdrop flex items-center justify-center p-4 hidden z-50">
-        <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-2xl w-full border border-slate-200 shadow-2xl relative">
-            <button type="button" onclick="closeHistoryModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700">
-                <i class="fa-solid fa-xmark text-lg"></i>
-            </button>
-            
-            <div class="flex items-center gap-3 mb-6">
-                <div class="w-12 h-12 bg-brand-50 border border-brand-100 text-brand-600 rounded-2xl flex items-center justify-center shadow-sm">
-                    <i class="fa-solid fa-clock-rotate-left text-xl"></i>
+    <!-- Modal Riwayat Pemesanan (History Modal) Bootstrap 5 -->
+    <div class="modal fade" id="historyModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content rounded-4 border-0 shadow-lg">
+                <div class="modal-header border-0 pb-0">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="bg-primary-subtle text-primary rounded-3 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                            <i class="fa-solid fa-clock-rotate-left fs-4"></i>
+                        </div>
+                        <div>
+                            <h5 class="modal-title fw-bold text-dark mb-0">Riwayat Pemesanan Lapangan</h5>
+                            <p id="historySubtitle" class="text-muted small mb-0">Daftar transaksi sewa lapangan Anda</p>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div>
-                    <h3 class="text-xl font-black text-slate-900">Riwayat Pemesanan Lapangan</h3>
-                    <p id="historySubtitle" class="text-xs text-slate-500">Daftar transaksi sewa lapangan Anda</p>
+                <div class="modal-body py-4">
+                    <div class="table-responsive rounded-3 border">
+                        <table class="table table-hover align-middle mb-0 small">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID / Tgl Booking</th>
+                                    <th>Jadwal Main</th>
+                                    <th>Tipe Akun</th>
+                                    <th>Total Biaya</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="historyTableBody">
+                                <!-- Diisi via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-dark w-100 rounded-3 py-2 fw-bold text-uppercase small" data-bs-dismiss="modal">
+                        Tutup Window
+                    </button>
                 </div>
             </div>
-
-            <!-- Tabel Riwayat -->
-            <div class="overflow-x-auto rounded-xl border border-slate-200 max-h-64 mb-6">
-                <table class="modern-table text-xs">
-                    <thead>
-                        <tr>
-                            <th>ID / Tgl Booking</th>
-                            <th>Jadwal Main</th>
-                            <th>Tipe Akun</th>
-                            <th>Total Biaya</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody id="historyTableBody" class="divide-y divide-slate-100 font-medium">
-                        <!-- Diisi via JS atau Blade Data -->
-                    </tbody>
-                </table>
-            </div>
-
-            <button type="button" onclick="closeHistoryModal()" class="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl text-xs uppercase tracking-wider shadow transition-all">
-                Tutup Window
-            </button>
         </div>
     </div>
 
-    <!-- Modal Login Member -->
-    <div id="loginModal" class="fixed inset-0 modal-backdrop flex items-center justify-center p-4 hidden z-50">
-        <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full border border-slate-200 shadow-2xl relative">
-            <button type="button" onclick="closeLoginModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700">
-                <i class="fa-solid fa-xmark text-lg"></i>
-            </button>
-            
-            <div class="text-center mb-6">
-                <div class="w-12 h-12 bg-brand-50 border border-brand-100 text-brand-600 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-sm">
-                    <i class="fa-solid fa-user-shield text-xl"></i>
+    <!-- Modal Login Member Bootstrap 5 -->
+    <div class="modal fade" id="loginModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0 shadow-lg p-3">
+                <div class="modal-header border-0 pb-0 justify-content-end">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <h3 class="text-xl font-black text-slate-900">Login Member Syafea</h3>
-                <p class="text-xs text-slate-500 mt-1">Nikmati potongan tarif khusus member resmi</p>
-            </div>
+                <div class="modal-body text-center pt-0">
+                    <div class="bg-primary-subtle text-primary rounded-4 d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 56px; height: 56px;">
+                        <i class="fa-solid fa-user-shield fs-3"></i>
+                    </div>
+                    <h4 class="fw-bold text-dark mb-1">Login Member Syafea</h4>
+                    <p class="text-muted small mb-4">Nikmati potongan tarif khusus member resmi</p>
 
-            <form onsubmit="handleMemberLogin(event)" class="space-y-4">
-                @csrf
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Nama / WhatsApp / Email</label>
-                    <input type="text" id="inputUser" required placeholder="Contoh: Budi Santoso" class="form-control-modern">
+                    <form onsubmit="handleMemberLogin(event)" class="text-start">
+                        @csrf
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-uppercase text-secondary">Nama / WhatsApp / Email</label>
+                            <input type="text" id="inputUser" required placeholder="Contoh: Budi Santoso" class="form-control rounded-3 py-2">
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label small fw-bold text-uppercase text-secondary">Password</label>
+                            <input type="password" required placeholder="••••••••" class="form-control rounded-3 py-2">
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 rounded-3 py-2.5 fw-bold text-uppercase small shadow-sm">
+                            MASUK SEBAGAI MEMBER
+                        </button>
+                    </form>
                 </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Password</label>
-                    <input type="password" required placeholder="••••••••" class="form-control-modern">
-                </div>
-                <button type="submit" class="w-full py-3.5 btn-modern-primary text-xs uppercase tracking-wider">
-                    MASUK SEBAGAI MEMBER
-                </button>
-            </form>
+            </div>
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-slate-900 text-slate-300 border-t border-slate-800 py-8 px-4 mt-12">
-        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
-            <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center text-white text-sm font-bold">
-                    <i class="fa-solid fa-volleyball"></i>
+    <!-- Footer Bootstrap 5 -->
+    <footer class="bg-dark text-secondary py-4 mt-5 border-top border-secondary">
+        <div class="container d-flex flex-column flex-md-row align-items-center justify-content-between gap-3 text-center text-md-start">
+            <div class="d-flex align-items-center gap-2">
+                <div class="bg-primary text-white rounded-2 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                    <i class="fa-solid fa-volleyball small"></i>
                 </div>
-                <span class="text-white font-bold text-sm">Mini GOR Syafea</span>
+                <span class="text-white fw-bold">Mini GOR Syafea</span>
             </div>
-            <p class="text-xs text-slate-400">&copy; {{ date('Y') }} Mini GOR Syafea. All Rights Reserved. Built with Laravel & CSS.</p>
+            <p class="small text-muted mb-0">&copy; {{ date('Y') }} Mini GOR Syafea. Built with Laravel & Bootstrap 5.</p>
         </div>
     </footer>
 
-    <!-- Shared Client Scripts -->
+    <!-- Bootstrap 5 Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Client-Side Scripting -->
     <script>
+        let bsLoginModal = null;
+        let bsHistoryModal = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginEl = document.getElementById('loginModal');
+            const historyEl = document.getElementById('historyModal');
+            if (loginEl) bsLoginModal = new bootstrap.Modal(loginEl);
+            if (historyEl) bsHistoryModal = new bootstrap.Modal(historyEl);
+
+            const savedMember = localStorage.getItem('syafea_member');
+            if (savedMember) {
+                activateMemberUI(savedMember);
+            }
+        });
+
         function openLoginModal() { 
-            document.getElementById('loginModal').classList.remove('hidden'); 
+            if (bsLoginModal) bsLoginModal.show(); 
         }
         function closeLoginModal() { 
-            document.getElementById('loginModal').classList.add('hidden'); 
+            if (bsLoginModal) bsLoginModal.hide(); 
         }
 
         function openHistoryModal() { 
             renderHistoryModal();
-            document.getElementById('historyModal').classList.remove('hidden'); 
+            if (bsHistoryModal) bsHistoryModal.show(); 
         }
         function closeHistoryModal() { 
-            document.getElementById('historyModal').classList.add('hidden'); 
+            if (bsHistoryModal) bsHistoryModal.hide(); 
         }
 
         function handleMemberLogin(e) {
@@ -257,20 +254,25 @@
             const btnLogin = document.getElementById('btnLoginMember');
             const badge = document.getElementById('memberProfileBadge');
             const nameDisplay = document.getElementById('memberNameDisplay');
-            if (btnLogin) btnLogin.classList.add('hidden');
+            if (btnLogin) btnLogin.classList.add('d-none');
             if (badge) {
-                badge.classList.remove('hidden');
-                badge.classList.add('flex');
+                badge.classList.remove('d-none');
+                badge.classList.add('d-flex');
             }
             if (nameDisplay) nameDisplay.innerText = name;
 
             const banner = document.getElementById('bannerStatus');
             if (banner) {
-                banner.className = "bg-gradient-to-r from-emerald-600 to-teal-700 text-white p-4 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 shadow-md";
-                document.getElementById('bannerIcon').className = "w-10 h-10 rounded-xl bg-white/20 text-white flex items-center justify-center border border-white/30";
-                document.getElementById('bannerIcon').innerHTML = '<i class="fa-solid fa-award text-lg"></i>';
-                document.getElementById('bannerTitle').innerText = "Halo, " + name + " (Member Aktif)";
-                document.getElementById('bannerDesc').innerText = "Hak istimewa custom jadwal aktif + Tarif spesial Member GOR Syafea.";
+                banner.className = "bg-gradient-member text-white p-4 rounded-4 shadow-sm d-flex flex-column flex-sm-row align-items-center justify-content-between gap-3 mb-4";
+                const bannerIcon = document.getElementById('bannerIcon');
+                if (bannerIcon) {
+                    bannerIcon.className = "rounded-3 bg-white bg-opacity-25 text-white d-flex align-items-center justify-content-center";
+                    bannerIcon.innerHTML = '<i class="fa-solid fa-award fs-4"></i>';
+                }
+                const bannerTitle = document.getElementById('bannerTitle');
+                if (bannerTitle) bannerTitle.innerText = "Halo, " + name + " (Member Aktif)";
+                const bannerDesc = document.getElementById('bannerDesc');
+                if (bannerDesc) bannerDesc.innerText = "Hak istimewa custom jadwal aktif + Tarif spesial Member GOR Syafea.";
                 const bannerBtn = document.getElementById('btnActionBanner');
                 if (bannerBtn) {
                     bannerBtn.innerText = "Lihat Riwayat Member";
@@ -279,7 +281,7 @@
             }
 
             const scheduleCtrl = document.getElementById('memberScheduleControl');
-            if (scheduleCtrl) scheduleCtrl.classList.remove('hidden');
+            if (scheduleCtrl) scheduleCtrl.classList.remove('d-none');
         }
 
         function logoutMember() {
@@ -305,32 +307,24 @@
 
             tbody.innerHTML = "";
             if (userHistory.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="py-6 text-center text-slate-400 italic">Belum ada riwayat pesanan untuk akun ini.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" class="py-4 text-center text-muted fst-italic">Belum ada riwayat pesanan untuk akun ini.</td></tr>`;
                 return;
             }
 
             userHistory.forEach(item => {
                 tbody.innerHTML += `
                     <tr>
-                        <td class="font-bold text-slate-800">${item.id}<br><span class="text-[10px] text-slate-400 font-normal">${item.date}</span></td>
+                        <td><span class="fw-bold text-dark">${item.id}</span><br><small class="text-muted">${item.date}</small></td>
                         <td>${item.schedule}</td>
-                        <td><span class="badge badge-member">${item.type}</span></td>
-                        <td class="font-bold text-slate-900">${item.price}</td>
-                        <td><span class="badge badge-success">${item.status}</span></td>
+                        <td><span class="badge bg-success-subtle text-success border border-success-subtle">${item.type}</span></td>
+                        <td class="fw-bold text-dark">${item.price}</td>
+                        <td><span class="badge bg-success-subtle text-success">${item.status}</span></td>
                     </tr>
                 `;
             });
         }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const savedMember = localStorage.getItem('syafea_member');
-            if (savedMember) {
-                activateMemberUI(savedMember);
-            }
-        });
     </script>
 
     @yield('scripts')
 </body>
 </html>
-
