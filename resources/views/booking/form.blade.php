@@ -105,14 +105,129 @@
                         </label>
                         <div class="input-group">
                             <span class="input-group-text bg-light text-muted border-end-0 rounded-start-3"><i class="fa-regular fa-credit-card"></i></span>
-                            <select name="payment_method" class="form-select rounded-end-3 py-2 border-start-0 cursor-pointer">
+                            <select name="payment_method" id="paymentMethodSelect" onchange="handlePaymentChange(this.value)" class="form-select rounded-end-3 py-2 border-start-0 cursor-pointer">
                                 <option value="bca">Transfer Bank - BCA (123-456-7890)</option>
                                 <option value="mandiri">Transfer Bank - Mandiri (987-654-3210)</option>
-                                <option value="qris">QRIS (Semua E-Wallet / Mobile Banking)</option>
+                                <option value="qris" selected>QRIS (Semua E-Wallet / Mobile Banking)</option>
                                 <option value="gopay">GoPay / DANA / OVO</option>
                             </select>
                         </div>
                     </div>
+
+                    <!-- ========================================== -->
+                    <!-- DETAIL PEMBAYARAN INTERAKTIF (JS / SIMULASI) -->
+                    <!-- ========================================== -->
+                    <div id="paymentDetailContainer">
+                        
+                        <!-- 1. KOTAK SIMULASI QRIS (OTOMATIS MUNCUL JIKA PILIH QRIS) -->
+                        <div id="qrisBox" class="p-4 bg-white border border-2 border-danger-subtle rounded-4 text-center shadow-sm my-2">
+                            <div class="d-flex align-items-center justify-content-between border-bottom pb-2 mb-3">
+                                <span class="badge bg-danger text-uppercase px-2.5 py-1.5 fw-bold" style="letter-spacing: 1px;">
+                                    <i class="fa-solid fa-qrcode me-1"></i> QRIS STANDAR NASIONAL
+                                </span>
+                                <small class="text-muted font-monospace">NMID: ID1029384756201</small>
+                            </div>
+                            
+                            <h5 class="fw-bold text-dark mb-0">MINI GOR SYAFEA</h5>
+                            <small class="text-muted d-block mb-3">Sistem Pembayaran Instan Semua E-Wallet & Mobile Banking</small>
+
+                            <!-- Gambar Simulasi QR Code QRIS -->
+                            <div class="d-inline-block p-3 bg-white border-2 border-dark rounded-3 shadow-sm mb-3 position-relative">
+                                <!-- SVG Realistis QR Code agar gambar tidak pernah rusak/pecah -->
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="160" height="160" class="d-block mx-auto">
+                                    <!-- Pattern QR Code -->
+                                    <rect width="160" height="160" fill="#ffffff"/>
+                                    <!-- Top-Left Target -->
+                                    <rect x="10" y="10" width="40" height="40" fill="#0f172a" rx="4"/>
+                                    <rect x="18" y="18" width="24" height="24" fill="#ffffff" rx="2"/>
+                                    <rect x="24" y="24" width="12" height="12" fill="#0f172a"/>
+                                    <!-- Top-Right Target -->
+                                    <rect x="110" y="10" width="40" height="40" fill="#0f172a" rx="4"/>
+                                    <rect x="118" y="18" width="24" height="24" fill="#ffffff" rx="2"/>
+                                    <rect x="124" y="24" width="12" height="12" fill="#0f172a"/>
+                                    <!-- Bottom-Left Target -->
+                                    <rect x="10" y="110" width="40" height="40" fill="#0f172a" rx="4"/>
+                                    <rect x="18" y="118" width="24" height="24" fill="#ffffff" rx="2"/>
+                                    <rect x="24" y="124" width="12" height="12" fill="#0f172a"/>
+                                    <!-- Data Bits Random Simulated Pattern -->
+                                    <rect x="60" y="15" width="8" height="8" fill="#0f172a"/>
+                                    <rect x="75" y="15" width="8" height="16" fill="#0f172a"/>
+                                    <rect x="90" y="20" width="8" height="8" fill="#0f172a"/>
+                                    <rect x="60" y="35" width="16" height="8" fill="#0f172a"/>
+                                    <rect x="85" y="35" width="12" height="12" fill="#0f172a"/>
+                                    <rect x="15" y="60" width="8" height="16" fill="#0f172a"/>
+                                    <rect x="30" y="65" width="12" height="8" fill="#0f172a"/>
+                                    <rect x="50" y="55" width="8" height="8" fill="#0f172a"/>
+                                    <rect x="65" y="60" width="12" height="12" fill="#0f172a"/>
+                                    <rect x="85" y="55" width="15" height="8" fill="#0f172a"/>
+                                    <rect x="110" y="60" width="8" height="15" fill="#0f172a"/>
+                                    <rect x="125" y="65" width="12" height="8" fill="#0f172a"/>
+                                    <rect x="140" y="55" width="8" height="8" fill="#0f172a"/>
+                                    <rect x="60" y="80" width="18" height="8" fill="#0f172a"/>
+                                    <rect x="85" y="80" width="8" height="18" fill="#0f172a"/>
+                                    <rect x="100" y="85" width="12" height="8" fill="#0f172a"/>
+                                    <rect x="120" y="80" width="8" height="8" fill="#0f172a"/>
+                                    <rect x="135" y="85" width="15" height="8" fill="#0f172a"/>
+                                    <rect x="60" y="105" width="8" height="12" fill="#0f172a"/>
+                                    <rect x="75" y="110" width="15" height="8" fill="#0f172a"/>
+                                    <rect x="100" y="105" width="8" height="8" fill="#0f172a"/>
+                                    <rect x="115" y="110" width="18" height="8" fill="#0f172a"/>
+                                    <rect x="60" y="130" width="12" height="15" fill="#0f172a"/>
+                                    <rect x="80" y="135" width="8" height="8" fill="#0f172a"/>
+                                    <rect x="95" y="125" width="15" height="12" fill="#0f172a"/>
+                                    <rect x="120" y="130" width="8" height="15" fill="#0f172a"/>
+                                    <rect x="135" y="125" width="15" height="8" fill="#0f172a"/>
+                                    <!-- Center Volley Icon Badge -->
+                                    <rect x="66" y="66" width="28" height="28" fill="#ffffff" rx="6" stroke="#2563eb" stroke-width="2"/>
+                                    <circle cx="80" cy="80" r="9" fill="#2563eb"/>
+                                    <path d="M76 80 Q80 75 84 80 M80 76 Q85 80 80 84" stroke="#ffffff" stroke-width="1.5" fill="none"/>
+                                </svg>
+                            </div>
+
+                            <div class="bg-light p-2.5 rounded-3 border mb-3">
+                                <span class="small text-muted d-block">Nominal yang harus dibayar:</span>
+                                <span id="qrisPriceDisplay" class="fs-5 fw-bold text-danger">Rp 50.000</span>
+                            </div>
+
+                            <div class="alert alert-info py-2 px-3 small text-start mb-0 border-0 bg-info-subtle text-info-emphasis rounded-3">
+                                <div class="d-flex gap-2">
+                                    <i class="fa-solid fa-circle-info fs-5 mt-0.5 text-primary"></i>
+                                    <div>
+                                        <strong>Petunjuk Simulasi QRIS:</strong>
+                                        <p class="mb-0 small">Buka aplikasi m-Banking (BCA, Mandiri, BRI) atau E-Wallet (GoPay, DANA, OVO, ShopeePay), scan kode QR di atas, lalu screenshot bukti pembayarannya dan upload di bawah.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2. KOTAK INFORMASI TRANSFER BANK (BCA / MANDIRI) -->
+                        <div id="bankBox" class="p-3 bg-light border border-primary-subtle rounded-3 shadow-sm my-2 d-none">
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <span id="bankNameDisplay" class="badge bg-primary px-3 py-1.5 fw-bold">TRANSFER BCA</span>
+                                <button type="button" class="btn btn-sm btn-outline-secondary py-0.5 px-2.5 small" onclick="copyRekening()">
+                                    <i class="fa-regular fa-copy me-1"></i> <span id="btnCopyText">Salin Rekening</span>
+                                </button>
+                            </div>
+                            <span class="small text-muted d-block mb-1">Nomor Rekening Tujuan:</span>
+                            <h4 id="bankNumberDisplay" class="font-monospace fw-bold text-dark mb-1">123-456-7890</h4>
+                            <small class="text-secondary">Atas Nama: <strong class="text-dark">Mini GOR Syafea</strong></small>
+                        </div>
+
+                        <!-- 3. KOTAK INFORMASI E-WALLET (GOPAY/DANA/OVO) -->
+                        <div id="ewalletBox" class="p-3 bg-light border border-success-subtle rounded-3 shadow-sm my-2 d-none">
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <span class="badge bg-success px-3 py-1.5 fw-bold">E-WALLET (GOPAY / DANA / OVO)</span>
+                                <button type="button" class="btn btn-sm btn-outline-secondary py-0.5 px-2.5 small" onclick="copyEwallet()">
+                                    <i class="fa-regular fa-copy me-1"></i> <span>Salin No. HP</span>
+                                </button>
+                            </div>
+                            <span class="small text-muted d-block mb-1">Nomor Akun / Handphone:</span>
+                            <h4 id="ewalletNumberDisplay" class="font-monospace fw-bold text-dark mb-1">0812-3456-7890</h4>
+                            <small class="text-secondary">Atas Nama: <strong class="text-dark">Mini GOR Syafea (Official)</strong></small>
+                        </div>
+
+                    </div>
+                    <!-- ========================================== -->
 
                     <!-- Upload Bukti Transfer -->
                     <div>
@@ -173,6 +288,10 @@
     document.addEventListener('DOMContentLoaded', () => {
         const modalEl = document.getElementById('successModal');
         if (modalEl) bsSuccessModal = new bootstrap.Modal(modalEl);
+
+        // Jalankan pengecekan metode pembayaran saat halaman pertama kali terbuka
+        const currentMethod = document.getElementById('paymentMethodSelect').value;
+        handlePaymentChange(currentMethod);
     });
 
     let activeBooking = JSON.parse(localStorage.getItem('syafea_active_booking')) || {
@@ -186,6 +305,10 @@
     document.getElementById('displayPrice').innerText = activeBooking.price;
     document.getElementById('displayDate').innerText = activeBooking.date;
     document.getElementById('displayTime').innerText = activeBooking.time;
+    
+    // Sinkronkan harga di kotak QRIS juga
+    const qrisPrice = document.getElementById('qrisPriceDisplay');
+    if (qrisPrice) qrisPrice.innerText = activeBooking.price;
 
     document.getElementById('inputBookingDate').value = activeBooking.date;
     document.getElementById('inputBookingTime').value = activeBooking.time;
@@ -195,6 +318,52 @@
     const memberName = localStorage.getItem('syafea_member');
     if (memberName) {
         document.getElementById('fullName').value = memberName;
+    }
+
+    // ========================================================
+    // LOGIKA JAVASCRIPT: TAMPILKAN GAMBAR QRIS / DETAIL BANK
+    // ========================================================
+    function handlePaymentChange(method) {
+        const qrisBox = document.getElementById('qrisBox');
+        const bankBox = document.getElementById('bankBox');
+        const ewalletBox = document.getElementById('ewalletBox');
+
+        const bankNameDisplay = document.getElementById('bankNameDisplay');
+        const bankNumberDisplay = document.getElementById('bankNumberDisplay');
+
+        // Sembunyikan semuanya terlebih dahulu
+        qrisBox.classList.add('d-none');
+        bankBox.classList.add('d-none');
+        ewalletBox.classList.add('d-none');
+
+        // Tampilkan box yang sesuai dengan pilihan dropdown
+        if (method === 'qris') {
+            qrisBox.classList.remove('d-none');
+        } else if (method === 'bca') {
+            bankNameDisplay.innerText = "TRANSFER BANK BCA";
+            bankNumberDisplay.innerText = "123-456-7890";
+            bankBox.classList.remove('d-none');
+        } else if (method === 'mandiri') {
+            bankNameDisplay.innerText = "TRANSFER BANK MANDIRI";
+            bankNumberDisplay.innerText = "987-654-3210";
+            bankBox.classList.remove('d-none');
+        } else if (method === 'gopay') {
+            ewalletBox.classList.remove('d-none');
+        }
+    }
+
+    function copyRekening() {
+        const text = document.getElementById('bankNumberDisplay').innerText;
+        navigator.clipboard.writeText(text);
+        const btnText = document.getElementById('btnCopyText');
+        btnText.innerText = "Tersalin!";
+        setTimeout(() => { btnText.innerText = "Salin Rekening"; }, 2000);
+    }
+
+    function copyEwallet() {
+        const text = document.getElementById('ewalletNumberDisplay').innerText;
+        navigator.clipboard.writeText(text);
+        alert("Nomor E-Wallet berhasil disalin: " + text);
     }
 
     function updateFileName(input) {
