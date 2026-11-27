@@ -11,39 +11,64 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        tosca: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            200: '#99f6e4',
+                            400: '#2dd4bf',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            700: '#0f766e',
+                        },
+                        navy: {
+                            800: '#1e293b',
+                            900: '#0f172a',
+                            950: '#0a1128',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style> body { font-family: 'Inter', sans-serif; } </style>
 </head>
 <body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col md:flex-row">
 
     <!-- MODAL LOGIN PEMILIK (KUNCI PRIVASI LAPORAN REKAP) -->
-    <div id="ownerLoginModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md flex items-center justify-center p-4 z-50">
+    <div id="ownerLoginModal" class="fixed inset-0 bg-navy-950/80 backdrop-blur-md flex items-center justify-center p-4 z-50">
         <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full border border-slate-200 shadow-2xl relative text-center">
-            <div class="w-14 h-14 bg-indigo-50 border border-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-sm">
+            <div class="w-14 h-14 bg-gradient-to-tr from-tosca-50 to-cyan-100 border border-tosca-200 text-tosca-600 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-sm">
                 <i class="fa-solid fa-lock text-2xl"></i>
             </div>
-            <h2 class="text-2xl font-black text-slate-900 mb-1">Area Private Pemilik GOR</h2>
+            <h2 class="text-2xl font-black text-navy-950 mb-1">Area Private Pemilik GOR</h2>
             <p class="text-xs text-slate-500 mb-5">Laporan rekap transaksi penyewaan & pembayaran bersifat rahasia. Masukkan kredensial pemilik GOR.</p>
             
             <form onsubmit="handleOwnerLogin(event)" class="space-y-4 text-left">
                 @csrf
                 <div>
                     <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Username Pemilik</label>
-                    <input type="text" id="ownerUser" required placeholder="Contoh: pemilik_syafea" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-indigo-600 focus:bg-white">
+                    <input type="text" id="ownerUser" required placeholder="Contoh: pemilik_syafea" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-tosca-500 focus:bg-white focus:ring-2 focus:ring-tosca-400/20">
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Password Rahasia</label>
-                    <input type="password" id="ownerPass" required placeholder="••••••••" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-indigo-600 focus:bg-white">
+                    <input type="password" id="ownerPass" required placeholder="••••••••" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-tosca-500 focus:bg-white focus:ring-2 focus:ring-tosca-400/20">
                 </div>
-                <button type="submit" class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs uppercase tracking-wider shadow-lg shadow-indigo-500/25 transition-all">
+                <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-tosca-500 via-cyan-600 to-blue-600 hover:opacity-95 text-white font-bold rounded-xl text-xs uppercase tracking-wider shadow-lg shadow-tosca-500/25 transition-all">
                     BUKA LAPORAN REKAP PEMILIK
                 </button>
             </form>
             
             <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
-                <a href="{{ route('booking.index') }}" class="inline-flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors">
+                <a href="{{ route('booking.index') }}" class="inline-flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-navy-950 transition-colors">
                     <i class="fa-solid fa-arrow-left"></i> Kembali ke Beranda
                 </a>
-                <a href="{{ route('admin.index') }}" class="text-xs font-bold text-indigo-600 hover:underline">Portal Admin &rarr;</a>
+                <a href="{{ route('admin.index') }}" class="text-xs font-bold text-tosca-700 hover:underline">Portal Admin &rarr;</a>
             </div>
         </div>
     </div>
@@ -51,34 +76,34 @@
     <!-- KONTEN OWNER (TERSEMBUNYI SAMPAI LOGIN BERHASIL) -->
     <div id="ownerContent" style="display:none;" class="w-full flex flex-col md:flex-row flex-grow">
 
-        <!-- SIDEBAR (KIRI) -->
-        <aside class="w-full md:w-64 bg-white border-r border-slate-200 flex flex-col justify-between">
+        <!-- SIDEBAR DEEP NAVY -->
+        <aside class="w-full md:w-64 bg-navy-950 text-slate-300 border-r border-slate-800 flex flex-col justify-between">
             <div>
-                <div class="h-16 flex items-center px-6 border-b border-slate-200 gap-3">
-                    <div class="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-black shadow-md shadow-indigo-500/20">
+                <div class="h-16 flex items-center px-6 border-b border-slate-800/80 gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-tosca-500 via-cyan-600 to-blue-600 text-white flex items-center justify-center font-black shadow-md shadow-tosca-500/20">
                         <i class="fa-solid fa-volleyball"></i>
                     </div>
                     <div>
-                        <span class="font-extrabold text-slate-900 tracking-tight text-sm block leading-none">MINI GOR SYAFEA</span>
-                        <span class="text-[10px] font-bold text-indigo-600 tracking-wider">PORTAL PEMILIK</span>
+                        <span class="font-extrabold text-white tracking-tight text-sm block leading-none">MINI GOR SYAFEA</span>
+                        <span class="text-[10px] font-bold text-tosca-400 tracking-wider">PORTAL PEMILIK</span>
                     </div>
                 </div>
 
-                <nav class="p-4 space-y-1">
-                    <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-100">
-                        <i class="fa-solid fa-chart-pie text-sm"></i> Rekap Penyewaan & Omzet
+                <nav class="p-4 space-y-1.5">
+                    <a href="#" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-tosca-500/20 to-cyan-500/10 text-tosca-300 border border-tosca-500/30">
+                        <i class="fa-solid fa-chart-pie text-sm text-tosca-400"></i> Rekap Penyewaan & Omzet
                     </a>
-                    <a href="{{ route('booking.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all">
-                        <i class="fa-solid fa-house text-sm text-slate-400"></i> Halaman Utama
+                    <a href="{{ route('booking.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:bg-slate-900 hover:text-white transition-all">
+                        <i class="fa-solid fa-house text-sm text-slate-500"></i> Halaman Utama
                     </a>
-                    <a href="{{ route('admin.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all">
-                        <i class="fa-solid fa-user-gear text-sm text-slate-400"></i> Panel Pengelola
+                    <a href="{{ route('admin.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:bg-slate-900 hover:text-white transition-all">
+                        <i class="fa-solid fa-user-gear text-sm text-slate-500"></i> Panel Pengelola
                     </a>
                 </nav>
             </div>
 
-            <div class="p-4 border-t border-slate-200">
-                <button type="button" onclick="logoutOwner()" class="w-full py-2.5 px-3 rounded-xl text-xs font-bold text-rose-700 bg-rose-50 border border-rose-200 hover:bg-rose-100 transition-all flex items-center justify-center gap-2">
+            <div class="p-4 border-t border-slate-800/80">
+                <button type="button" onclick="logoutOwner()" class="w-full py-2.5 px-3 rounded-xl text-xs font-bold text-rose-300 bg-rose-500/10 border border-rose-500/20 hover:bg-rose-500/20 transition-all flex items-center justify-center gap-2">
                     <i class="fa-solid fa-lock"></i> Kunci Portal Pemilik
                 </button>
             </div>
@@ -88,42 +113,42 @@
         <main class="flex-1 flex flex-col overflow-y-auto">
             
             <!-- TOP BAR -->
-            <header class="h-16 bg-white border-b border-slate-200 px-6 sm:px-8 flex items-center justify-between sticky top-0 z-30">
-                <h1 class="text-base sm:text-lg font-bold text-slate-800 flex items-center gap-2">
-                    <i class="fa-solid fa-chart-line text-indigo-600"></i> Laporan Rekap Transaksi & Omzet Penyewaan
+            <header class="h-16 bg-white border-b border-slate-200/80 px-6 sm:px-8 flex items-center justify-between sticky top-0 z-30">
+                <h1 class="text-base sm:text-lg font-bold text-navy-950 flex items-center gap-2">
+                    <i class="fa-solid fa-chart-line text-tosca-600"></i> Laporan Rekap Transaksi & Omzet Penyewaan
                 </h1>
                 <div class="flex items-center gap-3">
-                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Data Real-Time
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-tosca-50 to-cyan-50 text-tosca-700 border border-tosca-200">
+                        <span class="w-2 h-2 rounded-full bg-tosca-500 animate-pulse"></span> Data Real-Time
                     </span>
                 </div>
             </header>
 
             <div class="p-6 sm:p-8 space-y-6 max-w-6xl w-full">
                 
-                <!-- SUMMARY STATS CARDS (Modul 4: Rekap Data) -->
+                <!-- SUMMARY STATS CARDS -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                     
                     <!-- Card 1: Rekap Data Pembayaran (Fitur 4.2) -->
-                    <div class="bg-gradient-to-tr from-indigo-700 to-blue-600 rounded-3xl p-6 text-white shadow-lg shadow-indigo-500/20 relative overflow-hidden">
+                    <div class="bg-gradient-to-br from-navy-950 via-blue-950 to-tosca-900 rounded-3xl p-6 text-white shadow-xl shadow-navy-950/20 relative overflow-hidden border border-slate-800">
                         <div class="relative z-10">
-                            <span class="text-xs font-bold uppercase tracking-wider text-indigo-200 block mb-1">Rekap Pembayaran (Omzet)</span>
+                            <span class="text-xs font-bold uppercase tracking-wider text-tosca-300 block mb-1">Rekap Pembayaran (Omzet)</span>
                             <h2 id="totalRevenue" class="text-2xl sm:text-3xl font-black tracking-tight mb-2">Rp 0</h2>
-                            <p class="text-[11px] text-indigo-100 flex items-center gap-1">
-                                <i class="fa-solid fa-circle-check text-emerald-400"></i> Akumulasi dari pembayaran terverifikasi
+                            <p class="text-[11px] text-tosca-100 flex items-center gap-1.5">
+                                <i class="fa-solid fa-circle-check text-tosca-400"></i> Akumulasi pembayaran terverifikasi
                             </p>
                         </div>
-                        <div class="absolute -right-4 -bottom-4 w-28 h-28 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
+                        <div class="absolute -right-4 -bottom-4 w-28 h-28 bg-tosca-500/20 rounded-full blur-xl pointer-events-none"></div>
                     </div>
 
                     <!-- Card 2: Rekap Data Penyewaan (Fitur 4.1) -->
                     <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between">
                         <div>
                             <span class="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-1">Rekap Total Penyewaan</span>
-                            <h2 id="totalTransactions" class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight mb-2">0 Transaksi</h2>
+                            <h2 id="totalTransactions" class="text-2xl sm:text-3xl font-black text-navy-950 tracking-tight mb-2">0 Transaksi</h2>
                         </div>
                         <p class="text-[11px] text-slate-500 flex items-center gap-1">
-                            <i class="fa-solid fa-clipboard-list text-indigo-600"></i> Seluruh data pemesanan lapangan
+                            <i class="fa-solid fa-clipboard-list text-tosca-600"></i> Seluruh data pemesanan lapangan
                         </p>
                     </div>
 
@@ -132,8 +157,8 @@
                         <div>
                             <span class="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-1">Status Lapangan Mini GOR</span>
                             <div class="flex items-center gap-2 mb-2">
-                                <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
-                                <h2 class="text-xl font-black text-slate-900">Operasional Aktif</h2>
+                                <span class="w-3 h-3 rounded-full bg-tosca-500 animate-pulse"></span>
+                                <h2 class="text-xl font-black text-navy-950">Operasional Aktif</h2>
                             </div>
                         </div>
                         <p class="text-[11px] text-slate-500">Buka setiap hari 08.00 - 22.00 WIB</p>
@@ -145,8 +170,8 @@
                 <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8 space-y-4">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div>
-                            <h3 class="text-sm sm:text-base font-bold text-slate-900 flex items-center gap-2">
-                                <i class="fa-solid fa-chart-simple text-indigo-600"></i> Grafik Rekap Pembayaran Berdasarkan Tanggal
+                            <h3 class="text-sm sm:text-base font-bold text-navy-950 flex items-center gap-2">
+                                <i class="fa-solid fa-chart-simple text-tosca-600"></i> Grafik Rekap Pembayaran Berdasarkan Tanggal
                             </h3>
                             <p class="text-xs text-slate-500">Visualisasi pendapatan sewa lapangan harian dari transaksi yang terverifikasi</p>
                         </div>
@@ -160,14 +185,14 @@
                 <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8 space-y-4">
                     <div class="flex items-center justify-between">
                         <div>
-                            <h3 class="text-sm sm:text-base font-bold text-slate-900">Daftar Rekap Transaksi Penyewaan</h3>
+                            <h3 class="text-sm sm:text-base font-bold text-navy-950">Daftar Rekap Transaksi Penyewaan</h3>
                             <p class="text-xs text-slate-500">Rincian data penyewaan lapangan dari seluruh pelanggan</p>
                         </div>
                     </div>
 
                     <div class="overflow-x-auto rounded-2xl border border-slate-200">
                         <table class="w-full text-left text-xs">
-                            <thead class="bg-slate-50 text-slate-500 uppercase font-bold tracking-wider border-b border-slate-200">
+                            <thead class="bg-slate-50 text-slate-600 uppercase font-bold tracking-wider border-b border-slate-200">
                                 <tr>
                                     <th class="py-3.5 px-4">ID Transaksi</th>
                                     <th class="py-3.5 px-4">Nama Penyewa / Tipe</th>
@@ -281,12 +306,12 @@
 
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50 transition-colors">
-                        <td class="py-3.5 px-4 font-bold text-slate-900">${item.id}</td>
+                        <td class="py-3.5 px-4 font-bold text-navy-950">${item.id}</td>
                         <td class="py-3.5 px-4"><span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-200">${item.name || item.type}</span></td>
                         <td class="py-3.5 px-4 font-medium text-slate-800">${item.schedule}</td>
-                        <td class="py-3.5 px-4 font-bold text-slate-900">${item.price}</td>
+                        <td class="py-3.5 px-4 font-bold text-navy-950">${item.price}</td>
                         <td class="py-3.5 px-4">
-                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-semibold ${isVerified ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-amber-50 text-amber-700 border border-amber-200'}">
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-semibold ${isVerified ? 'bg-tosca-50 text-tosca-700 border border-tosca-200' : 'bg-amber-50 text-amber-700 border border-amber-200'}">
                                 ${item.status}
                             </span>
                         </td>
@@ -326,6 +351,11 @@
                 rekapChartInstance.destroy();
             }
 
+            // Create gradient for chart bar
+            let gradient = ctx.createLinearGradient(0, 0, 0, 300);
+            gradient.addColorStop(0, '#0d9488'); // tosca
+            gradient.addColorStop(1, '#1e3a8a'); // navy/blue
+
             rekapChartInstance = new Chart(ctx, {
                 type: 'bar',
                 data: {
@@ -333,7 +363,7 @@
                     datasets: [{
                         label: 'Pendapatan (Rp)',
                         data: chartData,
-                        backgroundColor: '#4f46e5',
+                        backgroundColor: gradient,
                         borderRadius: 8,
                     }]
                 },

@@ -6,9 +6,9 @@
 <div class="space-y-6" id="home">
     
     <!-- BANNER STATUS PENGUNJUNG (GUEST / MEMBER) -->
-    <div id="bannerStatus" class="bg-gradient-to-r from-slate-900 to-slate-800 text-white p-4 sm:p-5 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 shadow-md">
+    <div id="bannerStatus" class="bg-gradient-to-r from-navy-950 via-slate-900 to-blue-950 text-white p-4 sm:p-5 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg shadow-navy-950/20 border border-slate-800">
         <div class="flex items-center gap-3.5">
-            <div id="bannerIcon" class="w-11 h-11 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center border border-amber-500/30">
+            <div id="bannerIcon" class="w-11 h-11 rounded-xl bg-gradient-to-tr from-tosca-500/20 to-cyan-500/20 text-tosca-400 flex items-center justify-center border border-tosca-500/30">
                 <i class="fa-solid fa-user-clock text-xl"></i>
             </div>
             <div>
@@ -16,43 +16,47 @@
                 <p id="bannerDesc" class="text-xs text-slate-300">Pilih slot jadwal lapangan yang tersedia dan periksa riwayat penyewaan Anda.</p>
             </div>
         </div>
-        <button type="button" onclick="openLoginModal()" id="btnActionBanner" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold rounded-xl shadow transition-all whitespace-nowrap">
+        <button type="button" onclick="openLoginModal()" id="btnActionBanner" class="px-4 py-2 bg-gradient-to-r from-tosca-500 to-cyan-600 hover:from-tosca-600 hover:to-cyan-700 text-white text-xs font-bold rounded-xl shadow-md shadow-tosca-500/25 transition-all whitespace-nowrap">
             Login / Daftar Member
         </button>
     </div>
 
-    <!-- HERO SECTION -->
-    <section class="white-card p-6 sm:p-10 text-center glow-effect-light relative overflow-hidden">
-        <div class="relative z-10 max-w-2xl mx-auto space-y-3">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 text-brand-600 border border-brand-100 text-xs font-bold tracking-wide uppercase">
-                <span class="dot-indicator online"></span> Sistem Informasi Pencatatan Penyewaan
+    <!-- HERO SECTION DENGAN GRADASI TOSCA - BIRU - NAVY -->
+    <section class="bg-gradient-to-br from-navy-950 via-slate-900 to-blue-950 text-white p-8 sm:p-12 text-center rounded-3xl relative overflow-hidden shadow-xl border border-slate-800">
+        <!-- Background Lighting Orbs -->
+        <div class="absolute -top-12 -left-12 w-48 h-48 bg-tosca-500/20 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-12 -right-12 w-48 h-48 bg-blue-600/20 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="relative z-10 max-w-2xl mx-auto space-y-4">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-tosca-500/10 text-tosca-300 border border-tosca-500/30 text-xs font-bold tracking-wide uppercase">
+                <span class="w-2 h-2 rounded-full bg-tosca-400 animate-pulse"></span> Sistem Informasi Pencatatan Penyewaan
             </div>
-            <h1 class="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight leading-tight">
+            <h1 class="text-3xl sm:text-5xl font-black tracking-tight leading-tight">
                 PENYEWAAN LAPANGAN <br>
-                <span class="bg-gradient-to-r from-brand-600 to-indigo-600 bg-clip-text text-transparent">MINI GOR SYAFEA</span>
+                <span class="bg-gradient-to-r from-tosca-400 via-cyan-400 to-blue-400 bg-clip-text text-transparent">MINI GOR SYAFEA</span>
             </h1>
-            <p class="text-sm font-medium text-slate-600">
-                <strong class="text-slate-900">Jam Operasional: 08.00 - 22.00 WIB</strong> — 
-                <span>Pilih paket 3 jam hemat atau per jam sesuai jadwal olahraga Anda.</span>
+            <p class="text-sm font-medium text-slate-300">
+                <strong class="text-white">Jam Operasional: 08.00 - 22.00 WIB</strong> — 
+                <span>Tersedia paket 3 jam hemat atau sewa per jam untuk badminton & voli.</span>
             </p>
         </div>
     </section>
 
-    <!-- KONTROL KHUSUS MEMBER: PANEL CUSTOM JADWAL (Fitur 1.1 / 2.1) -->
-    <div id="memberScheduleControl" class="hidden white-card p-5 sm:p-6 border border-brand-200 bg-brand-50/40">
-        <h4 class="text-sm font-bold text-slate-900 flex items-center gap-2 mb-1">
-            <i class="fa-solid fa-sliders text-brand-600"></i> Panel Custom Jadwal Khusus Member
+    <!-- KONTROL KHUSUS MEMBER: PANEL CUSTOM JADWAL -->
+    <div id="memberScheduleControl" class="hidden white-card p-5 sm:p-6 border border-tosca-200 bg-gradient-to-r from-tosca-50/50 to-cyan-50/50 glow-effect-tosca">
+        <h4 class="text-sm font-bold text-navy-950 flex items-center gap-2 mb-1">
+            <i class="fa-solid fa-sliders text-tosca-600"></i> Panel Custom Jadwal Khusus Member
         </h4>
         <p class="text-xs text-slate-600 mb-4">Sebagai member terdaftar, Anda memiliki hak istimewa mengatur tanggal dan durasi jam sewa secara fleksibel.</p>
         
         <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
             <div class="md:col-span-4">
                 <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Pilih Tanggal Sewa</label>
-                <input type="date" id="customDate" value="{{ date('Y-m-d') }}" class="w-full px-3.5 py-2 bg-white border border-slate-300 rounded-xl text-xs font-medium focus:outline-none focus:border-brand-600">
+                <input type="date" id="customDate" value="{{ date('Y-m-d') }}" class="w-full px-3.5 py-2 bg-white border border-slate-300 rounded-xl text-xs font-medium focus:outline-none focus:border-tosca-500 focus:ring-2 focus:ring-tosca-400/20">
             </div>
             <div class="md:col-span-5">
                 <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Pilih Durasi / Jam Sewa</label>
-                <select id="customTime" class="w-full px-3.5 py-2 bg-white border border-slate-300 rounded-xl text-xs font-medium focus:outline-none focus:border-brand-600 cursor-pointer">
+                <select id="customTime" class="w-full px-3.5 py-2 bg-white border border-slate-300 rounded-xl text-xs font-medium focus:outline-none focus:border-tosca-500 focus:ring-2 focus:ring-tosca-400/20 cursor-pointer">
                     <option value="08:00 - 11:00 (Paket 3 Jam)">Paket 3 Jam (08:00 - 11:00)</option>
                     <option value="13:00 - 16:00 (Paket 3 Jam)">Paket 3 Jam (13:00 - 16:00)</option>
                     <option value="16:00 - 19:00 (Paket 3 Jam)">Paket 3 Jam (16:00 - 19:00)</option>
@@ -62,19 +66,19 @@
                 </select>
             </div>
             <div class="md:col-span-3 flex items-end">
-                <button type="button" onclick="applyCustomSchedule()" class="w-full py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl text-xs uppercase tracking-wider shadow-md shadow-brand-500/20 transition-all flex items-center justify-center gap-1.5">
+                <button type="button" onclick="applyCustomSchedule()" class="w-full py-2.5 bg-gradient-to-r from-tosca-500 via-cyan-600 to-blue-600 hover:opacity-95 text-white font-bold rounded-xl text-xs uppercase tracking-wider shadow-md shadow-tosca-500/25 transition-all flex items-center justify-center gap-1.5">
                     <i class="fa-solid fa-check"></i> Terapkan Jadwal
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- SECTION JADWAL TERSEDIA & FILTER TANGGAL (Modul 2: Kelola Jadwal & Pemesanan) -->
+    <!-- SECTION JADWAL TERSEDIA & FILTER TANGGAL -->
     <section id="jadwal" class="space-y-4">
         <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
             <div>
-                <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
-                    <i class="fa-solid fa-calendar-check text-brand-600"></i> Ketersediaan Jadwal Lapangan
+                <h2 class="text-lg font-bold text-navy-950 flex items-center gap-2">
+                    <i class="fa-solid fa-calendar-check text-tosca-600"></i> Ketersediaan Jadwal Lapangan
                 </h2>
                 <p class="text-xs text-slate-500">Pilih tanggal untuk melihat ketersediaan slot jam sewa lapangan</p>
             </div>
@@ -82,17 +86,17 @@
             <!-- FILTER TANGGAL TABEL -->
             <div class="flex items-center gap-2 bg-white px-3 py-2 rounded-xl border border-slate-200 shadow-sm w-fit">
                 <span class="text-xs font-bold text-slate-600 whitespace-nowrap flex items-center gap-1.5">
-                    <i class="fa-regular fa-calendar text-brand-600"></i> Tanggal Main:
+                    <i class="fa-regular fa-calendar text-tosca-600"></i> Tanggal Main:
                 </span>
-                <input type="date" id="tableDateFilter" value="{{ date('Y-m-d') }}" onchange="renderScheduleTable()" class="text-xs font-bold text-slate-900 bg-slate-50 px-2 py-1 rounded-lg border-0 focus:outline-none cursor-pointer">
+                <input type="date" id="tableDateFilter" value="{{ date('Y-m-d') }}" onchange="renderScheduleTable()" class="text-xs font-bold text-navy-950 bg-slate-50 px-2 py-1 rounded-lg border-0 focus:outline-none cursor-pointer">
             </div>
         </div>
 
-        <!-- Tabel Jadwal Tailwind -->
+        <!-- Tabel Jadwal -->
         <div class="white-card overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-xs">
-                    <thead class="bg-slate-50 text-slate-500 uppercase font-bold tracking-wider border-b border-slate-200">
+                    <thead class="bg-gradient-to-r from-slate-50 to-cyan-50/40 text-slate-600 uppercase font-bold tracking-wider border-b border-slate-200">
                         <tr>
                             <th class="py-3.5 px-4">Tanggal Sewa</th>
                             <th class="py-3.5 px-4">Slot Jam Lapangan</th>
@@ -147,26 +151,26 @@
             if (isPaket3Jam) {
                 priceVal = isMember ? "Rp 40.000" : "Rp 50.000";
                 priceHtml = isMember 
-                    ? `<span class="line-through text-slate-400 text-[11px] mr-1">Rp 50.000</span> <span class="text-emerald-600 font-bold">Rp 40.000</span> <span class="ml-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">Member</span>`
-                    : `<span class="font-bold text-slate-900">Rp 50.000</span> <span class="ml-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-600">Umum</span>`;
+                    ? `<span class="line-through text-slate-400 text-[11px] mr-1">Rp 50.000</span> <span class="text-tosca-600 font-bold">Rp 40.000</span> <span class="ml-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-tosca-50 text-tosca-700 border border-tosca-200">Member</span>`
+                    : `<span class="font-bold text-navy-950">Rp 50.000</span> <span class="ml-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-600">Umum</span>`;
             } else {
                 priceVal = isMember ? "Rp 15.000" : "Rp 20.000";
                 priceHtml = isMember 
-                    ? `<span class="line-through text-slate-400 text-[11px] mr-1">Rp 20.000</span> <span class="text-emerald-600 font-bold">Rp 15.000</span> <span class="ml-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">Member</span>`
-                    : `<span class="font-bold text-slate-900">Rp 20.000</span> <span class="ml-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-600">Umum</span>`;
+                    ? `<span class="line-through text-slate-400 text-[11px] mr-1">Rp 20.000</span> <span class="text-tosca-600 font-bold">Rp 15.000</span> <span class="ml-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-tosca-50 text-tosca-700 border border-tosca-200">Member</span>`
+                    : `<span class="font-bold text-navy-950">Rp 20.000</span> <span class="ml-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-600">Umum</span>`;
             }
 
             let statusHtml = isBooked 
                 ? `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-600 border border-slate-200"><span class="dot-indicator busy"></span> Penuh</span>`
-                : `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200"><span class="dot-indicator online"></span> Tersedia</span>`;
+                : `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold bg-gradient-to-r from-tosca-50 to-cyan-50 text-tosca-700 border border-tosca-200"><span class="dot-indicator online"></span> Tersedia</span>`;
 
             let actionHtml = isBooked
                 ? `<button disabled class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 bg-slate-100 cursor-not-allowed uppercase"><i class="fa-solid fa-lock mr-1"></i> Penuh</button>`
-                : `<button onclick="bookSpecificSlot('${formattedDate}', '${time}', '${priceVal}')" class="px-3.5 py-1.5 rounded-lg text-xs font-bold text-white bg-brand-600 hover:bg-brand-700 shadow-sm transition-all uppercase"><i class="fa-solid fa-cart-plus mr-1"></i> PESAN SLOT</button>`;
+                : `<button onclick="bookSpecificSlot('${formattedDate}', '${time}', '${priceVal}')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-tosca-500 via-cyan-600 to-blue-600 hover:opacity-95 shadow-sm shadow-tosca-500/25 transition-all uppercase"><i class="fa-solid fa-cart-plus mr-1"></i> PESAN SLOT</button>`;
 
             tbody.innerHTML += `
                 <tr class="hover:bg-slate-50/80 transition-colors ${isBooked ? 'bg-slate-50/40 opacity-70' : ''}">
-                    <td class="py-3.5 px-4"><div class="flex items-center gap-2"><i class="fa-regular fa-calendar-days text-brand-600"></i><span class="font-bold text-slate-900">${formattedDate}</span></div></td>
+                    <td class="py-3.5 px-4"><div class="flex items-center gap-2"><i class="fa-regular fa-calendar-days text-tosca-600"></i><span class="font-bold text-navy-950">${formattedDate}</span></div></td>
                     <td class="py-3.5 px-4"><span class="inline-block px-2.5 py-1 rounded-md bg-slate-100 border border-slate-200 text-slate-800 font-mono text-[11px]">${time}</span></td>
                     <td class="py-3.5 px-4">${priceHtml}</td>
                     <td class="py-3.5 px-4">${statusHtml}</td>

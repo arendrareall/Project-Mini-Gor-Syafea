@@ -10,6 +10,31 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        tosca: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            200: '#99f6e4',
+                            400: '#2dd4bf',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            700: '#0f766e',
+                        },
+                        navy: {
+                            800: '#1e293b',
+                            900: '#0f172a',
+                            950: '#0a1128',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style> 
         body { font-family: 'Inter', sans-serif; } 
         .dot-indicator {
@@ -20,45 +45,45 @@
             margin-right: 6px;
         }
         .dot-indicator.online {
-            background-color: #10b981;
-            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+            background-color: #14b8a6;
+            box-shadow: 0 0 0 2px rgba(20, 184, 166, 0.25);
         }
         .dot-indicator.pending {
             background-color: #f59e0b;
         }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between border-t-4 border-blue-600">
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between border-t-4 border-tosca-500">
 
     <!-- MODAL LOGIN ADMIN PENGELOLA (PENGAMAN AREA PRIVATE) -->
-    <div id="adminLoginModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md flex items-center justify-center p-4 z-50">
+    <div id="adminLoginModal" class="fixed inset-0 bg-navy-950/80 backdrop-blur-md flex items-center justify-center p-4 z-50">
         <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full border border-slate-200 shadow-2xl relative text-center">
-            <div class="w-14 h-14 bg-blue-50 border border-blue-100 text-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-sm">
+            <div class="w-14 h-14 bg-gradient-to-tr from-tosca-50 to-cyan-100 border border-tosca-200 text-tosca-600 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-sm">
                 <i class="fa-solid fa-user-shield text-2xl"></i>
             </div>
-            <h2 class="text-2xl font-black text-slate-900 mb-1">Login Admin Pengelola</h2>
+            <h2 class="text-2xl font-black text-navy-950 mb-1">Login Admin Pengelola</h2>
             <p class="text-xs text-slate-500 mb-5">Area verifikasi pembayaran & kelola penyewaan bersifat rahasia. Masukkan kredensial pengelola GOR.</p>
             
             <form onsubmit="handleAdminLogin(event)" class="space-y-4 text-left">
                 @csrf
                 <div>
                     <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Username Admin</label>
-                    <input type="text" id="adminUser" required placeholder="Contoh: admin_syafea" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-blue-600 focus:bg-white">
+                    <input type="text" id="adminUser" required placeholder="Contoh: admin_syafea" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-tosca-500 focus:bg-white focus:ring-2 focus:ring-tosca-400/20">
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Password</label>
-                    <input type="password" id="adminPass" required placeholder="••••••••" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-blue-600 focus:bg-white">
+                    <input type="password" id="adminPass" required placeholder="••••••••" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-tosca-500 focus:bg-white focus:ring-2 focus:ring-tosca-400/20">
                 </div>
-                <button type="submit" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs uppercase tracking-wider shadow-lg shadow-blue-500/25 transition-all">
+                <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-tosca-500 via-cyan-600 to-blue-600 hover:opacity-95 text-white font-bold rounded-xl text-xs uppercase tracking-wider shadow-lg shadow-tosca-500/25 transition-all">
                     MASUK PANEL PENGELOLA
                 </button>
             </form>
             
             <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
-                <a href="{{ route('booking.index') }}" class="inline-flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors">
+                <a href="{{ route('booking.index') }}" class="inline-flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-navy-950 transition-colors">
                     <i class="fa-solid fa-arrow-left"></i> Kembali ke Beranda
                 </a>
-                <a href="{{ route('owner.index') }}" class="text-xs font-bold text-blue-600 hover:underline">Portal Pemilik &rarr;</a>
+                <a href="{{ route('owner.index') }}" class="text-xs font-bold text-tosca-700 hover:underline">Portal Pemilik &rarr;</a>
             </div>
         </div>
     </div>
@@ -67,15 +92,15 @@
     <div id="adminContent" style="display:none;" class="flex-grow flex flex-col justify-between">
 
         <!-- HEADER / NAVBAR ADMIN -->
-        <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+        <header class="bg-white border-b border-slate-200/80 sticky top-0 z-30 shadow-sm">
             <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
                 <div class="flex items-center gap-3">
-                    <a href="{{ route('booking.index') }}" class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black text-xl shadow-md shadow-blue-500/20 hover:bg-blue-700 transition-all">
+                    <a href="{{ route('booking.index') }}" class="w-10 h-10 rounded-xl bg-gradient-to-tr from-tosca-500 via-cyan-600 to-blue-700 text-white flex items-center justify-center font-black text-xl shadow-md shadow-tosca-500/20 hover:opacity-95 transition-all">
                         <i class="fa-solid fa-volleyball"></i>
                     </a>
                     <div>
-                        <span class="font-extrabold text-slate-900 tracking-tight text-lg block leading-none">PANEL PENGELOLA</span>
-                        <span class="text-[10px] font-bold text-blue-600 tracking-widest uppercase">MINI GOR SYAFEA</span>
+                        <span class="font-extrabold text-navy-950 tracking-tight text-lg block leading-none">PANEL PENGELOLA</span>
+                        <span class="text-[10px] font-bold text-tosca-600 tracking-widest uppercase">MINI GOR SYAFEA</span>
                     </div>
                 </div>
 
@@ -86,7 +111,7 @@
                     <a href="{{ route('booking.index') }}" class="px-3.5 py-2 rounded-xl text-xs font-bold text-slate-700 bg-slate-100 border border-slate-200 hover:bg-slate-200 transition-all flex items-center gap-1.5">
                         <i class="fa-solid fa-arrow-left"></i> <span class="hidden sm:inline">Beranda</span>
                     </a>
-                    <a href="{{ route('owner.index') }}" class="px-3.5 py-2 rounded-xl text-xs font-bold text-blue-700 bg-blue-50 border border-blue-100 hover:bg-blue-100 transition-all flex items-center gap-1.5">
+                    <a href="{{ route('owner.index') }}" class="px-3.5 py-2 rounded-xl text-xs font-bold text-tosca-700 bg-tosca-50 border border-tosca-100 hover:bg-tosca-100 transition-all flex items-center gap-1.5">
                         <i class="fa-solid fa-chart-line"></i> <span class="hidden sm:inline">Portal Pemilik</span>
                     </a>
                 </nav>
@@ -101,9 +126,9 @@
                 <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
                     <div>
                         <span class="text-xs font-bold uppercase text-slate-500 block mb-0.5">Total Daftar Penyewaan</span>
-                        <h3 id="statTotalOrders" class="text-2xl font-black text-slate-900">0</h3>
+                        <h3 id="statTotalOrders" class="text-2xl font-black text-navy-950">0</h3>
                     </div>
-                    <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-tosca-50 to-cyan-100 text-tosca-600 flex items-center justify-center font-bold">
                         <i class="fa-solid fa-list-check"></i>
                     </div>
                 </div>
@@ -118,10 +143,10 @@
                 </div>
                 <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
                     <div>
-                        <span class="text-xs font-bold uppercase text-emerald-600 block mb-0.5">Pembayaran Terverifikasi</span>
-                        <h3 id="statVerifiedOrders" class="text-2xl font-black text-emerald-600">0</h3>
+                        <span class="text-xs font-bold uppercase text-tosca-700 block mb-0.5">Pembayaran Terverifikasi</span>
+                        <h3 id="statVerifiedOrders" class="text-2xl font-black text-tosca-700">0</h3>
                     </div>
-                    <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+                    <div class="w-10 h-10 rounded-xl bg-tosca-50 text-tosca-600 flex items-center justify-center font-bold">
                         <i class="fa-solid fa-circle-check"></i>
                     </div>
                 </div>
@@ -131,8 +156,8 @@
             <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                     <div>
-                        <h1 class="text-xl font-bold text-slate-900 flex items-center gap-2">
-                            <i class="fa-solid fa-clipboard-list text-blue-600"></i> Kelola Penyewaan & Verifikasi Pembayaran
+                        <h1 class="text-xl font-bold text-navy-950 flex items-center gap-2">
+                            <i class="fa-solid fa-clipboard-list text-tosca-600"></i> Kelola Penyewaan & Verifikasi Pembayaran
                         </h1>
                         <p class="text-xs text-slate-500 mt-1">Daftar transaksi penyewaan lapangan masuk untuk diverifikasi atau diperbarui</p>
                     </div>
@@ -144,7 +169,7 @@
                 <!-- TABEL ADMIN -->
                 <div class="overflow-x-auto rounded-2xl border border-slate-200">
                     <table class="w-full text-left text-xs">
-                        <thead class="bg-slate-50 text-slate-500 uppercase font-bold tracking-wider border-b border-slate-200">
+                        <thead class="bg-slate-50 text-slate-600 uppercase font-bold tracking-wider border-b border-slate-200">
                             <tr>
                                 <th class="py-3.5 px-4">Penyewa / Tipe</th>
                                 <th class="py-3.5 px-4">Jadwal Main</th>
@@ -249,28 +274,28 @@
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50 transition-colors">
                         <td class="py-3.5 px-4">
-                            <span class="font-bold text-slate-900 block">${item.id}</span>
-                            <span class="text-[11px] text-emerald-600 font-bold">${item.name || item.type}</span>
+                            <span class="font-bold text-navy-950 block">${item.id}</span>
+                            <span class="text-[11px] text-tosca-700 font-bold">${item.name || item.type}</span>
                         </td>
                         <td class="py-3.5 px-4">
                             <span class="block text-slate-800 font-medium">${item.schedule}</span>
                             <span class="text-[10px] text-slate-400">Tgl Booking: ${item.date}</span>
                         </td>
-                        <td class="py-3.5 px-4 font-bold text-slate-900">${item.price}</td>
+                        <td class="py-3.5 px-4 font-bold text-navy-950">${item.price}</td>
                         <td class="py-3.5 px-4">
-                            <button type="button" class="px-2.5 py-1 text-xs font-semibold text-blue-600 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 flex items-center gap-1" onclick="alert('Bukti pembayaran pelanggan terlampir: ${item.method || 'QRIS'}')">
+                            <button type="button" class="px-2.5 py-1 text-xs font-semibold text-tosca-700 bg-tosca-50 border border-tosca-200 rounded-lg hover:bg-tosca-100 flex items-center gap-1" onclick="alert('Bukti pembayaran pelanggan terlampir: ${item.method || 'QRIS'}')">
                                 <i class="fa-solid fa-image"></i> <span>Lihat Bukti</span>
                             </button>
                         </td>
                         <td class="py-3.5 px-4">
-                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold ${isVerified ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-amber-50 text-amber-700 border border-amber-200'}">
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold ${isVerified ? 'bg-tosca-50 text-tosca-700 border border-tosca-200' : 'bg-amber-50 text-amber-700 border border-amber-200'}">
                                 <span class="dot-indicator ${isVerified ? 'online' : 'pending'}"></span>
                                 ${item.status}
                             </span>
                         </td>
                         <td class="py-3.5 px-4 text-center">
-                            <div class="inline-flex rounded-xl shadow-sm overflow-hidden border border-slate-200" role="group">
-                                <button type="button" onclick="verifyOrder(${index}, 'Terverifikasi')" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-1 transition-colors" title="Verifikasi Pembayaran">
+                            <div class="inline-flex rounded-xl shadow-xs overflow-hidden border border-slate-200" role="group">
+                                <button type="button" onclick="verifyOrder(${index}, 'Terverifikasi')" class="px-3 py-1.5 bg-gradient-to-r from-tosca-600 to-cyan-600 hover:opacity-95 text-white font-bold text-xs flex items-center gap-1 transition-all" title="Verifikasi Pembayaran">
                                     <i class="fa-solid fa-check"></i> Terima
                                 </button>
                                 <button type="button" onclick="verifyOrder(${index}, 'Ditolak')" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs flex items-center gap-1 transition-colors border-l border-rose-500" title="Tolak Pesanan">
