@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Admin Dashboard - Mini GOR Syafea</title>
+    <title>Admin Pengelola - Sistem Informasi Pencatatan Penyewaan Mini GOR Syafea</title>
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -30,14 +30,14 @@
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between border-t-4 border-blue-600">
 
-    <!-- MODAL LOGIN ADMIN (PENGAMAN AREA PRIVATE) -->
+    <!-- MODAL LOGIN ADMIN PENGELOLA (PENGAMAN AREA PRIVATE) -->
     <div id="adminLoginModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md flex items-center justify-center p-4 z-50">
         <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full border border-slate-200 shadow-2xl relative text-center">
             <div class="w-14 h-14 bg-blue-50 border border-blue-100 text-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-sm">
                 <i class="fa-solid fa-user-shield text-2xl"></i>
             </div>
-            <h2 class="text-2xl font-black text-slate-900 mb-1">Login Admin Panel</h2>
-            <p class="text-xs text-slate-500 mb-5">Area verifikasi pesanan bersifat rahasia. Masukkan kredensial admin GOR.</p>
+            <h2 class="text-2xl font-black text-slate-900 mb-1">Login Admin Pengelola</h2>
+            <p class="text-xs text-slate-500 mb-5">Area verifikasi pembayaran & kelola penyewaan bersifat rahasia. Masukkan kredensial pengelola GOR.</p>
             
             <form onsubmit="handleAdminLogin(event)" class="space-y-4 text-left">
                 @csrf
@@ -50,13 +50,13 @@
                     <input type="password" id="adminPass" required placeholder="••••••••" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-blue-600 focus:bg-white">
                 </div>
                 <button type="submit" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs uppercase tracking-wider shadow-lg shadow-blue-500/25 transition-all">
-                    MASUK ADMIN PANEL
+                    MASUK PANEL PENGELOLA
                 </button>
             </form>
             
             <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
                 <a href="{{ route('booking.index') }}" class="inline-flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors">
-                    <i class="fa-solid fa-arrow-left"></i> Kembali ke Home
+                    <i class="fa-solid fa-arrow-left"></i> Kembali ke Beranda
                 </a>
                 <a href="{{ route('owner.index') }}" class="text-xs font-bold text-blue-600 hover:underline">Portal Pemilik &rarr;</a>
             </div>
@@ -74,20 +74,20 @@
                         <i class="fa-solid fa-volleyball"></i>
                     </a>
                     <div>
-                        <span class="font-extrabold text-slate-900 tracking-tight text-lg block leading-none">ADMIN PANEL</span>
+                        <span class="font-extrabold text-slate-900 tracking-tight text-lg block leading-none">PANEL PENGELOLA</span>
                         <span class="text-[10px] font-bold text-blue-600 tracking-widest uppercase">MINI GOR SYAFEA</span>
                     </div>
                 </div>
 
                 <nav class="flex items-center gap-2">
                     <button type="button" onclick="logoutAdmin()" class="px-3.5 py-2 rounded-xl text-xs font-bold text-rose-700 bg-rose-50 border border-rose-200 hover:bg-rose-100 transition-all flex items-center gap-1.5" title="Kunci Kembali">
-                        <i class="fa-solid fa-lock"></i> <span class="hidden sm:inline">Lock Admin</span>
+                        <i class="fa-solid fa-lock"></i> <span class="hidden sm:inline">Kunci Panel</span>
                     </button>
                     <a href="{{ route('booking.index') }}" class="px-3.5 py-2 rounded-xl text-xs font-bold text-slate-700 bg-slate-100 border border-slate-200 hover:bg-slate-200 transition-all flex items-center gap-1.5">
-                        <i class="fa-solid fa-arrow-left"></i> <span class="hidden sm:inline">Home</span>
+                        <i class="fa-solid fa-arrow-left"></i> <span class="hidden sm:inline">Beranda</span>
                     </a>
                     <a href="{{ route('owner.index') }}" class="px-3.5 py-2 rounded-xl text-xs font-bold text-blue-700 bg-blue-50 border border-blue-100 hover:bg-blue-100 transition-all flex items-center gap-1.5">
-                        <i class="fa-solid fa-chart-line"></i> <span class="hidden sm:inline">Pemilik</span>
+                        <i class="fa-solid fa-chart-line"></i> <span class="hidden sm:inline">Portal Pemilik</span>
                     </a>
                 </nav>
             </div>
@@ -95,13 +95,46 @@
 
         <!-- MAIN CONTENT -->
         <main class="max-w-6xl mx-auto px-4 sm:px-6 py-8 w-full space-y-6 flex-grow">
+            
+            <!-- Quick Stats Admin -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+                    <div>
+                        <span class="text-xs font-bold uppercase text-slate-500 block mb-0.5">Total Daftar Penyewaan</span>
+                        <h3 id="statTotalOrders" class="text-2xl font-black text-slate-900">0</h3>
+                    </div>
+                    <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-list-check"></i>
+                    </div>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+                    <div>
+                        <span class="text-xs font-bold uppercase text-amber-600 block mb-0.5">Menunggu Verifikasi</span>
+                        <h3 id="statPendingOrders" class="text-2xl font-black text-amber-600">0</h3>
+                    </div>
+                    <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-clock"></i>
+                    </div>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+                    <div>
+                        <span class="text-xs font-bold uppercase text-emerald-600 block mb-0.5">Pembayaran Terverifikasi</span>
+                        <h3 id="statVerifiedOrders" class="text-2xl font-black text-emerald-600">0</h3>
+                    </div>
+                    <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabel Daftar Penyewaan & Verifikasi -->
             <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                     <div>
                         <h1 class="text-xl font-bold text-slate-900 flex items-center gap-2">
-                            <i class="fa-solid fa-clipboard-list text-blue-600"></i> Verifikasi Pesanan Masuk (Real-Time)
+                            <i class="fa-solid fa-clipboard-list text-blue-600"></i> Kelola Penyewaan & Verifikasi Pembayaran
                         </h1>
-                        <p class="text-xs text-slate-500 mt-1">Kelola dan verifikasi bukti pembayaran sewa lapangan dari pelanggan</p>
+                        <p class="text-xs text-slate-500 mt-1">Daftar transaksi penyewaan lapangan masuk untuk diverifikasi atau diperbarui</p>
                     </div>
                     <div class="flex items-center gap-2">
                         <input type="date" value="{{ date('Y-m-d') }}" class="px-3 py-1.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-medium focus:outline-none">
@@ -113,11 +146,11 @@
                     <table class="w-full text-left text-xs">
                         <thead class="bg-slate-50 text-slate-500 uppercase font-bold tracking-wider border-b border-slate-200">
                             <tr>
-                                <th class="py-3.5 px-4">Pelanggan / Tipe</th>
+                                <th class="py-3.5 px-4">Penyewa / Tipe</th>
                                 <th class="py-3.5 px-4">Jadwal Main</th>
-                                <th class="py-3.5 px-4">Total</th>
-                                <th class="py-3.5 px-4">Bukti Bayar</th>
-                                <th class="py-3.5 px-4">Status</th>
+                                <th class="py-3.5 px-4">Total Biaya</th>
+                                <th class="py-3.5 px-4">Bukti Pembayaran</th>
+                                <th class="py-3.5 px-4">Status Pembayaran</th>
                                 <th class="py-3.5 px-4 text-center">Aksi Verifikasi</th>
                             </tr>
                         </thead>
@@ -131,7 +164,7 @@
 
         <!-- FOOTER -->
         <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500">
-            &copy; {{ date('Y') }} Mini GOR Syafea. Admin Management Panel.
+            &copy; {{ date('Y') }} Sistem Informasi Pencatatan Penyewaan Mini GOR Syafea. Panel Admin Pengelola.
         </footer>
 
     </div><!-- end #adminContent -->
@@ -193,30 +226,39 @@
 
             tbody.innerHTML = "";
 
+            let pendingCount = 0;
+            let verifiedCount = 0;
+
             if (history.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="6" class="py-6 text-center text-slate-400 italic">Belum ada pesanan masuk dari pelanggan.</td>
+                        <td colspan="6" class="py-6 text-center text-slate-400 italic">Belum ada daftar pesanan penyewaan dari pelanggan.</td>
                     </tr>
                 `;
+                document.getElementById('statTotalOrders').innerText = "0";
+                document.getElementById('statPendingOrders').innerText = "0";
+                document.getElementById('statVerifiedOrders').innerText = "0";
                 return;
             }
 
             history.forEach((item, index) => {
                 const isVerified = item.status.includes('Terverifikasi');
+                if (isVerified) verifiedCount++;
+                else if (item.status.includes('Pending')) pendingCount++;
+
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50 transition-colors">
                         <td class="py-3.5 px-4">
                             <span class="font-bold text-slate-900 block">${item.id}</span>
-                            <span class="text-[11px] text-emerald-600 font-bold">${item.type}</span>
+                            <span class="text-[11px] text-emerald-600 font-bold">${item.name || item.type}</span>
                         </td>
                         <td class="py-3.5 px-4">
                             <span class="block text-slate-800 font-medium">${item.schedule}</span>
-                            <span class="text-[10px] text-slate-400">Booking: ${item.date}</span>
+                            <span class="text-[10px] text-slate-400">Tgl Booking: ${item.date}</span>
                         </td>
                         <td class="py-3.5 px-4 font-bold text-slate-900">${item.price}</td>
                         <td class="py-3.5 px-4">
-                            <button type="button" class="px-2.5 py-1 text-xs font-semibold text-blue-600 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 flex items-center gap-1" onclick="alert('Menampilkan gambar bukti transfer pelanggan.')">
+                            <button type="button" class="px-2.5 py-1 text-xs font-semibold text-blue-600 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 flex items-center gap-1" onclick="alert('Bukti pembayaran pelanggan terlampir: ${item.method || 'QRIS'}')">
                                 <i class="fa-solid fa-image"></i> <span>Lihat Bukti</span>
                             </button>
                         </td>
@@ -228,10 +270,10 @@
                         </td>
                         <td class="py-3.5 px-4 text-center">
                             <div class="inline-flex rounded-xl shadow-sm overflow-hidden border border-slate-200" role="group">
-                                <button type="button" onclick="verifyOrder(${index}, 'Terverifikasi')" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-1 transition-colors">
+                                <button type="button" onclick="verifyOrder(${index}, 'Terverifikasi')" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-1 transition-colors" title="Verifikasi Pembayaran">
                                     <i class="fa-solid fa-check"></i> Terima
                                 </button>
-                                <button type="button" onclick="verifyOrder(${index}, 'Ditolak')" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs flex items-center gap-1 transition-colors border-l border-rose-500">
+                                <button type="button" onclick="verifyOrder(${index}, 'Ditolak')" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs flex items-center gap-1 transition-colors border-l border-rose-500" title="Tolak Pesanan">
                                     <i class="fa-solid fa-xmark"></i> Tolak
                                 </button>
                             </div>
@@ -239,6 +281,10 @@
                     </tr>
                 `;
             });
+
+            document.getElementById('statTotalOrders').innerText = history.length;
+            document.getElementById('statPendingOrders').innerText = pendingCount;
+            document.getElementById('statVerifiedOrders').innerText = verifiedCount;
         }
 
         function verifyOrder(index, newStatus) {
@@ -247,7 +293,7 @@
                 history[index].status = newStatus === 'Terverifikasi' ? 'Aktif / Terverifikasi' : 'Ditolak Admin';
                 localStorage.setItem('syafea_history', JSON.stringify(history));
                 loadAdminOrders();
-                alert(`Pesanan berhasil diubah statusnya menjadi: ${newStatus}`);
+                alert(`Status pesanan berhasil diperbarui: ${newStatus}`);
             }
         }
     </script>

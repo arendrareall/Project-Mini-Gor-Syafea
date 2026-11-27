@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Portal Pemilik - Laporan Rekap Transaksi Mini GOR Syafea</title>
+    <title>Portal Pemilik - Laporan Rekap Penyewaan & Pembayaran Mini GOR Syafea</title>
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -15,14 +15,14 @@
 </head>
 <body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col md:flex-row">
 
-    <!-- MODAL LOGIN PEMILIK (KUNCI PRIVASI KEUANGAN) -->
+    <!-- MODAL LOGIN PEMILIK (KUNCI PRIVASI LAPORAN REKAP) -->
     <div id="ownerLoginModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md flex items-center justify-center p-4 z-50">
         <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full border border-slate-200 shadow-2xl relative text-center">
             <div class="w-14 h-14 bg-indigo-50 border border-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-sm">
                 <i class="fa-solid fa-lock text-2xl"></i>
             </div>
-            <h2 class="text-2xl font-black text-slate-900 mb-1">Area Private Pemilik</h2>
-            <p class="text-xs text-slate-500 mb-5">Data omzet keuangan & rekap jadwal bersifat rahasia. Masukkan kredensial pemilik GOR.</p>
+            <h2 class="text-2xl font-black text-slate-900 mb-1">Area Private Pemilik GOR</h2>
+            <p class="text-xs text-slate-500 mb-5">Laporan rekap transaksi penyewaan & pembayaran bersifat rahasia. Masukkan kredensial pemilik GOR.</p>
             
             <form onsubmit="handleOwnerLogin(event)" class="space-y-4 text-left">
                 @csrf
@@ -35,7 +35,7 @@
                     <input type="password" id="ownerPass" required placeholder="••••••••" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-indigo-600 focus:bg-white">
                 </div>
                 <button type="submit" class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs uppercase tracking-wider shadow-lg shadow-indigo-500/25 transition-all">
-                    BUKA LAPORAN KEUANGAN
+                    BUKA LAPORAN REKAP PEMILIK
                 </button>
             </form>
             
@@ -60,19 +60,19 @@
                     </div>
                     <div>
                         <span class="font-extrabold text-slate-900 tracking-tight text-sm block leading-none">MINI GOR SYAFEA</span>
-                        <span class="text-[10px] font-bold text-indigo-600 tracking-wider">PEMILIK PORTAL</span>
+                        <span class="text-[10px] font-bold text-indigo-600 tracking-wider">PORTAL PEMILIK</span>
                     </div>
                 </div>
 
                 <nav class="p-4 space-y-1">
                     <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-100">
-                        <i class="fa-solid fa-chart-pie text-sm"></i> Dashboard & Omzet
+                        <i class="fa-solid fa-chart-pie text-sm"></i> Rekap Penyewaan & Omzet
                     </a>
                     <a href="{{ route('booking.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all">
-                        <i class="fa-solid fa-house text-sm text-slate-400"></i> Halaman Utama (Home)
+                        <i class="fa-solid fa-house text-sm text-slate-400"></i> Halaman Utama
                     </a>
                     <a href="{{ route('admin.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all">
-                        <i class="fa-solid fa-user-gear text-sm text-slate-400"></i> Panel Admin
+                        <i class="fa-solid fa-user-gear text-sm text-slate-400"></i> Panel Pengelola
                     </a>
                 </nav>
             </div>
@@ -90,65 +90,65 @@
             <!-- TOP BAR -->
             <header class="h-16 bg-white border-b border-slate-200 px-6 sm:px-8 flex items-center justify-between sticky top-0 z-30">
                 <h1 class="text-base sm:text-lg font-bold text-slate-800 flex items-center gap-2">
-                    <i class="fa-solid fa-chart-line text-indigo-600"></i> Laporan Rekap Keuangan & Jadwal
+                    <i class="fa-solid fa-chart-line text-indigo-600"></i> Laporan Rekap Transaksi & Omzet Penyewaan
                 </h1>
                 <div class="flex items-center gap-3">
                     <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Live Data
+                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Data Real-Time
                     </span>
                 </div>
             </header>
 
             <div class="p-6 sm:p-8 space-y-6 max-w-6xl w-full">
                 
-                <!-- SUMMARY STATS CARDS -->
+                <!-- SUMMARY STATS CARDS (Modul 4: Rekap Data) -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                     
-                    <!-- Card 1: Total Omzet -->
+                    <!-- Card 1: Rekap Data Pembayaran (Fitur 4.2) -->
                     <div class="bg-gradient-to-tr from-indigo-700 to-blue-600 rounded-3xl p-6 text-white shadow-lg shadow-indigo-500/20 relative overflow-hidden">
                         <div class="relative z-10">
-                            <span class="text-xs font-bold uppercase tracking-wider text-indigo-200 block mb-1">Total Pendapatan</span>
+                            <span class="text-xs font-bold uppercase tracking-wider text-indigo-200 block mb-1">Rekap Pembayaran (Omzet)</span>
                             <h2 id="totalRevenue" class="text-2xl sm:text-3xl font-black tracking-tight mb-2">Rp 0</h2>
                             <p class="text-[11px] text-indigo-100 flex items-center gap-1">
-                                <i class="fa-solid fa-circle-check text-emerald-400"></i> Akumulasi dari pesanan terverifikasi
+                                <i class="fa-solid fa-circle-check text-emerald-400"></i> Akumulasi dari pembayaran terverifikasi
                             </p>
                         </div>
                         <div class="absolute -right-4 -bottom-4 w-28 h-28 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
                     </div>
 
-                    <!-- Card 2: Total Transaksi -->
+                    <!-- Card 2: Rekap Data Penyewaan (Fitur 4.1) -->
                     <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between">
                         <div>
-                            <span class="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-1">Total Transaksi</span>
-                            <h2 id="totalTransactions" class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight mb-2">0 Pesanan</h2>
+                            <span class="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-1">Rekap Total Penyewaan</span>
+                            <h2 id="totalTransactions" class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight mb-2">0 Transaksi</h2>
                         </div>
                         <p class="text-[11px] text-slate-500 flex items-center gap-1">
-                            <i class="fa-solid fa-clipboard-list text-indigo-600"></i> Semua status pemesanan
+                            <i class="fa-solid fa-clipboard-list text-indigo-600"></i> Seluruh data pemesanan lapangan
                         </p>
                     </div>
 
-                    <!-- Card 3: Status Lapangan -->
+                    <!-- Card 3: Status Lapangan GOR -->
                     <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between sm:col-span-2 lg:col-span-1">
                         <div>
-                            <span class="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-1">Status Operasional</span>
+                            <span class="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-1">Status Lapangan Mini GOR</span>
                             <div class="flex items-center gap-2 mb-2">
                                 <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
-                                <h2 class="text-xl font-black text-slate-900">GOR Buka</h2>
+                                <h2 class="text-xl font-black text-slate-900">Operasional Aktif</h2>
                             </div>
                         </div>
-                        <p class="text-[11px] text-slate-500">Operasional reguler 08.00 - 22.00 WIB</p>
+                        <p class="text-[11px] text-slate-500">Buka setiap hari 08.00 - 22.00 WIB</p>
                     </div>
 
                 </div>
 
-                <!-- GRAFIK OMZET -->
+                <!-- GRAFIK REKAP OMZET -->
                 <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8 space-y-4">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div>
                             <h3 class="text-sm sm:text-base font-bold text-slate-900 flex items-center gap-2">
-                                <i class="fa-solid fa-chart-simple text-indigo-600"></i> Grafik Pendapatan Berdasarkan Tanggal
+                                <i class="fa-solid fa-chart-simple text-indigo-600"></i> Grafik Rekap Pembayaran Berdasarkan Tanggal
                             </h3>
-                            <p class="text-xs text-slate-500">Rekap pemasukan harian yang tercatat di sistem</p>
+                            <p class="text-xs text-slate-500">Visualisasi pendapatan sewa lapangan harian dari transaksi yang terverifikasi</p>
                         </div>
                     </div>
                     <div class="h-64 w-full">
@@ -156,12 +156,12 @@
                     </div>
                 </div>
 
-                <!-- TABEL DETAIL SEMUA TRANSAKSI -->
+                <!-- TABEL REKAP TRANSAKSI PENYEWAAN -->
                 <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8 space-y-4">
                     <div class="flex items-center justify-between">
                         <div>
-                            <h3 class="text-sm sm:text-base font-bold text-slate-900">Rekap Transaksi Penyewaan</h3>
-                            <p class="text-xs text-slate-500">Data riwayat transaksi dari semua pelanggan</p>
+                            <h3 class="text-sm sm:text-base font-bold text-slate-900">Daftar Rekap Transaksi Penyewaan</h3>
+                            <p class="text-xs text-slate-500">Rincian data penyewaan lapangan dari seluruh pelanggan</p>
                         </div>
                     </div>
 
@@ -170,10 +170,10 @@
                             <thead class="bg-slate-50 text-slate-500 uppercase font-bold tracking-wider border-b border-slate-200">
                                 <tr>
                                     <th class="py-3.5 px-4">ID Transaksi</th>
-                                    <th class="py-3.5 px-4">Tipe Pemesan</th>
-                                    <th class="py-3.5 px-4">Jadwal Sewa</th>
+                                    <th class="py-3.5 px-4">Nama Penyewa / Tipe</th>
+                                    <th class="py-3.5 px-4">Jadwal Sewa Lapangan</th>
                                     <th class="py-3.5 px-4">Nominal</th>
-                                    <th class="py-3.5 px-4">Status</th>
+                                    <th class="py-3.5 px-4">Status Verifikasi</th>
                                 </tr>
                             </thead>
                             <tbody id="ownerHistoryTableBody" class="divide-y divide-slate-100 font-medium text-slate-700">
@@ -251,7 +251,7 @@
             if (allHistory.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="5" class="py-6 text-center text-slate-400 italic">Belum ada data jadwal pesanan masuk.</td>
+                        <td colspan="5" class="py-6 text-center text-slate-400 italic">Belum ada data riwayat penyewaan masuk.</td>
                     </tr>
                 `;
                 document.getElementById('totalRevenue').innerText = "Rp 0";
@@ -282,7 +282,7 @@
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50 transition-colors">
                         <td class="py-3.5 px-4 font-bold text-slate-900">${item.id}</td>
-                        <td class="py-3.5 px-4"><span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-200">${item.type}</span></td>
+                        <td class="py-3.5 px-4"><span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-200">${item.name || item.type}</span></td>
                         <td class="py-3.5 px-4 font-medium text-slate-800">${item.schedule}</td>
                         <td class="py-3.5 px-4 font-bold text-slate-900">${item.price}</td>
                         <td class="py-3.5 px-4">
@@ -297,7 +297,6 @@
             document.getElementById('totalRevenue').innerText = 'Rp ' + totalRev.toLocaleString('id-ID');
             document.getElementById('totalTransactions').innerText = allHistory.length + ' Transaksi';
 
-            // Urutkan tanggal secara kronologis untuk grafik
             let sortedDates = Object.keys(dateMap).sort((a, b) => {
                 let partsA = a.split('-');
                 let partsB = b.split('-');
