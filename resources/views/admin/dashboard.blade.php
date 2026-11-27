@@ -67,6 +67,11 @@
             <form onsubmit="handleAdminLogin(event)" class="space-y-4 text-left">
                 @csrf
                 <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Nama Petugas Admin yang Bertugas</label>
+                    <input type="text" id="adminStaffName" required placeholder="Contoh: Ariel Arendra" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-tosca-500 focus:bg-white focus:ring-2 focus:ring-tosca-400/20">
+                    <span class="text-[10px] text-slate-400 mt-0.5 block">*Nama ini akan terkunci sebagai verifikator resmi dan tercetak di nota.</span>
+                </div>
+                <div>
                     <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Username Admin</label>
                     <input type="text" id="adminUser" required placeholder="Contoh: admin_syafea" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-tosca-500 focus:bg-white focus:ring-2 focus:ring-tosca-400/20">
                 </div>
@@ -105,12 +110,11 @@
                 </div>
 
                 <nav class="flex items-center gap-2">
-                    <!-- Tombol Cepat Ubah Nama Admin yang Bertugas -->
-                    <button type="button" onclick="editAdminName()" class="px-3 py-1.5 rounded-xl text-xs font-bold text-cyan-800 bg-cyan-50 border border-cyan-200 hover:bg-cyan-100 transition-all flex items-center gap-1.5 shadow-2xs" title="Klik untuk mengubah nama admin penanggung jawab">
-                        <i class="fa-solid fa-user-gear text-cyan-600"></i>
-                        <span>Admin: <strong id="adminNameDisplay" class="underline">Ariel Arendra</strong></span>
-                        <i class="fa-solid fa-pen text-[10px] text-cyan-500"></i>
-                    </button>
+                    <!-- Badge Petugas Admin Terkunci Sesuai Login (Anti-Kecurangan) -->
+                    <div class="px-3.5 py-1.5 rounded-xl text-xs font-bold text-cyan-900 bg-cyan-50 border border-cyan-200 flex items-center gap-1.5 shadow-2xs">
+                        <i class="fa-solid fa-user-shield text-cyan-600"></i>
+                        <span>Petugas: <strong id="adminNameDisplay" class="text-navy-950">Ariel Arendra</strong></span>
+                    </div>
                     <button type="button" onclick="logoutAdmin()" class="px-3.5 py-2 rounded-xl text-xs font-bold text-rose-700 bg-rose-50 border border-rose-200 hover:bg-rose-100 transition-all flex items-center gap-1.5" title="Kunci Kembali">
                         <i class="fa-solid fa-lock"></i> <span class="hidden sm:inline">Kunci Panel</span>
                     </button>
@@ -215,11 +219,13 @@
 
         function handleAdminLogin(e) {
             e.preventDefault();
+            const staffName = document.getElementById('adminStaffName').value.trim() || 'Ariel Arendra';
             const user = document.getElementById('adminUser').value.trim();
             const pass = document.getElementById('adminPass').value;
 
             if (user === ADMIN_CREDENTIALS.username && pass === ADMIN_CREDENTIALS.password) {
                 sessionStorage.setItem('admin_logged_in', 'true');
+                sessionStorage.setItem('admin_staff_name', staffName);
                 showAdminContent();
             } else {
                 let errEl = document.getElementById('loginError');
@@ -236,22 +242,12 @@
         }
 
         function getActiveAdminName() {
-            return localStorage.getItem('syafea_admin_name') || ADMIN_CREDENTIALS.name || 'Ariel Arendra';
+            return sessionStorage.getItem('admin_staff_name') || 'Ariel Arendra';
         }
 
         function updateAdminNameUI() {
             const el = document.getElementById('adminNameDisplay');
             if (el) el.innerText = getActiveAdminName();
-        }
-
-        function editAdminName() {
-            const current = getActiveAdminName();
-            const newName = prompt("Ubah Nama Admin yang Bertanggung Jawab:", current);
-            if (newName && newName.trim() !== "") {
-                localStorage.setItem('syafea_admin_name', newName.trim());
-                updateAdminNameUI();
-                alert(`✅ Nama admin penanggung jawab berhasil diubah menjadi: ${newName.trim()}`);
-            }
         }
 
         function showAdminContent() {
@@ -263,9 +259,12 @@
 
         function logoutAdmin() {
             sessionStorage.removeItem('admin_logged_in');
+            sessionStorage.removeItem('admin_staff_name');
             document.getElementById('adminContent').style.display = 'none';
             document.getElementById('adminUser').value = '';
             document.getElementById('adminPass').value = '';
+            const staffInput = document.getElementById('adminStaffName');
+            if (staffInput) staffInput.value = '';
             const errEl = document.getElementById('loginError');
             if (errEl) errEl.remove();
             document.getElementById('adminLoginModal').style.display = 'flex';
