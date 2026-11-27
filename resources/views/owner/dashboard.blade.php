@@ -166,17 +166,78 @@
 
                 </div>
 
+                <!-- KONTROL FILTER TANGGAL & PILIHAN MODE GRAFIK -->
+                <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-5 sm:p-6 space-y-4">
+                    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                        
+                        <!-- Pilihan Rentang Tanggal (Start Date - End Date) -->
+                        <div class="flex flex-wrap items-center gap-2.5">
+                            <span class="text-xs font-bold text-slate-700 flex items-center gap-1.5 mr-1">
+                                <i class="fa-solid fa-calendar-week text-tosca-600"></i> Periode Laporan:
+                            </span>
+
+                            <div class="flex items-center gap-1.5 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200">
+                                <span class="text-[11px] font-bold text-slate-500">Mulai:</span>
+                                <input type="date" id="filterStartDate" onchange="applyOwnerFilters()" class="text-xs font-bold text-navy-950 bg-white px-2 py-1 rounded-lg border border-slate-300 focus:outline-none focus:border-tosca-500 cursor-pointer">
+                            </div>
+
+                            <span class="text-xs font-bold text-slate-400">s/d</span>
+
+                            <div class="flex items-center gap-1.5 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200">
+                                <span class="text-[11px] font-bold text-slate-500">Sampai:</span>
+                                <input type="date" id="filterEndDate" onchange="applyOwnerFilters()" class="text-xs font-bold text-navy-950 bg-white px-2 py-1 rounded-lg border border-slate-300 focus:outline-none focus:border-tosca-500 cursor-pointer">
+                            </div>
+
+                            <!-- Tombol Shortcut Preset Contoh: 6 Mei - 6 Juni -->
+                            <button type="button" onclick="setPresetMeiJuni()" class="px-3 py-1.5 text-xs font-bold text-tosca-700 hover:text-white bg-tosca-50 hover:bg-tosca-600 border border-tosca-200 rounded-xl transition-all shadow-2xs flex items-center gap-1.5" title="Contoh Preset Tanggal 6 Mei - 6 Juni">
+                                <i class="fa-regular fa-calendar-check"></i> 6 Mei - 6 Juni
+                            </button>
+
+                            <button type="button" onclick="resetDateFilter()" class="px-3 py-1.5 text-xs font-bold text-slate-600 hover:text-navy-950 bg-slate-100 hover:bg-slate-200 rounded-xl transition-all flex items-center gap-1" title="Tampilkan Semua Data">
+                                <i class="fa-solid fa-arrows-rotate"></i> Reset
+                            </button>
+                        </div>
+
+                        <!-- Pilihan Mode Chart: Per Hari vs Per Bulan -->
+                        <div class="flex items-center gap-1.5 bg-slate-100 p-1.5 rounded-2xl border border-slate-200 self-start lg:self-auto">
+                            <button type="button" id="btnModeDaily" onclick="setChartMode('daily')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all bg-gradient-to-r from-tosca-600 via-cyan-600 to-blue-600 text-white shadow-sm flex items-center gap-1.5">
+                                <i class="fa-solid fa-calendar-day"></i> Mode Per Hari
+                            </button>
+                            <button type="button" id="btnModeMonthly" onclick="setChartMode('monthly')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold text-slate-600 hover:text-navy-950 transition-all flex items-center gap-1.5">
+                                <i class="fa-solid fa-calendar-days"></i> Mode Per Bulan
+                            </button>
+                        </div>
+
+                    </div>
+
+                    <!-- Indikator Status Filter Aktif -->
+                    <div class="pt-3 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between text-xs text-slate-500 gap-2">
+                        <div class="flex items-center gap-2">
+                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-cyan-50 text-cyan-700 border border-cyan-200">
+                                <i class="fa-solid fa-filter text-[10px]"></i> Status Filter
+                            </span>
+                            <span id="filterInfoText" class="font-medium text-slate-700">Menampilkan seluruh data transaksi</span>
+                        </div>
+                        <div class="text-[11px] text-slate-400">
+                            Mode Visualisasi: <strong id="filterModeDisplay" class="text-tosca-700">Per Hari</strong>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- GRAFIK REKAP OMZET -->
                 <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8 space-y-4">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div>
-                            <h3 class="text-sm sm:text-base font-bold text-navy-950 flex items-center gap-2">
-                                <i class="fa-solid fa-chart-simple text-tosca-600"></i> Grafik Rekap Pembayaran Berdasarkan Tanggal
+                            <h3 id="chartTitle" class="text-sm sm:text-base font-bold text-navy-950 flex items-center gap-2">
+                                <i class="fa-solid fa-chart-simple text-tosca-600"></i> Grafik Rekap Pembayaran Sewa Lapangan
                             </h3>
-                            <p class="text-xs text-slate-500">Visualisasi pendapatan sewa lapangan harian dari transaksi yang terverifikasi</p>
+                            <p id="chartSubtitle" class="text-xs text-slate-500">Visualisasi pendapatan sewa lapangan harian dari transaksi yang terverifikasi</p>
+                        </div>
+                        <div id="chartBadgeCount" class="text-xs font-bold text-tosca-700 bg-tosca-50 border border-tosca-200 px-3 py-1 rounded-xl w-fit">
+                            0 Data Ditampilkan
                         </div>
                     </div>
-                    <div class="h-64 w-full">
+                    <div class="h-72 w-full">
                         <canvas id="rekapChart"></canvas>
                     </div>
                 </div>
@@ -218,6 +279,12 @@
         const OWNER_CREDENTIALS = { username: 'pemilik_syafea', password: 'owner123' };
 
         let rekapChartInstance = null;
+        let currentChartMode = 'daily'; // 'daily' atau 'monthly'
+        let ownerAllHistory = [];
+        let ownerFilteredHistory = [];
+
+        const INDO_MONTHS_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+        const INDO_MONTHS_LONG = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 
         document.addEventListener('DOMContentLoaded', () => {
             const isLoggedIn = sessionStorage.getItem('owner_logged_in') === 'true';
@@ -254,7 +321,7 @@
         function showOwnerContent() {
             document.getElementById('ownerLoginModal').style.display = 'none';
             document.getElementById('ownerContent').style.display = 'flex';
-            loadOwnerData();
+            initOwnerData();
         }
 
         function logoutOwner() {
@@ -267,51 +334,265 @@
             document.getElementById('ownerLoginModal').style.display = 'flex';
         }
 
-        function loadOwnerData() {
-            const tbody = document.getElementById('ownerHistoryTableBody');
-            let allHistory = JSON.parse(localStorage.getItem('syafea_history')) || [];
+        // Inisialisasi Data Sampel Kaya Rentang Tanggal (Mei, Juni, Juli, dst.)
+        function initOwnerData() {
+            let history = JSON.parse(localStorage.getItem('syafea_history'));
 
-            tbody.innerHTML = "";
+            // Pastikan data mencakup variasi tanggal (misal 6 Mei - 6 Juni) agar chart interaktif
+            const sampleHistory = [
+                {
+                    id: "#GOR-1011",
+                    date: "06-05-2026",
+                    name: "Budi Santoso",
+                    schedule: "06-05-2026 (08:00 - 11:00)",
+                    type: "Member Syafea",
+                    price: "Rp 50.000",
+                    method: "QRIS",
+                    status: "Aktif / Terverifikasi"
+                },
+                {
+                    id: "#GOR-1022",
+                    date: "14-05-2026",
+                    name: "Tim PB Djarum Muda",
+                    schedule: "14-05-2026 (16:00 - 19:00)",
+                    type: "Member Syafea",
+                    price: "Rp 100.000",
+                    method: "TRANSFER BANK BCA",
+                    status: "Aktif / Terverifikasi"
+                },
+                {
+                    id: "#GOR-1033",
+                    date: "25-05-2026",
+                    name: "Komunitas Voli Rungkut",
+                    schedule: "25-05-2026 (19:00 - 22:00)",
+                    type: "Tamu (Regular)",
+                    price: "Rp 150.000",
+                    method: "QRIS",
+                    status: "Aktif / Terverifikasi"
+                },
+                {
+                    id: "#GOR-1044",
+                    date: "01-06-2026",
+                    name: "Ahmad Dani",
+                    schedule: "01-06-2026 (13:00 - 16:00)",
+                    type: "Tamu (Regular)",
+                    price: "Rp 50.000",
+                    method: "TRANSFER BANK BCA",
+                    status: "Aktif / Terverifikasi"
+                },
+                {
+                    id: "#GOR-1055",
+                    date: "06-06-2026",
+                    name: "Ariel Arendra",
+                    schedule: "06-06-2026 (08:00 - 11:00)",
+                    type: "Member Syafea",
+                    price: "Rp 100.000",
+                    method: "QRIS",
+                    status: "Aktif / Terverifikasi"
+                },
+                {
+                    id: "#GOR-1066",
+                    date: "18-06-2026",
+                    name: "Fajar Alfian & Rekan",
+                    schedule: "18-06-2026 (16:00 - 19:00)",
+                    type: "Member Syafea",
+                    price: "Rp 100.000",
+                    method: "MANDIRI TRANSFER",
+                    status: "Aktif / Terverifikasi"
+                },
+                {
+                    id: "#GOR-1077",
+                    date: "10-07-2026",
+                    name: "PB Tangkas Syafea",
+                    schedule: "10-07-2026 (19:00 - 22:00)",
+                    type: "Member Syafea",
+                    price: "Rp 150.000",
+                    method: "QRIS",
+                    status: "Aktif / Terverifikasi"
+                },
+                {
+                    id: "#GOR-8821",
+                    date: "{{ date('d-m-Y') }}",
+                    name: "Budi Santoso",
+                    schedule: "{{ date('d-m-Y') }} (08:00 - 11:00)",
+                    type: "Member Syafea",
+                    price: "Rp 50.000",
+                    method: "QRIS",
+                    status: "Aktif / Terverifikasi"
+                }
+            ];
 
-            if (allHistory.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="5" class="py-6 text-center text-slate-400 italic">Belum ada data riwayat penyewaan masuk.</td>
-                    </tr>
-                `;
-                document.getElementById('totalRevenue').innerText = "Rp 0";
-                document.getElementById('totalTransactions').innerText = "0 Transaksi";
-                updateChart({});
-                return;
+            if (!history || history.length < 3) {
+                history = sampleHistory;
+                localStorage.setItem('syafea_history', JSON.stringify(history));
             }
 
-            let totalRev = 0;
-            let dateMap = {};
+            ownerAllHistory = history;
+            applyOwnerFilters();
+        }
 
-            allHistory.forEach(item => {
+        // Ekstraksi Tanggal dari Data Item Transaksi
+        function parseItemDate(item) {
+            let str = "";
+            if (item.schedule) {
+                const m = item.schedule.match(/(\d{1,4}[-/]\d{1,2}[-/]\d{1,4})/);
+                if (m) str = m[1];
+            }
+            if (!str && item.date) {
+                const m = item.date.match(/(\d{1,4}[-/]\d{1,2}[-/]\d{1,4})/);
+                if (m) str = m[1];
+                else str = item.date;
+            }
+            if (!str) return new Date();
+
+            const p = str.split(/[-/]/);
+            if (p.length === 3) {
+                if (p[0].length === 4) {
+                    return new Date(parseInt(p[0]), parseInt(p[1]) - 1, parseInt(p[2]));
+                } else {
+                    return new Date(parseInt(p[2]), parseInt(p[1]) - 1, parseInt(p[0]));
+                }
+            }
+            const d = new Date(str);
+            return isNaN(d.getTime()) ? new Date() : d;
+        }
+
+        // Format tanggal YYYY-MM-DD untuk komparasi
+        function toYMD(d) {
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${y}-${m}-${day}`;
+        }
+
+        // Ganti Mode Grafik: 'daily' vs 'monthly'
+        function setChartMode(mode) {
+            currentChartMode = mode;
+            const btnDaily = document.getElementById('btnModeDaily');
+            const btnMonthly = document.getElementById('btnModeMonthly');
+            const modeDisplay = document.getElementById('filterModeDisplay');
+
+            if (mode === 'daily') {
+                btnDaily.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all bg-gradient-to-r from-tosca-600 via-cyan-600 to-blue-600 text-white shadow-sm flex items-center gap-1.5";
+                btnMonthly.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold text-slate-600 hover:text-navy-950 transition-all flex items-center gap-1.5";
+                modeDisplay.innerText = "Per Hari (Daily)";
+            } else {
+                btnMonthly.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all bg-gradient-to-r from-tosca-600 via-cyan-600 to-blue-600 text-white shadow-sm flex items-center gap-1.5";
+                btnDaily.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold text-slate-600 hover:text-navy-950 transition-all flex items-center gap-1.5";
+                modeDisplay.innerText = "Per Bulan (Monthly)";
+            }
+
+            renderFilteredData();
+        }
+
+        // Preset Shortcut: 6 Mei - 6 Juni 2026
+        function setPresetMeiJuni() {
+            document.getElementById('filterStartDate').value = '2026-05-06';
+            document.getElementById('filterEndDate').value = '2026-06-06';
+            applyOwnerFilters();
+        }
+
+        // Reset Filter Tanggal
+        function resetDateFilter() {
+            document.getElementById('filterStartDate').value = '';
+            document.getElementById('filterEndDate').value = '';
+            applyOwnerFilters();
+        }
+
+        // Terapkan Filter Tanggal
+        function applyOwnerFilters() {
+            const startVal = document.getElementById('filterStartDate').value;
+            const endVal = document.getElementById('filterEndDate').value;
+            const infoText = document.getElementById('filterInfoText');
+
+            const startDate = startVal ? new Date(startVal + 'T00:00:00') : null;
+            const endDate = endVal ? new Date(endVal + 'T23:59:59') : null;
+
+            if (startDate && endDate) {
+                const sStr = `${startDate.getDate()} ${INDO_MONTHS_LONG[startDate.getMonth()]} ${startDate.getFullYear()}`;
+                const eStr = `${endDate.getDate()} ${INDO_MONTHS_LONG[endDate.getMonth()]} ${endDate.getFullYear()}`;
+                infoText.innerHTML = `Menampilkan periode: <strong class="text-tosca-700 font-bold">${sStr} s/d ${eStr}</strong>`;
+            } else if (startDate) {
+                const sStr = `${startDate.getDate()} ${INDO_MONTHS_LONG[startDate.getMonth()]} ${startDate.getFullYear()}`;
+                infoText.innerHTML = `Menampilkan periode mulai: <strong class="text-tosca-700 font-bold">${sStr}</strong>`;
+            } else if (endDate) {
+                const eStr = `${endDate.getDate()} ${INDO_MONTHS_LONG[endDate.getMonth()]} ${endDate.getFullYear()}`;
+                infoText.innerHTML = `Menampilkan periode hingga: <strong class="text-tosca-700 font-bold">${eStr}</strong>`;
+            } else {
+                infoText.innerText = "Menampilkan seluruh data transaksi riwayat penyewaan";
+            }
+
+            ownerFilteredHistory = ownerAllHistory.filter(item => {
+                const itemD = parseItemDate(item);
+                if (startDate && itemD < startDate) return false;
+                if (endDate && itemD > endDate) return false;
+                return true;
+            });
+
+            renderFilteredData();
+        }
+
+        // Render Data ke Stats Cards, Tabel, dan Chart
+        function renderFilteredData() {
+            const tbody = document.getElementById('ownerHistoryTableBody');
+            tbody.innerHTML = "";
+
+            let totalRev = 0;
+            let groupMap = {}; // Key: YYYY-MM-DD (daily) atau YYYY-MM (monthly)
+
+            ownerFilteredHistory.forEach(item => {
                 const numericPrice = parseInt(item.price.replace(/[^0-9]/g, '')) || 0;
-                const isVerified = item.status.includes('Terverifikasi');
+                const isVerified = item.status && item.status.includes('Terverifikasi');
+                const isRejected = item.status && item.status.includes('Ditolak');
 
                 if (isVerified) {
                     totalRev += numericPrice;
                 }
 
-                let bookingDate = item.schedule.split(' ')[0] || item.date;
-                if (!dateMap[bookingDate]) {
-                    dateMap[bookingDate] = 0;
+                const itemDate = parseItemDate(item);
+                let groupKey = "";
+                let displayLabel = "";
+
+                if (currentChartMode === 'daily') {
+                    groupKey = toYMD(itemDate);
+                    displayLabel = `${String(itemDate.getDate()).padStart(2, '0')} ${INDO_MONTHS_SHORT[itemDate.getMonth()]} ${itemDate.getFullYear()}`;
+                } else {
+                    const y = itemDate.getFullYear();
+                    const m = String(itemDate.getMonth() + 1).padStart(2, '0');
+                    groupKey = `${y}-${m}`;
+                    displayLabel = `${INDO_MONTHS_LONG[itemDate.getMonth()]} ${y}`;
                 }
+
+                if (!groupMap[groupKey]) {
+                    groupMap[groupKey] = {
+                        label: displayLabel,
+                        total: 0,
+                        dateObj: itemDate
+                    };
+                }
+
                 if (isVerified) {
-                    dateMap[bookingDate] += numericPrice;
+                    groupMap[groupKey].total += numericPrice;
+                }
+
+                // Render Baris Tabel
+                let badgeClass = 'bg-amber-50 text-amber-700 border border-amber-200';
+                if (isVerified) {
+                    badgeClass = 'bg-tosca-50 text-tosca-700 border border-tosca-200';
+                } else if (isRejected) {
+                    badgeClass = 'bg-rose-50 text-rose-700 border border-rose-200';
                 }
 
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50 transition-colors">
                         <td class="py-3.5 px-4 font-bold text-navy-950">${item.id}</td>
-                        <td class="py-3.5 px-4"><span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-200">${item.name || item.type}</span></td>
+                        <td class="py-3.5 px-4">
+                            <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-200">${item.name || item.type}</span>
+                        </td>
                         <td class="py-3.5 px-4 font-medium text-slate-800">${item.schedule}</td>
                         <td class="py-3.5 px-4 font-bold text-navy-950">${item.price}</td>
                         <td class="py-3.5 px-4">
-                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-semibold ${isVerified ? 'bg-tosca-50 text-tosca-700 border border-tosca-200' : 'bg-amber-50 text-amber-700 border border-amber-200'}">
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-semibold ${badgeClass}">
                                 ${item.status}
                             </span>
                         </td>
@@ -319,63 +600,117 @@
                 `;
             });
 
+            if (ownerFilteredHistory.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="py-8 text-center text-slate-400 italic">
+                            <i class="fa-regular fa-calendar-xmark text-2xl block mb-1 text-slate-300"></i>
+                            Tidak ada data transaksi pada rentang tanggal yang dipilih.
+                        </td>
+                    </tr>
+                `;
+            }
+
+            // Update Statistik Ringkasan
             document.getElementById('totalRevenue').innerText = 'Rp ' + totalRev.toLocaleString('id-ID');
-            document.getElementById('totalTransactions').innerText = allHistory.length + ' Transaksi';
+            document.getElementById('totalTransactions').innerText = ownerFilteredHistory.length + ' Transaksi';
+            document.getElementById('chartBadgeCount').innerText = `${ownerFilteredHistory.length} Transaksi Ditemukan`;
 
-            let sortedDates = Object.keys(dateMap).sort((a, b) => {
-                let partsA = a.split('-');
-                let partsB = b.split('-');
-                let dateA = new Date(partsA[2] || partsA[0], (partsA[1] || 1) - 1, partsA[0] || partsA[2]);
-                let dateB = new Date(partsB[2] || partsB[0], (partsB[1] || 1) - 1, partsB[0] || partsB[2]);
-                return dateA - dateB;
+            // Urutkan grup tanggal secara kronologis
+            const sortedKeys = Object.keys(groupMap).sort((a, b) => a.localeCompare(b));
+            const chartLabels = [];
+            const chartValues = [];
+
+            sortedKeys.forEach(k => {
+                chartLabels.push(groupMap[k].label);
+                chartValues.push(groupMap[k].total);
             });
 
-            let sortedDateMap = {};
-            sortedDates.forEach(date => {
-                sortedDateMap[date] = dateMap[date];
-            });
+            // Update Header Grafik
+            const chartTitle = document.getElementById('chartTitle');
+            const chartSubtitle = document.getElementById('chartSubtitle');
+            if (currentChartMode === 'daily') {
+                chartTitle.innerHTML = `<i class="fa-solid fa-chart-simple text-tosca-600"></i> Grafik Rekap Pendapatan Harian`;
+                chartSubtitle.innerText = `Visualisasi pendapatan harian sesuai rentang tanggal yang dipilih`;
+            } else {
+                chartTitle.innerHTML = `<i class="fa-solid fa-chart-simple text-cyan-600"></i> Grafik Rekap Pendapatan Bulanan`;
+                chartSubtitle.innerText = `Akumulasi total omzet per bulan dari transaksi yang terverifikasi`;
+            }
 
-            updateChart(sortedDateMap);
+            renderChart(chartLabels, chartValues);
         }
 
-        function updateChart(dateMap) {
-            const labels = Object.keys(dateMap);
-            const dataValues = Object.values(dateMap);
-
-            const chartLabels = labels.length > 0 ? labels : ['Belum Ada Data'];
-            const chartData = dataValues.length > 0 ? dataValues : [0];
-
+        function renderChart(labels, values) {
             const ctx = document.getElementById('rekapChart').getContext('2d');
             
             if (rekapChartInstance) {
                 rekapChartInstance.destroy();
             }
 
-            // Create gradient for chart bar
-            let gradient = ctx.createLinearGradient(0, 0, 0, 300);
-            gradient.addColorStop(0, '#0d9488'); // tosca
-            gradient.addColorStop(1, '#1e3a8a'); // navy/blue
+            const effectiveLabels = labels.length > 0 ? labels : ['Tidak Ada Data'];
+            const effectiveValues = values.length > 0 ? values : [0];
+
+            let gradient = ctx.createLinearGradient(0, 0, 0, 320);
+            if (currentChartMode === 'daily') {
+                gradient.addColorStop(0, '#0d9488'); // tosca
+                gradient.addColorStop(0.5, '#06b6d4'); // cyan
+                gradient.addColorStop(1, '#1e3a8a'); // navy blue
+            } else {
+                gradient.addColorStop(0, '#2563eb'); // royal blue
+                gradient.addColorStop(0.5, '#06b6d4'); // cyan
+                gradient.addColorStop(1, '#0f766e'); // tosca
+            }
 
             rekapChartInstance = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: chartLabels,
+                    labels: effectiveLabels,
                     datasets: [{
-                        label: 'Pendapatan (Rp)',
-                        data: chartData,
+                        label: currentChartMode === 'daily' ? 'Omzet Harian (Rp)' : 'Omzet Bulanan (Rp)',
+                        data: effectiveValues,
                         backgroundColor: gradient,
-                        borderRadius: 8,
+                        borderRadius: 10,
+                        borderSkipped: false,
+                        maxBarThickness: currentChartMode === 'daily' ? 45 : 70
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#0a1128',
+                            titleFont: { family: 'Inter', size: 12, weight: 'bold' },
+                            bodyFont: { family: 'Inter', size: 12 },
+                            padding: 10,
+                            cornerRadius: 10,
+                            callbacks: {
+                                label: function(context) {
+                                    return ' Total: Rp ' + context.parsed.y.toLocaleString('id-ID');
+                                }
+                            }
+                        }
+                    },
                     scales: {
+                        x: {
+                            grid: { display: false },
+                            ticks: {
+                                font: { family: 'Inter', size: 11, weight: 'bold' },
+                                color: '#475569'
+                            }
+                        },
                         y: {
                             beginAtZero: true,
+                            grid: { color: '#f1f5f9' },
                             ticks: {
-                                callback: function(value) { return 'Rp ' + (value / 1000) + 'rb'; }
+                                font: { family: 'Inter', size: 11 },
+                                color: '#64748b',
+                                callback: function(value) {
+                                    if (value >= 1000000) return 'Rp ' + (value / 1000000) + 'jt';
+                                    if (value >= 1000) return 'Rp ' + (value / 1000) + 'rb';
+                                    return 'Rp ' + value;
+                                }
                             }
                         }
                     }
