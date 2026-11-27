@@ -118,9 +118,24 @@
                     <span class="text-xs font-bold text-slate-600 whitespace-nowrap flex items-center gap-1.5">
                         <i class="fa-regular fa-calendar text-tosca-600"></i> Tanggal Main:
                     </span>
-                    <input type="date" id="tableDateFilter" value="{{ date('Y-m-d') }}" onchange="renderScheduleTable()" class="text-xs font-bold text-navy-950 bg-slate-50 px-2 py-1 rounded-lg border-0 focus:outline-none cursor-pointer">
+                    <input type="date" id="tableDateFilter" value="{{ date('Y-m-d') }}" onchange="handleDateInputChange(this.value)" class="text-xs font-bold text-navy-950 bg-slate-50 px-2 py-1 rounded-lg border-0 focus:outline-none cursor-pointer">
                 </div>
                 <div id="bookingLimitBadge"></div>
+            </div>
+        </div>
+
+        <!-- TAMPILAN BARIS TANGGAL VISUAL (SESUAI CATATAN SHABRINA IT: SEMINGGU AVAIL, LEWAT SEMINGGU ABU-ABU) -->
+        <div class="white-card p-4 space-y-2.5 border border-slate-200/90 shadow-sm">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-2">
+                <span class="text-xs font-extrabold text-navy-950 flex items-center gap-2">
+                    <i class="fa-solid fa-calendar-week text-tosca-600"></i> Pilihan Cepat Tanggal Main
+                    <span class="text-[11px] font-normal text-slate-500 hidden sm:inline">(Klik kartu tanggal di bawah untuk memilih jadwal)</span>
+                </span>
+                <div id="dateStripLegend"></div>
+            </div>
+            <!-- Horizontal Scrollable Date Strip -->
+            <div id="dateStripContainer" class="flex items-stretch gap-2.5 overflow-x-auto py-1 scroll-smooth">
+                <!-- Diisi via JavaScript -->
             </div>
         </div>
 
@@ -159,9 +174,147 @@
         "09:00 - 10:00 (Per Jam)"
     ];
 
+    const indonesianDays = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+    const indonesianMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+
     document.addEventListener('DOMContentLoaded', () => {
+        renderDateStrip();
         renderScheduleTable();
     });
+
+    function formatYMD(d) {
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${y}-${m}-${day}`;
+    }
+
+    // Tampilan Baris Tanggal Visual (Pilihan 14 Hari: 7 Hari Avail, >7 Hari Abu-abu bagi Non-Member)
+    function renderDateStrip() {
+        const stripContainer = document.getElementById('dateStripContainer');
+        const stripLegend = document.getElementById('dateStripLegend');
+        if (!stripContainer) return;
+
+        const dateInputEl = document.getElementById('tableDateFilter');
+        const selectedYMD = dateInputEl ? dateInputEl.value : formatYMD(new Date());
+        const isMember = localStorage.getItem('syafea_member');
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        // Update Legend Keterangan
+        if (stripLegend) {
+            if (isMember) {
+                stripLegend.innerHTML = `
+                    <span class="inline-flex items-center gap-1.5 text-[11px] font-bold text-amber-800 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-xl">
+                        <i class="fa-solid fa-crown text-amber-500"></i> Bebas Pilih Tanggal Tanpa Batas (Member)
+                    </span>
+                `;
+            } else {
+                stripLegend.innerHTML = `
+                    <div class="flex items-center gap-2 text-[11px]">
+                        <span class="inline-flex items-center gap-1 font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-lg">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> 7 Hari Avail (Bisa Diklik)
+                        </span>
+                        <span class="inline-flex items-center gap-1 font-bold text-slate-500 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-lg">
+                            <i class="fa-solid fa-lock text-[9px] text-slate-400"></i> >7 Hari Abu-abu (Member Only)
+                        </span>
+                    </div>
+                `;
+            }
+        }
+
+        let html = '';
+        for (let i = 0; i < 14; i++) {
+            const currentDay = new Date(today);
+            currentDay.setDate(today.getDate() + i);
+
+            const ymd = formatYMD(currentDay);
+            const dayName = indonesianDays[currentDay.getDay()];
+            const dayNum = currentDay.getDate();
+            const monthName = indonesianMonths[currentDay.getMonth()];
+            const dateFormatted = `${dayNum} ${monthName} ${currentDay.getFullYear()}`;
+            const isToday = (i === 0);
+            const isSelected = (ymd === selectedYMD);
+
+            // Jika bukan member, hari ke-8 dan seterusnya (> 7 hari) terkunci dan abu-abu
+            const isLocked = (!isMember && i > 7);
+
+            if (isLocked) {
+                // Tampilan Abu-Abu untuk yang seminggu lewat (Catatan Shabrina IT)
+                html += `
+                    <button type="button" onclick="showLockedDateAlert('${dateFormatted}')" class="flex-shrink-0 w-24 sm:w-28 p-2.5 rounded-2xl border border-slate-200 bg-slate-100/80 text-slate-400 opacity-60 hover:opacity-90 hover:border-slate-300 transition-all text-center cursor-not-allowed group relative flex flex-col justify-between" title="Terkunci: Hanya Member Syafea yang bisa booking tanggal ini">
+                        <div>
+                            <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">${dayName}</span>
+                            <span class="block text-sm font-extrabold text-slate-500 my-0.5">${dayNum} ${monthName}</span>
+                        </div>
+                        <div class="mt-1">
+                            <span class="inline-flex items-center justify-center gap-1 text-[9px] font-bold text-slate-500 bg-slate-200/90 px-1.5 py-0.5 rounded-md w-full">
+                                <i class="fa-solid fa-lock text-[8px] text-slate-400"></i> Kunci
+                            </span>
+                        </div>
+                    </button>
+                `;
+            } else {
+                // Avail untuk diklik
+                if (isSelected) {
+                    html += `
+                        <button type="button" onclick="selectDateFromStrip('${ymd}')" class="flex-shrink-0 w-24 sm:w-28 p-2.5 rounded-2xl border-2 border-tosca-500 bg-gradient-to-tr from-tosca-600 via-cyan-600 to-blue-600 text-white shadow-md shadow-tosca-500/30 scale-[1.02] text-center transition-all flex flex-col justify-between">
+                            <div>
+                                <span class="block text-[10px] font-extrabold text-tosca-100 uppercase tracking-wider">${isToday ? 'Hari Ini' : dayName}</span>
+                                <span class="block text-sm font-black text-white my-0.5">${dayNum} ${monthName}</span>
+                            </div>
+                            <div class="mt-1">
+                                <span class="inline-flex items-center justify-center gap-1 text-[9px] font-black text-white bg-white/20 px-1.5 py-0.5 rounded-md w-full">
+                                    <i class="fa-solid fa-check text-[8px]"></i> Dipilih
+                                </span>
+                            </div>
+                        </button>
+                    `;
+                } else {
+                    html += `
+                        <button type="button" onclick="selectDateFromStrip('${ymd}')" class="flex-shrink-0 w-24 sm:w-28 p-2.5 rounded-2xl border border-slate-200 bg-white hover:border-tosca-400 hover:bg-tosca-50/40 text-slate-700 shadow-xs hover:shadow-sm text-center transition-all group flex flex-col justify-between">
+                            <div>
+                                <span class="block text-[10px] font-bold text-slate-500 group-hover:text-tosca-600 uppercase tracking-wider">${isToday ? 'Hari Ini' : dayName}</span>
+                                <span class="block text-sm font-extrabold text-navy-950 group-hover:text-tosca-700 my-0.5">${dayNum} ${monthName}</span>
+                            </div>
+                            <div class="mt-1">
+                                <span class="inline-flex items-center justify-center gap-1 text-[9px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded-md w-full">
+                                    <i class="fa-solid fa-circle text-[5px] text-emerald-500"></i> Avail
+                                </span>
+                            </div>
+                        </button>
+                    `;
+                }
+            }
+        }
+        stripContainer.innerHTML = html;
+    }
+
+    function selectDateFromStrip(ymd) {
+        const dateInputEl = document.getElementById('tableDateFilter');
+        if (dateInputEl) {
+            dateInputEl.value = ymd;
+        }
+        renderDateStrip();
+        renderScheduleTable();
+    }
+
+    function handleDateInputChange(ymd) {
+        renderDateStrip();
+        renderScheduleTable();
+    }
+
+    function showLockedDateAlert(dateStr) {
+        const isMember = localStorage.getItem('syafea_member');
+        if (isMember) return;
+
+        if (confirm(`🔒 Tanggal ${dateStr} Terkunci (Khusus Member)!\n\nSesuai aturan sistem:\n• Tamu biasa hanya dapat memesan slot maksimal 7 hari ke depan.\n• Member Syafea bebas memesan tanggal berapapun tanpa batas waktu.\n\nApakah Anda ingin Masuk / Login sebagai Member sekarang untuk membuka akses tanpa batas?`)) {
+            if (typeof openUnifiedLoginModal === 'function') {
+                openUnifiedLoginModal();
+            }
+        }
+    }
 
     function renderScheduleTable() {
         const dateInputEl = document.getElementById('tableDateFilter');
@@ -177,13 +330,6 @@
         today.setHours(0, 0, 0, 0);
         const maxGuest = new Date(today);
         maxGuest.setDate(today.getDate() + 7);
-
-        const formatYMD = (d) => {
-            const y = d.getFullYear();
-            const m = String(d.getMonth() + 1).padStart(2, '0');
-            const day = String(d.getDate()).padStart(2, '0');
-            return `${y}-${m}-${day}`;
-        };
 
         const chosenDate = dateInput ? new Date(dateInput + 'T00:00:00') : today;
         let isOutOfGuestLimit = false;
@@ -282,6 +428,7 @@
         }
 
         document.getElementById('tableDateFilter').value = selectedDate;
+        renderDateStrip();
         renderScheduleTable();
         bookSpecificSlot(formattedDate, selectedTime, priceVal);
     }
