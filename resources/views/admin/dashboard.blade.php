@@ -93,6 +93,37 @@
         </div>
     </div>
 
+    <!-- MODAL KONFIRMASI LOGOUT ADMIN (WAJIB PASSWORD DEMI KEAMANAN) -->
+    <div id="adminLogoutModal" class="fixed inset-0 bg-navy-950/80 backdrop-blur-md hidden items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-3xl p-6 sm:p-7 max-w-sm w-full border border-slate-200 shadow-2xl relative text-center space-y-4">
+            <div class="w-12 h-12 bg-rose-50 border border-rose-200 text-rose-600 rounded-2xl flex items-center justify-center mx-auto shadow-xs">
+                <i class="fa-solid fa-user-shield text-xl"></i>
+            </div>
+            <div>
+                <h3 class="text-base font-black text-navy-950">Konfirmasi Keluar Petugas Admin</h3>
+                <p class="text-xs text-slate-500 mt-1">Petugas: <strong id="adminLogoutStaffName" class="text-navy-950"></strong>.<br>Masukkan password admin untuk memverifikasi penutupan sesi dinas.</p>
+            </div>
+            <form onsubmit="handleConfirmAdminLogout(event)" class="space-y-3 text-left">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Password Admin</label>
+                    <input type="password" id="inputAdminLogoutPass" required placeholder="admin123" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-cyan-500 focus:bg-white focus:ring-2 focus:ring-cyan-400/20">
+                    <span class="text-[10px] text-slate-400 mt-0.5 block">*Default: <strong>admin123</strong></span>
+                </div>
+                <div id="errorAdminLogoutMsg" class="hidden p-2 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-[11px] font-semibold">
+                    ❌ Password admin salah! Sesi petugas tetap aktif demi audit.
+                </div>
+                <div class="flex items-center gap-2 pt-1">
+                    <button type="button" onclick="closeAdminLogoutModal()" class="w-1/2 py-2.5 rounded-xl text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-all">
+                        Batal
+                    </button>
+                    <button type="submit" class="w-1/2 py-2.5 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-rose-600 to-rose-700 hover:opacity-95 shadow-md shadow-rose-600/25 transition-all">
+                        Tutup Sesi
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- KONTEN ADMIN (TERSEMBUNYI SAMPAI LOGIN BERHASIL) -->
     <div id="adminContent" style="display:none;" class="flex-grow flex flex-col justify-between">
 
@@ -266,16 +297,56 @@
         }
 
         function logoutAdmin() {
-            sessionStorage.removeItem('admin_logged_in');
-            sessionStorage.removeItem('admin_staff_name');
-            document.getElementById('adminContent').style.display = 'none';
-            document.getElementById('adminUser').value = '';
-            document.getElementById('adminPass').value = '';
-            const staffInput = document.getElementById('adminStaffName');
-            if (staffInput) staffInput.value = '';
-            const errEl = document.getElementById('loginError');
-            if (errEl) errEl.remove();
-            document.getElementById('adminLoginModal').style.display = 'flex';
+            openAdminLogoutModal();
+        }
+
+        function openAdminLogoutModal() {
+            const modal = document.getElementById('adminLogoutModal');
+            const passInput = document.getElementById('inputAdminLogoutPass');
+            const nameEl = document.getElementById('adminLogoutStaffName');
+            const errEl = document.getElementById('errorAdminLogoutMsg');
+            if (nameEl) nameEl.innerText = getActiveAdminName();
+            if (errEl) errEl.classList.add('hidden');
+            if (passInput) passInput.value = '';
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                if (passInput) passInput.focus();
+            }
+        }
+
+        function closeAdminLogoutModal() {
+            const modal = document.getElementById('adminLogoutModal');
+            if (modal) {
+                modal.classList.remove('flex');
+                modal.classList.add('hidden');
+            }
+        }
+
+        function handleConfirmAdminLogout(e) {
+            e.preventDefault();
+            const pass = document.getElementById('inputAdminLogoutPass').value;
+            const errEl = document.getElementById('errorAdminLogoutMsg');
+
+            if (pass === ADMIN_CREDENTIALS.password) {
+                const staffName = getActiveAdminName();
+                sessionStorage.removeItem('admin_logged_in');
+                sessionStorage.removeItem('admin_staff_name');
+                closeAdminLogoutModal();
+                document.getElementById('adminContent').style.display = 'none';
+                document.getElementById('adminUser').value = '';
+                document.getElementById('adminPass').value = '';
+                const staffInput = document.getElementById('adminStaffName');
+                if (staffInput) staffInput.value = '';
+                const errLoginEl = document.getElementById('loginError');
+                if (errLoginEl) errLoginEl.remove();
+                document.getElementById('adminLoginModal').style.display = 'flex';
+                alert(`✅ Petugas ${staffName} berhasil keluar dan menutup sesi dinas dengan aman.`);
+            } else {
+                if (errEl) errEl.classList.remove('hidden');
+                document.getElementById('inputAdminLogoutPass').value = '';
+                document.getElementById('inputAdminLogoutPass').focus();
+            }
         }
 
         function loadAdminOrders() {
