@@ -283,8 +283,33 @@
 
             history.forEach((item, index) => {
                 const isVerified = item.status && item.status.includes('Terverifikasi');
+                const isRejected = item.status && item.status.includes('Ditolak');
                 if (isVerified) verifiedCount++;
                 else if (item.status && item.status.includes('Pending')) pendingCount++;
+
+                // Badge warna status
+                let statusBadgeClass = 'bg-amber-50 text-amber-700 border border-amber-200';
+                let dotClass = 'pending';
+                if (isVerified) {
+                    statusBadgeClass = 'bg-tosca-50 text-tosca-700 border border-tosca-200';
+                    dotClass = 'online';
+                } else if (isRejected) {
+                    statusBadgeClass = 'bg-rose-50 text-rose-700 border border-rose-200';
+                    dotClass = 'offline';
+                }
+
+                // Tombol cetak nota (jika ditolak, dinonaktifkan / tidak bisa cetak nota)
+                const printButtonHtml = isRejected ? `
+                    <button type="button" disabled class="px-3 py-1.5 bg-slate-100 text-slate-400 font-bold text-xs rounded-xl border border-slate-200 flex items-center gap-1.5 cursor-not-allowed opacity-60" title="Pesanan berstatus Ditolak tidak dapat mencetak nota">
+                        <i class="fa-solid fa-ban text-rose-400"></i>
+                        <span>Nota Dibatalkan</span>
+                    </button>
+                ` : `
+                    <button type="button" onclick="printAdminReceipt(${index})" class="px-3 py-1.5 bg-gradient-to-r from-slate-100 to-cyan-50 hover:from-cyan-100 hover:to-blue-100 text-slate-800 hover:text-navy-950 font-bold text-xs rounded-xl border border-slate-300 hover:border-cyan-300 flex items-center gap-1.5 transition-all shadow-xs" title="Cetak Nota Transaksi Resmi">
+                        <i class="fa-solid fa-print text-cyan-600"></i>
+                        <span>Cetak Nota</span>
+                    </button>
+                `;
 
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50 transition-colors">
@@ -303,8 +328,8 @@
                             </button>
                         </td>
                         <td class="py-3.5 px-4">
-                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold ${isVerified ? 'bg-tosca-50 text-tosca-700 border border-tosca-200' : 'bg-amber-50 text-amber-700 border border-amber-200'}">
-                                <span class="dot-indicator ${isVerified ? 'online' : 'pending'}"></span>
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold ${statusBadgeClass}">
+                                <span class="dot-indicator ${dotClass}"></span>
                                 ${item.status}
                             </span>
                         </td>
@@ -319,11 +344,8 @@
                                     </button>
                                 </div>
                                 
-                                <!-- FITUR 3.3 CETAK NOTA OLEH ADMIN -->
-                                <button type="button" onclick="printAdminReceipt(${index})" class="px-3 py-1.5 bg-gradient-to-r from-slate-100 to-cyan-50 hover:from-cyan-100 hover:to-blue-100 text-slate-800 hover:text-navy-950 font-bold text-xs rounded-xl border border-slate-300 hover:border-cyan-300 flex items-center gap-1.5 transition-all shadow-xs" title="Cetak Nota Transaksi Resmi">
-                                    <i class="fa-solid fa-print text-cyan-600"></i>
-                                    <span>Cetak Nota</span>
-                                </button>
+                                <!-- FITUR 3.3 CETAK NOTA OLEH ADMIN (TERKUNCI JIKA DITOLAK) -->
+                                ${printButtonHtml}
                             </div>
                         </td>
                     </tr>
@@ -350,6 +372,12 @@
             let history = JSON.parse(localStorage.getItem('syafea_history')) || [];
             const item = history[index];
             if (!item) return;
+
+            // Validasi: Jika status ditolak, tidak dapat mencetak nota
+            if (item.status && item.status.includes('Ditolak')) {
+                alert('❌ Pesanan ini telah DITOLAK oleh admin. Nota transaksi tidak dapat diterbitkan atau dicetak!');
+                return;
+            }
 
             const printWindow = window.open('', '', 'width=650,height=750');
             printWindow.document.write(`
