@@ -102,12 +102,8 @@
                 </a>
                 
                 <a href="{{ route('booking.index') }}#jadwal" class="px-3.5 py-2 text-xs font-semibold text-slate-600 hover:text-navy-950 rounded-xl hover:bg-slate-200/80 transition-all flex items-center gap-2">
-                    <i class="fa-solid fa-calendar-days text-xs text-tosca-600"></i> Jadwal Lapangan
+                    <i class="fa-solid fa-calendar-days text-xs text-tosca-600"></i> Jadwal
                 </a>
-                
-                <button type="button" onclick="openHistoryModal()" class="px-3.5 py-2 text-xs font-bold text-slate-700 hover:text-navy-950 rounded-xl bg-white/80 hover:bg-white border border-slate-200/90 shadow-xs transition-all flex items-center gap-2">
-                    <i class="fa-solid fa-receipt text-xs text-tosca-600"></i> Riwayat & Cetak Nota
-                </button>
                 
                 <!-- Dynamic Member Auth / Nav Container -->
                 <div id="authNavContainer" class="flex items-center gap-2 pl-2 border-l border-slate-300">
@@ -126,7 +122,10 @@
                             <span class="text-[9px] text-tosca-700 font-bold block uppercase leading-none">Member Aktif</span>
                             <span id="memberNameDisplay" class="text-xs font-extrabold text-navy-950">Member</span>
                         </div>
-                        <button type="button" onclick="logoutMember()" class="ml-2 text-slate-400 hover:text-rose-600 text-xs" title="Keluar Member">
+                        <button type="button" onclick="openHistoryModal()" class="ml-1 text-tosca-600 hover:text-tosca-800 text-xs" title="Riwayat & Cetak Nota">
+                            <i class="fa-solid fa-receipt"></i>
+                        </button>
+                        <button type="button" onclick="logoutMember()" class="text-slate-400 hover:text-rose-600 text-xs" title="Keluar Member">
                             <i class="fa-solid fa-right-from-bracket"></i>
                         </button>
                     </div>
@@ -372,10 +371,6 @@
                     </tbody>
                 </table>
             </div>
-
-            <button type="button" onclick="closeHistoryModal()" class="w-full py-2.5 bg-gradient-to-r from-navy-900 to-slate-800 hover:from-navy-950 hover:to-slate-900 text-white font-bold rounded-xl text-xs uppercase tracking-wider transition-all">
-                Tutup Window
-            </button>
         </div>
     </div>
 
@@ -497,8 +492,8 @@
             const badge = document.getElementById('memberProfileBadge');
             const nameDisplay = document.getElementById('memberNameDisplay');
             if (btnLogin) {
-                btnLogin.innerText = "Ganti Akun";
-                btnLogin.className = "px-3 py-1.5 text-xs font-semibold text-slate-600 hover:text-navy-950 bg-slate-200/80 rounded-xl transition-all";
+                // Setelah login, sembunyikan tombol Masuk dan ganti dengan badge member
+                btnLogin.style.display = 'none';
             }
             if (badge) {
                 badge.classList.remove('hidden');
@@ -506,6 +501,7 @@
             }
             if (nameDisplay) nameDisplay.innerText = name;
 
+            // Tampilkan banner selamat datang member di halaman index
             const memberBanner = document.getElementById('memberWelcomeBanner');
             if (memberBanner) {
                 memberBanner.classList.remove('hidden');
