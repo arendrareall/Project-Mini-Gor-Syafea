@@ -92,22 +92,6 @@
             </div>
         </div>
 
-        <!-- Quick Action: Cetak Nota Pembayaran -->
-        <div class="bg-gradient-to-r from-tosca-50 via-cyan-50 to-blue-50 border border-tosca-200/80 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xs">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-tosca-500 to-cyan-600 text-white flex items-center justify-center font-bold shadow-xs">
-                    <i class="fa-solid fa-receipt text-lg"></i>
-                </div>
-                <div>
-                    <h4 class="text-xs font-bold text-navy-950">Sudah Melakukan Pemesanan Lapangan?</h4>
-                    <p class="text-[11px] text-slate-600">Cek status verifikasi atau cetak ulang lembar nota pembayaran resmi Anda di sini.</p>
-                </div>
-            </div>
-            <button type="button" onclick="openHistoryModal()" class="px-4 py-2 bg-gradient-to-r from-tosca-600 via-cyan-600 to-blue-600 hover:opacity-95 text-white font-bold rounded-xl text-xs flex items-center gap-2 shadow-sm transition-all whitespace-nowrap">
-                <i class="fa-solid fa-print"></i> <span>Cetak Nota Pembayaran</span>
-            </button>
-        </div>
-
         <!-- Tabel Jadwal -->
         <div class="white-card overflow-hidden">
             <div class="overflow-x-auto">
