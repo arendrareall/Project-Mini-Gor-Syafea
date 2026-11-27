@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- SheetJS (XLSX) untuk Cetak / Export ke Spreadsheet Excel -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -118,7 +120,12 @@
                     <i class="fa-solid fa-chart-line text-tosca-600"></i> Laporan Rekap Transaksi & Omzet Penyewaan
                 </h1>
                 <div class="flex items-center gap-3">
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-tosca-50 to-cyan-50 text-tosca-700 border border-tosca-200">
+                    <!-- Tombol Cetak / Export ke Spreadsheet Excel -->
+                    <button type="button" onclick="exportToExcel()" class="px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white font-bold text-xs rounded-xl shadow-md shadow-emerald-600/25 flex items-center gap-2 transition-all cursor-pointer">
+                        <i class="fa-solid fa-file-excel text-sm"></i>
+                        <span>Cetak Laporan Excel</span>
+                    </button>
+                    <span class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-gradient-to-r from-tosca-50 to-cyan-50 text-tosca-700 border border-tosca-200">
                         <span class="w-2 h-2 rounded-full bg-tosca-500 animate-pulse"></span> Data Real-Time
                     </span>
                 </div>
@@ -244,11 +251,15 @@
 
                 <!-- TABEL REKAP TRANSAKSI PENYEWAAN -->
                 <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8 space-y-4">
-                    <div class="flex items-center justify-between">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div>
                             <h3 class="text-sm sm:text-base font-bold text-navy-950">Daftar Rekap Transaksi Penyewaan</h3>
                             <p class="text-xs text-slate-500">Rincian data penyewaan lapangan dari seluruh pelanggan</p>
                         </div>
+                        <button type="button" onclick="exportToExcel()" class="px-3.5 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold text-xs rounded-xl flex items-center gap-2 transition-all shadow-xs w-fit">
+                            <i class="fa-solid fa-file-excel text-emerald-600 text-sm"></i>
+                            <span>Download Spreadsheet (.xlsx)</span>
+                        </button>
                     </div>
 
                     <div class="overflow-x-auto rounded-2xl border border-slate-200">
@@ -716,6 +727,124 @@
                     }
                 }
             });
+        }
+
+        // ========================================================
+        // FITUR CETAK LAPORAN PEMILIK KE SPREADSHEET / EXCEL (.XLSX)
+        // ========================================================
+        function exportToExcel() {
+            if (!ownerFilteredHistory || ownerFilteredHistory.length === 0) {
+                alert("⚠️ Tidak ada data transaksi yang dapat dicetak/diekspor ke Excel.");
+                return;
+            }
+
+            const startVal = document.getElementById('filterStartDate').value;
+            const endVal = document.getElementById('filterEndDate').value;
+            let periodeLabel = "Seluruh Data Riwayat";
+            if (startVal && endVal) {
+                periodeLabel = `${startVal} s/d ${endVal}`;
+            } else if (startVal) {
+                periodeLabel = `Mulai ${startVal}`;
+            } else if (endVal) {
+                periodeLabel = `Hingga ${endVal}`;
+            }
+
+            // Susun data tabel spreadsheet
+            const dataRows = [
+                ["SISTEM INFORMASI PENCATATAN PENYEWAAN MINI GOR SYAFEA"],
+                ["LAPORAN REKAP DATA PENYEWAAN & PENDAPATAN LAPANGAN (PORTAL PEMILIK)"],
+                ["Periode Laporan:", periodeLabel],
+                ["Tanggal Unduh:", new Date().toLocaleString('id-ID')],
+                [], // Baris kosong
+                [
+                    "No",
+                    "ID Transaksi",
+                    "Nama Penyewa",
+                    "Kategori Akun",
+                    "Jadwal Sewa Lapangan",
+                    "Metode Pembayaran",
+                    "Nominal (Rp)",
+                    "Status Verifikasi"
+                ]
+            ];
+
+            let totalOmzetTerverifikasi = 0;
+            let totalSemuaTransaksi = 0;
+
+            ownerFilteredHistory.forEach((item, idx) => {
+                const numericPrice = parseInt(item.price.replace(/[^0-9]/g, '')) || 0;
+                totalSemuaTransaksi += numericPrice;
+                if (item.status && item.status.includes('Terverifikasi')) {
+                    totalOmzetTerverifikasi += numericPrice;
+                }
+
+                dataRows.push([
+                    idx + 1,
+                    item.id,
+                    item.name || item.type,
+                    item.type,
+                    item.schedule,
+                    (item.method || 'QRIS').toUpperCase(),
+                    numericPrice,
+                    item.status
+                ]);
+            });
+
+            // Baris Ringkasan Akumulasi
+            dataRows.push([]); // Baris kosong
+            dataRows.push(["", "", "", "", "", "TOTAL PENDAPATAN TERVERIFIKASI (OMZET)", totalOmzetTerverifikasi, ""]);
+            dataRows.push(["", "", "", "", "", "TOTAL NOMINAL SEMUA TRANSAKSI", totalSemuaTransaksi, ""]);
+            dataRows.push(["", "", "", "", "", "JUMLAH TOTAL TRANSAKSI", ownerFilteredHistory.length + " Transaksi", ""]);
+
+            // Gunakan SheetJS jika pustaka terhubung
+            if (typeof XLSX !== "undefined") {
+                const ws = XLSX.utils.aoa_to_sheet(dataRows);
+
+                // Atur lebar kolom agar rapi saat dibuka di Microsoft Excel
+                ws['!cols'] = [
+                    { wch: 6 },  // No
+                    { wch: 16 }, // ID Transaksi
+                    { wch: 28 }, // Nama Penyewa
+                    { wch: 22 }, // Kategori Akun
+                    { wch: 32 }, // Jadwal
+                    { wch: 22 }, // Metode
+                    { wch: 20 }, // Nominal
+                    { wch: 26 }  // Status Verifikasi
+                ];
+
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, "Rekap Laporan Pemilik");
+
+                const dateSuffix = new Date().toISOString().slice(0, 10);
+                XLSX.writeFile(wb, `Laporan_Mini_GOR_Syafea_${dateSuffix}.xlsx`);
+            } else {
+                // Fallback: Export ke format CSV standar Excel
+                exportToCSV(dataRows);
+            }
+        }
+
+        function exportToCSV(rows) {
+            let csvContent = "\uFEFF"; // Byte Order Mark (BOM) UTF-8 agar karakter rapi di Excel
+            rows.forEach(row => {
+                let rowStr = row.map(cell => {
+                    let val = (cell === null || cell === undefined) ? "" : String(cell);
+                    if (val.includes(",") || val.includes("\"") || val.includes("\n")) {
+                        val = '"' + val.replace(/"/g, '""') + '"';
+                    }
+                    return val;
+                }).join(",");
+                csvContent += rowStr + "\r\n";
+            });
+
+            const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            const dateSuffix = new Date().toISOString().slice(0, 10);
+            link.setAttribute("href", url);
+            link.setAttribute("download", `Laporan_Mini_GOR_Syafea_${dateSuffix}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
     </script>
 </body>
