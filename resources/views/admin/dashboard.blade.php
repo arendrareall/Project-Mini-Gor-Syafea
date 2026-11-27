@@ -195,7 +195,7 @@
     </div><!-- end #adminContent -->
 
     <script>
-        const ADMIN_CREDENTIALS = { username: 'admin_syafea', password: 'admin123' };
+        const ADMIN_CREDENTIALS = { username: 'admin_syafea', password: 'admin123', name: 'Ariel Arendra' };
 
         document.addEventListener('DOMContentLoaded', () => {
             const isLoggedIn = sessionStorage.getItem('admin_logged_in') === 'true';
@@ -260,7 +260,8 @@
                         type: "Member Syafea",
                         price: "Rp 50.000",
                         method: "QRIS",
-                        status: "Aktif / Terverifikasi"
+                        status: "Aktif / Terverifikasi",
+                        verified_by: "Ariel Arendra"
                     },
                     {
                         id: "#GOR-5432",
@@ -270,7 +271,8 @@
                         type: "Tamu (Regular)",
                         price: "Rp 50.000",
                         method: "TRANSFER BANK BCA",
-                        status: "Pending Verifikasi"
+                        status: "Pending Verifikasi",
+                        verified_by: null
                     }
                 ];
                 localStorage.setItem('syafea_history', JSON.stringify(history));
@@ -361,9 +363,11 @@
             let history = JSON.parse(localStorage.getItem('syafea_history')) || [];
             if (history[index]) {
                 history[index].status = newStatus === 'Terverifikasi' ? 'Aktif / Terverifikasi' : 'Ditolak Admin';
+                history[index].verified_by = newStatus === 'Terverifikasi' ? 'Ariel Arendra' : 'Ariel Arendra (Ditolak)';
+                history[index].verified_at = new Date().toLocaleString('id-ID');
                 localStorage.setItem('syafea_history', JSON.stringify(history));
                 loadAdminOrders();
-                alert(`Status pesanan berhasil diperbarui: ${newStatus}`);
+                alert(`Status pesanan berhasil diperbarui: ${newStatus}\nPenanggung Jawab: Ariel Arendra`);
             }
         }
 
@@ -418,6 +422,8 @@
                         <div class="row"><span class="label">Jadwal Sewa</span><span class="value">${item.schedule}</span></div>
                         <div class="row"><span class="label">Metode Pembayaran</span><span class="value">${(item.method || 'QRIS').toUpperCase()}</span></div>
                         <div class="row"><span class="label">Status Verifikasi</span><span class="value" style="color:#0f766e;">${item.status}</span></div>
+                        <div class="row"><span class="label">Admin Verifikator</span><span class="value" style="color:#2563eb;">${item.verified_by || 'Ariel Arendra'}</span></div>
+                        <div class="row"><span class="label">Admin Pencetak</span><span class="value">Ariel Arendra (Admin Pengelola)</span></div>
                     </div>
 
                     <div class="total-box">
@@ -426,9 +432,9 @@
                     </div>
 
                     <div class="sign">
-                        <div>Petugas Pengelola GOR,</div>
-                        <div class="sign-name">Admin Operasional GOR</div>
-                        <div style="font-size: 10px; color: #94a3b8;">Mini GOR Syafea</div>
+                        <div>Admin yang Bertanggung Jawab,</div>
+                        <div class="sign-name">${item.verified_by || 'Ariel Arendra'}</div>
+                        <div style="font-size: 10px; color: #94a3b8;">Admin Pengelola Mini GOR Syafea</div>
                     </div>
 
                     <div class="footer">
