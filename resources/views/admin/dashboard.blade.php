@@ -105,6 +105,12 @@
                 </div>
 
                 <nav class="flex items-center gap-2">
+                    <!-- Tombol Cepat Ubah Nama Admin yang Bertugas -->
+                    <button type="button" onclick="editAdminName()" class="px-3 py-1.5 rounded-xl text-xs font-bold text-cyan-800 bg-cyan-50 border border-cyan-200 hover:bg-cyan-100 transition-all flex items-center gap-1.5 shadow-2xs" title="Klik untuk mengubah nama admin penanggung jawab">
+                        <i class="fa-solid fa-user-gear text-cyan-600"></i>
+                        <span>Admin: <strong id="adminNameDisplay" class="underline">Ariel Arendra</strong></span>
+                        <i class="fa-solid fa-pen text-[10px] text-cyan-500"></i>
+                    </button>
                     <button type="button" onclick="logoutAdmin()" class="px-3.5 py-2 rounded-xl text-xs font-bold text-rose-700 bg-rose-50 border border-rose-200 hover:bg-rose-100 transition-all flex items-center gap-1.5" title="Kunci Kembali">
                         <i class="fa-solid fa-lock"></i> <span class="hidden sm:inline">Kunci Panel</span>
                     </button>
@@ -229,9 +235,29 @@
             }
         }
 
+        function getActiveAdminName() {
+            return localStorage.getItem('syafea_admin_name') || ADMIN_CREDENTIALS.name || 'Ariel Arendra';
+        }
+
+        function updateAdminNameUI() {
+            const el = document.getElementById('adminNameDisplay');
+            if (el) el.innerText = getActiveAdminName();
+        }
+
+        function editAdminName() {
+            const current = getActiveAdminName();
+            const newName = prompt("Ubah Nama Admin yang Bertanggung Jawab:", current);
+            if (newName && newName.trim() !== "") {
+                localStorage.setItem('syafea_admin_name', newName.trim());
+                updateAdminNameUI();
+                alert(`✅ Nama admin penanggung jawab berhasil diubah menjadi: ${newName.trim()}`);
+            }
+        }
+
         function showAdminContent() {
             document.getElementById('adminLoginModal').style.display = 'none';
             document.getElementById('adminContent').style.display = 'flex';
+            updateAdminNameUI();
             loadAdminOrders();
         }
 
@@ -362,12 +388,13 @@
         function verifyOrder(index, newStatus) {
             let history = JSON.parse(localStorage.getItem('syafea_history')) || [];
             if (history[index]) {
+                const adminName = getActiveAdminName();
                 history[index].status = newStatus === 'Terverifikasi' ? 'Aktif / Terverifikasi' : 'Ditolak Admin';
-                history[index].verified_by = newStatus === 'Terverifikasi' ? 'Ariel Arendra' : 'Ariel Arendra (Ditolak)';
+                history[index].verified_by = newStatus === 'Terverifikasi' ? adminName : `${adminName} (Ditolak)`;
                 history[index].verified_at = new Date().toLocaleString('id-ID');
                 localStorage.setItem('syafea_history', JSON.stringify(history));
                 loadAdminOrders();
-                alert(`Status pesanan berhasil diperbarui: ${newStatus}\nPenanggung Jawab: Ariel Arendra`);
+                alert(`Status pesanan berhasil diperbarui: ${newStatus}\nPenanggung Jawab: ${adminName}`);
             }
         }
 
@@ -376,6 +403,8 @@
             let history = JSON.parse(localStorage.getItem('syafea_history')) || [];
             const item = history[index];
             if (!item) return;
+
+            const adminName = getActiveAdminName();
 
             // Validasi: Jika status ditolak, tidak dapat mencetak nota
             if (item.status && item.status.includes('Ditolak')) {
@@ -422,8 +451,8 @@
                         <div class="row"><span class="label">Jadwal Sewa</span><span class="value">${item.schedule}</span></div>
                         <div class="row"><span class="label">Metode Pembayaran</span><span class="value">${(item.method || 'QRIS').toUpperCase()}</span></div>
                         <div class="row"><span class="label">Status Verifikasi</span><span class="value" style="color:#0f766e;">${item.status}</span></div>
-                        <div class="row"><span class="label">Admin Verifikator</span><span class="value" style="color:#2563eb;">${item.verified_by || 'Ariel Arendra'}</span></div>
-                        <div class="row"><span class="label">Admin Pencetak</span><span class="value">Ariel Arendra (Admin Pengelola)</span></div>
+                        <div class="row"><span class="label">Admin Verifikator</span><span class="value" style="color:#2563eb;">${item.verified_by || adminName}</span></div>
+                        <div class="row"><span class="label">Admin Pencetak</span><span class="value">${adminName} (Admin Pengelola)</span></div>
                     </div>
 
                     <div class="total-box">
@@ -433,7 +462,7 @@
 
                     <div class="sign">
                         <div>Admin yang Bertanggung Jawab,</div>
-                        <div class="sign-name">${item.verified_by || 'Ariel Arendra'}</div>
+                        <div class="sign-name">${item.verified_by || adminName}</div>
                         <div style="font-size: 10px; color: #94a3b8;">Admin Pengelola Mini GOR Syafea</div>
                     </div>
 
