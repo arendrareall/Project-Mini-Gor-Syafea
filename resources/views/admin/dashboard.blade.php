@@ -176,7 +176,7 @@
                                 <th class="py-3.5 px-4">Total Biaya</th>
                                 <th class="py-3.5 px-4">Bukti Pembayaran</th>
                                 <th class="py-3.5 px-4">Status Pembayaran</th>
-                                <th class="py-3.5 px-4 text-center">Aksi Verifikasi</th>
+                                <th class="py-3.5 px-4 text-center">Aksi Verifikasi & Cetak Nota</th>
                             </tr>
                         </thead>
                         <tbody id="adminTableBody" class="divide-y divide-slate-100 font-medium text-slate-700">
@@ -247,29 +247,44 @@
 
         function loadAdminOrders() {
             const tbody = document.getElementById('adminTableBody');
-            let history = JSON.parse(localStorage.getItem('syafea_history')) || [];
+            let history = JSON.parse(localStorage.getItem('syafea_history'));
+
+            // Inisialisasi data sampel awal jika penyimpanan masih kosong
+            if (!history || history.length === 0) {
+                history = [
+                    {
+                        id: "#GOR-8821",
+                        date: "{{ date('d-m-Y') }}",
+                        name: "Budi Santoso",
+                        schedule: "{{ date('d-m-Y') }} (08:00 - 11:00)",
+                        type: "Member Syafea",
+                        price: "Rp 50.000",
+                        method: "QRIS",
+                        status: "Aktif / Terverifikasi"
+                    },
+                    {
+                        id: "#GOR-5432",
+                        date: "{{ date('d-m-Y') }}",
+                        name: "Ahmad Dani",
+                        schedule: "{{ date('d-m-Y') }} (14:00 - 17:00)",
+                        type: "Tamu (Regular)",
+                        price: "Rp 50.000",
+                        method: "TRANSFER BANK BCA",
+                        status: "Pending Verifikasi"
+                    }
+                ];
+                localStorage.setItem('syafea_history', JSON.stringify(history));
+            }
 
             tbody.innerHTML = "";
 
             let pendingCount = 0;
             let verifiedCount = 0;
 
-            if (history.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="6" class="py-6 text-center text-slate-400 italic">Belum ada daftar pesanan penyewaan dari pelanggan.</td>
-                    </tr>
-                `;
-                document.getElementById('statTotalOrders').innerText = "0";
-                document.getElementById('statPendingOrders').innerText = "0";
-                document.getElementById('statVerifiedOrders').innerText = "0";
-                return;
-            }
-
             history.forEach((item, index) => {
-                const isVerified = item.status.includes('Terverifikasi');
+                const isVerified = item.status && item.status.includes('Terverifikasi');
                 if (isVerified) verifiedCount++;
-                else if (item.status.includes('Pending')) pendingCount++;
+                else if (item.status && item.status.includes('Pending')) pendingCount++;
 
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50 transition-colors">
@@ -294,12 +309,20 @@
                             </span>
                         </td>
                         <td class="py-3.5 px-4 text-center">
-                            <div class="inline-flex rounded-xl shadow-xs overflow-hidden border border-slate-200" role="group">
-                                <button type="button" onclick="verifyOrder(${index}, 'Terverifikasi')" class="px-3 py-1.5 bg-gradient-to-r from-tosca-600 to-cyan-600 hover:opacity-95 text-white font-bold text-xs flex items-center gap-1 transition-all" title="Verifikasi Pembayaran">
-                                    <i class="fa-solid fa-check"></i> Terima
-                                </button>
-                                <button type="button" onclick="verifyOrder(${index}, 'Ditolak')" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs flex items-center gap-1 transition-colors border-l border-rose-500" title="Tolak Pesanan">
-                                    <i class="fa-solid fa-xmark"></i> Tolak
+                            <div class="flex items-center justify-center gap-2">
+                                <div class="inline-flex rounded-xl shadow-xs overflow-hidden border border-slate-200" role="group">
+                                    <button type="button" onclick="verifyOrder(${index}, 'Terverifikasi')" class="px-2.5 py-1.5 bg-gradient-to-r from-tosca-600 to-cyan-600 hover:opacity-95 text-white font-bold text-xs flex items-center gap-1 transition-all" title="Verifikasi Pembayaran">
+                                        <i class="fa-solid fa-check"></i> Terima
+                                    </button>
+                                    <button type="button" onclick="verifyOrder(${index}, 'Ditolak')" class="px-2.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs flex items-center gap-1 transition-colors border-l border-rose-500" title="Tolak Pesanan">
+                                        <i class="fa-solid fa-xmark"></i> Tolak
+                                    </button>
+                                </div>
+                                
+                                <!-- FITUR 3.3 CETAK NOTA OLEH ADMIN -->
+                                <button type="button" onclick="printAdminReceipt(${index})" class="px-3 py-1.5 bg-gradient-to-r from-slate-100 to-cyan-50 hover:from-cyan-100 hover:to-blue-100 text-slate-800 hover:text-navy-950 font-bold text-xs rounded-xl border border-slate-300 hover:border-cyan-300 flex items-center gap-1.5 transition-all shadow-xs" title="Cetak Nota Transaksi Resmi">
+                                    <i class="fa-solid fa-print text-cyan-600"></i>
+                                    <span>Cetak Nota</span>
                                 </button>
                             </div>
                         </td>
@@ -320,6 +343,79 @@
                 loadAdminOrders();
                 alert(`Status pesanan berhasil diperbarui: ${newStatus}`);
             }
+        }
+
+        // Fitur 3.3 Cetak Nota Pembayaran (Sisi Admin)
+        function printAdminReceipt(index) {
+            let history = JSON.parse(localStorage.getItem('syafea_history')) || [];
+            const item = history[index];
+            if (!item) return;
+
+            const printWindow = window.open('', '', 'width=650,height=750');
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>Nota Transaksi - ${item.id} - Mini GOR Syafea</title>
+                    <style>
+                        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 30px; color: #0f172a; max-width: 520px; margin: auto; }
+                        .header { text-align: center; border-bottom: 2px dashed #0d9488; padding-bottom: 16px; margin-bottom: 20px; }
+                        .brand { font-size: 22px; font-weight: 900; letter-spacing: -0.5px; color: #0a1128; margin: 0; }
+                        .desc { font-size: 11px; color: #64748b; margin-top: 4px; line-height: 1.4; }
+                        .badge { display: inline-block; padding: 4px 12px; background: #f0fdfa; color: #0f766e; border: 1px solid #99f6e4; border-radius: 999px; font-size: 10px; font-weight: bold; margin-top: 10px; letter-spacing: 1px; }
+                        .details { margin: 18px 0; }
+                        .row { display: flex; justify-content: space-between; font-size: 13px; margin: 8px 0; }
+                        .label { color: #64748b; font-weight: 500; }
+                        .value { font-weight: bold; color: #0f172a; text-align: right; }
+                        .total-box { border-top: 2px dashed #0d9488; border-bottom: 2px dashed #0d9488; padding: 14px 0; margin-top: 18px; display: flex; justify-content: space-between; font-size: 16px; font-weight: 900; color: #0d9488; }
+                        .footer { text-align: center; margin-top: 28px; font-size: 11px; color: #94a3b8; line-height: 1.5; }
+                        .sign { margin-top: 24px; text-align: right; font-size: 12px; }
+                        .sign-name { font-weight: bold; text-decoration: underline; margin-top: 45px; }
+                        @media print {
+                            body { padding: 10px; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <h1 class="brand">MINI GOR SYAFEA</h1>
+                        <p class="desc">Sistem Informasi Pencatatan Penyewaan Lapangan<br>Panel Administrasi & Pengelola Lapangan</p>
+                        <span class="badge">NOTA RESMI TRANSAKSI (SALINAN ADMIN)</span>
+                    </div>
+                    
+                    <div class="details">
+                        <div class="row"><span class="label">No. Transaksi</span><span class="value">${item.id}</span></div>
+                        <div class="row"><span class="label">Tanggal Booking</span><span class="value">${item.date}</span></div>
+                        <div class="row"><span class="label">Nama Penyewa</span><span class="value">${item.name || item.type}</span></div>
+                        <div class="row"><span class="label">Kategori Akun</span><span class="value">${item.type}</span></div>
+                        <div class="row"><span class="label">Jadwal Sewa</span><span class="value">${item.schedule}</span></div>
+                        <div class="row"><span class="label">Metode Pembayaran</span><span class="value">${(item.method || 'QRIS').toUpperCase()}</span></div>
+                        <div class="row"><span class="label">Status Verifikasi</span><span class="value" style="color:#0f766e;">${item.status}</span></div>
+                    </div>
+
+                    <div class="total-box">
+                        <span>TOTAL PEMBAYARAN</span>
+                        <span>${item.price}</span>
+                    </div>
+
+                    <div class="sign">
+                        <div>Petugas Pengelola GOR,</div>
+                        <div class="sign-name">Admin Operasional GOR</div>
+                        <div style="font-size: 10px; color: #94a3b8;">Mini GOR Syafea</div>
+                    </div>
+
+                    <div class="footer">
+                        <p>Dokumen ini adalah bukti transaksi resmi sah yang dicetak dari Sistem Mini GOR Syafea.</p>
+                        <p>Dicetak pada: ${new Date().toLocaleString('id-ID')}</p>
+                    </div>
+                    <script>
+                        window.onload = function() {
+                            window.print();
+                        };
+                    <\/script>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
         }
     </script>
 </body>
