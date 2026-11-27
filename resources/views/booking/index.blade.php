@@ -16,8 +16,8 @@
                 <p id="bannerDesc" class="text-xs text-slate-300">Pilih slot jadwal lapangan yang tersedia dan periksa riwayat penyewaan Anda.</p>
             </div>
         </div>
-        <button type="button" onclick="openLoginModal()" id="btnActionBanner" class="px-4 py-2 bg-gradient-to-r from-tosca-500 to-cyan-600 hover:from-tosca-600 hover:to-cyan-700 text-white text-xs font-bold rounded-xl shadow-md shadow-tosca-500/25 transition-all whitespace-nowrap">
-            Login / Daftar Member
+        <button type="button" onclick="openUnifiedLoginModal()" id="btnActionBanner" class="px-4 py-2 bg-gradient-to-r from-tosca-500 to-cyan-600 hover:from-tosca-600 hover:to-cyan-700 text-white text-xs font-bold rounded-xl shadow-md shadow-tosca-500/25 transition-all whitespace-nowrap">
+            Masuk / Login Member
         </button>
     </div>
 

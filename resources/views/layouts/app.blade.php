@@ -95,10 +95,10 @@
                 </div>
             </a>
 
-            <!-- Navigation Bar -->
-            <nav class="flex flex-wrap items-center gap-1.5 bg-slate-100/90 p-1.5 rounded-2xl border border-slate-200">
-                <a href="{{ route('booking.index') }}" class="px-3.5 py-2 text-xs font-bold text-white bg-gradient-to-r from-tosca-500 via-cyan-600 to-blue-600 rounded-xl shadow-sm transition-all hover:opacity-95 flex items-center gap-2">
-                    <i class="fa-solid fa-house text-xs"></i> Beranda
+            <!-- Navigation Bar Terpadu -->
+            <nav class="flex flex-wrap items-center gap-2 bg-slate-100/90 p-1.5 rounded-2xl border border-slate-200">
+                <a href="{{ route('booking.index') }}" class="px-3.5 py-2 text-xs font-bold text-slate-700 hover:text-navy-950 hover:bg-slate-200/80 rounded-xl transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-house text-xs text-tosca-600"></i> Beranda
                 </a>
                 
                 <a href="{{ route('booking.index') }}#jadwal" class="px-3.5 py-2 text-xs font-semibold text-slate-600 hover:text-navy-950 rounded-xl hover:bg-slate-200/80 transition-all flex items-center gap-2">
@@ -111,10 +111,13 @@
                 
                 <!-- Dynamic Member Auth / Nav Container -->
                 <div id="authNavContainer" class="flex items-center gap-2 pl-2 border-l border-slate-300">
-                    <button type="button" onclick="openLoginModal()" id="btnLoginMember" class="px-3.5 py-2 text-xs font-bold text-tosca-700 bg-tosca-50 hover:bg-tosca-100/80 border border-tosca-200 rounded-xl transition-all flex items-center gap-2">
-                        <i class="fa-solid fa-user-lock text-xs"></i> Login Member
+                    
+                    <!-- Satu Tombol Utama: Portal Masuk / Login Terpadu -->
+                    <button type="button" onclick="openUnifiedLoginModal()" id="btnUnifiedLogin" class="px-4 py-2 text-xs font-bold text-white bg-gradient-to-r from-tosca-500 via-cyan-600 to-blue-600 hover:opacity-95 rounded-xl shadow-md shadow-tosca-500/25 transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-arrow-right-to-bracket text-xs"></i> Masuk Sistem GOR
                     </button>
                     
+                    <!-- Badge Jika Sudah Login Member -->
                     <div id="memberProfileBadge" class="hidden items-center gap-2 bg-gradient-to-r from-tosca-50 to-cyan-50 border border-tosca-200 px-3 py-1.5 rounded-xl">
                         <div class="w-6 h-6 rounded-full bg-gradient-to-tr from-tosca-500 to-blue-600 text-white flex items-center justify-center text-xs font-bold shadow-xs">
                             <i class="fa-solid fa-user-check"></i>
@@ -123,20 +126,11 @@
                             <span class="text-[9px] text-tosca-700 font-bold block uppercase leading-none">Member Aktif</span>
                             <span id="memberNameDisplay" class="text-xs font-extrabold text-navy-950">Member</span>
                         </div>
-                        <button type="button" onclick="logoutMember()" class="ml-2 text-slate-400 hover:text-rose-600 text-xs" title="Keluar">
+                        <button type="button" onclick="logoutMember()" class="ml-2 text-slate-400 hover:text-rose-600 text-xs" title="Keluar Member">
                             <i class="fa-solid fa-right-from-bracket"></i>
                         </button>
                     </div>
-                </div>
 
-                <!-- Role Shortcut Links: Admin & Pemilik -->
-                <div class="flex items-center gap-1 pl-2 border-l border-slate-300">
-                    <a href="{{ route('admin.index') }}" class="px-2.5 py-1.5 text-xs font-semibold text-slate-600 hover:text-navy-950 hover:bg-slate-200/80 rounded-lg transition-all flex items-center gap-1" title="Portal Admin Pengelola">
-                        <i class="fa-solid fa-user-gear text-slate-500 text-xs"></i> Admin
-                    </a>
-                    <a href="{{ route('owner.index') }}" class="px-2.5 py-1.5 text-xs font-semibold text-slate-600 hover:text-navy-950 hover:bg-slate-200/80 rounded-lg transition-all flex items-center gap-1" title="Portal Pemilik GOR">
-                        <i class="fa-solid fa-chart-line text-slate-500 text-xs"></i> Pemilik
-                    </a>
                 </div>
             </nav>
         </div>
@@ -173,6 +167,175 @@
     <main class="max-w-6xl w-full mx-auto px-4 py-6 flex-grow">
         @yield('content')
     </main>
+
+    <!-- ======================================================= -->
+    <!-- MODAL LOGIN TERPADU MULTI-ROLE (PORTAL MASUK SISTEM)   -->
+    <!-- ======================================================= -->
+    <div id="unifiedLoginModal" class="fixed inset-0 bg-navy-950/80 backdrop-blur-md hidden items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full border border-slate-200 shadow-2xl relative text-center">
+            
+            <!-- Tombol Tutup -->
+            <button type="button" onclick="closeUnifiedLoginModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <!-- TAHAP 1: PILIHAN MASUK SEBAGAI ROLE APA -->
+            <div id="loginStepSelectRole">
+                <div class="w-14 h-14 bg-gradient-to-tr from-tosca-50 to-cyan-100 border border-tosca-200 text-tosca-600 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-sm">
+                    <i class="fa-solid fa-id-badge text-2xl"></i>
+                </div>
+                <h3 class="text-2xl font-black text-navy-950 mb-1">Masuk Sistem GOR</h3>
+                <p class="text-xs text-slate-500 mb-6">Silakan pilih jenis hak akses pengguna Anda untuk melanjutkan</p>
+
+                <!-- 3 Pilihan Card Role -->
+                <div class="grid grid-cols-1 gap-3 text-left">
+                    
+                    <!-- 1. Pilihan Role: Pelanggan / Member -->
+                    <button type="button" onclick="showLoginForm('member')" class="group p-4 rounded-2xl border-2 border-slate-200 hover:border-tosca-500 hover:bg-tosca-50/40 transition-all flex items-center gap-4 text-left">
+                        <div class="w-12 h-12 rounded-xl bg-tosca-50 group-hover:bg-tosca-500 text-tosca-600 group-hover:text-white border border-tosca-200 flex items-center justify-center text-xl transition-all shadow-xs">
+                            <i class="fa-solid fa-user-check"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between">
+                                <h4 class="text-sm font-bold text-navy-950 group-hover:text-tosca-700">Pelanggan / Member GOR</h4>
+                                <span class="text-xs text-tosca-600 group-hover:translate-x-1 transition-transform">&rarr;</span>
+                            </div>
+                            <p class="text-xs text-slate-500 mt-0.5">Akses khusus sewa custom jadwal & diskon tarif member</p>
+                        </div>
+                    </button>
+
+                    <!-- 2. Pilihan Role: Admin Pengelola -->
+                    <button type="button" onclick="showLoginForm('admin')" class="group p-4 rounded-2xl border-2 border-slate-200 hover:border-cyan-500 hover:bg-cyan-50/40 transition-all flex items-center gap-4 text-left">
+                        <div class="w-12 h-12 rounded-xl bg-cyan-50 group-hover:bg-cyan-600 text-cyan-600 group-hover:text-white border border-cyan-200 flex items-center justify-center text-xl transition-all shadow-xs">
+                            <i class="fa-solid fa-user-gear"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between">
+                                <h4 class="text-sm font-bold text-navy-950 group-hover:text-cyan-700">Admin Pengelola</h4>
+                                <span class="text-xs text-cyan-600 group-hover:translate-x-1 transition-transform">&rarr;</span>
+                            </div>
+                            <p class="text-xs text-slate-500 mt-0.5">Kelola penyewaan, verifikasi pembayaran, & cek bukti bayar</p>
+                        </div>
+                    </button>
+
+                    <!-- 3. Pilihan Role: Pemilik GOR -->
+                    <button type="button" onclick="showLoginForm('owner')" class="group p-4 rounded-2xl border-2 border-slate-200 hover:border-blue-700 hover:bg-blue-50/40 transition-all flex items-center gap-4 text-left">
+                        <div class="w-12 h-12 rounded-xl bg-blue-50 group-hover:bg-blue-800 text-blue-700 group-hover:text-white border border-blue-200 flex items-center justify-center text-xl transition-all shadow-xs">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between">
+                                <h4 class="text-sm font-bold text-navy-950 group-hover:text-blue-900">Pemilik (Owner GOR)</h4>
+                                <span class="text-xs text-blue-600 group-hover:translate-x-1 transition-transform">&rarr;</span>
+                            </div>
+                            <p class="text-xs text-slate-500 mt-0.5">Laporan rekap keuangan, omzet penyewaan, & grafik laba</p>
+                        </div>
+                    </button>
+
+                </div>
+            </div>
+
+            <!-- TAHAP 2A: FORM LOGIN MEMBER -->
+            <div id="loginFormMember" class="hidden text-left space-y-4">
+                <button type="button" onclick="backToRoleSelect()" class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-navy-950 mb-1">
+                    <i class="fa-solid fa-arrow-left"></i> Ganti Pilihan Role
+                </button>
+                <div class="flex items-center gap-3 pb-3 border-b border-slate-100">
+                    <div class="w-10 h-10 rounded-xl bg-tosca-50 text-tosca-600 border border-tosca-200 flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-user-check"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-base font-bold text-navy-950">Login Member Syafea</h4>
+                        <p class="text-xs text-slate-500">Gunakan akun penyewa terdaftar Anda</p>
+                    </div>
+                </div>
+
+                <form onsubmit="handleUnifiedMemberSubmit(event)" class="space-y-4">
+                    @csrf
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Nama / WhatsApp / Email</label>
+                        <input type="text" id="inputMemberName" required placeholder="Contoh: Budi Santoso" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-tosca-500 focus:bg-white focus:ring-2 focus:ring-tosca-400/20">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Password</label>
+                        <input type="password" required placeholder="••••••••" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-tosca-500 focus:bg-white focus:ring-2 focus:ring-tosca-400/20">
+                    </div>
+                    <button type="submit" class="w-full py-3 bg-gradient-to-r from-tosca-500 via-cyan-600 to-blue-600 hover:opacity-95 text-white font-bold rounded-xl text-xs uppercase tracking-wider shadow-lg shadow-tosca-500/25 transition-all">
+                        MASUK SEBAGAI MEMBER
+                    </button>
+                </form>
+            </div>
+
+            <!-- TAHAP 2B: FORM LOGIN ADMIN -->
+            <div id="loginFormAdmin" class="hidden text-left space-y-4">
+                <button type="button" onclick="backToRoleSelect()" class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-navy-950 mb-1">
+                    <i class="fa-solid fa-arrow-left"></i> Ganti Pilihan Role
+                </button>
+                <div class="flex items-center gap-3 pb-3 border-b border-slate-100">
+                    <div class="w-10 h-10 rounded-xl bg-cyan-50 text-cyan-600 border border-cyan-200 flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-user-gear"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-base font-bold text-navy-950">Login Admin Pengelola</h4>
+                        <p class="text-xs text-slate-500">Kredensial khusus staf pengelola GOR Syafea</p>
+                    </div>
+                </div>
+
+                <form onsubmit="handleUnifiedAdminSubmit(event)" class="space-y-4">
+                    @csrf
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Username Admin</label>
+                        <input type="text" id="inputAdminUser" required placeholder="admin_syafea" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-cyan-500 focus:bg-white focus:ring-2 focus:ring-cyan-400/20">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Password</label>
+                        <input type="password" id="inputAdminPass" required placeholder="admin123" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-cyan-500 focus:bg-white focus:ring-2 focus:ring-cyan-400/20">
+                    </div>
+                    <div id="errorAdminMsg" class="hidden p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold">
+                        ❌ Username atau password admin salah!
+                    </div>
+                    <button type="submit" class="w-full py-3 bg-gradient-to-r from-cyan-600 to-blue-700 hover:opacity-95 text-white font-bold rounded-xl text-xs uppercase tracking-wider shadow-lg shadow-cyan-500/25 transition-all">
+                        MASUK PANEL PENGELOLA
+                    </button>
+                </form>
+            </div>
+
+            <!-- TAHAP 2C: FORM LOGIN PEMILIK -->
+            <div id="loginFormOwner" class="hidden text-left space-y-4">
+                <button type="button" onclick="backToRoleSelect()" class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-navy-950 mb-1">
+                    <i class="fa-solid fa-arrow-left"></i> Ganti Pilihan Role
+                </button>
+                <div class="flex items-center gap-3 pb-3 border-b border-slate-100">
+                    <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-800 border border-blue-200 flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-chart-line"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-base font-bold text-navy-950">Login Pemilik GOR</h4>
+                        <p class="text-xs text-slate-500">Kredensial rahasia laporan rekap keuangan</p>
+                    </div>
+                </div>
+
+                <form onsubmit="handleUnifiedOwnerSubmit(event)" class="space-y-4">
+                    @csrf
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Username Pemilik</label>
+                        <input type="text" id="inputOwnerUser" required placeholder="pemilik_syafea" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-blue-700 focus:bg-white focus:ring-2 focus:ring-blue-600/20">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Password Rahasia</label>
+                        <input type="password" id="inputOwnerPass" required placeholder="owner123" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-blue-700 focus:bg-white focus:ring-2 focus:ring-blue-600/20">
+                    </div>
+                    <div id="errorOwnerMsg" class="hidden p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold">
+                        ❌ Username atau password pemilik salah!
+                    </div>
+                    <button type="submit" class="w-full py-3 bg-gradient-to-r from-blue-700 via-indigo-700 to-navy-900 hover:opacity-95 text-white font-bold rounded-xl text-xs uppercase tracking-wider shadow-lg shadow-blue-700/25 transition-all">
+                        BUKA LAPORAN KEUANGAN
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    </div>
 
     <!-- Modal Riwayat Pemesanan (History Modal) -->
     <div id="historyModal" class="fixed inset-0 bg-navy-950/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
@@ -216,36 +379,6 @@
         </div>
     </div>
 
-    <!-- Modal Login Member -->
-    <div id="loginModal" class="fixed inset-0 bg-navy-950/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-sm w-full border border-slate-200 shadow-2xl relative text-center">
-            <button type="button" onclick="closeLoginModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-
-            <div class="w-14 h-14 bg-gradient-to-tr from-tosca-50 to-cyan-100 border border-tosca-200 text-tosca-600 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-sm">
-                <i class="fa-solid fa-user-shield text-2xl"></i>
-            </div>
-            <h3 class="text-xl font-black text-navy-950 mb-1">Login Member Syafea</h3>
-            <p class="text-xs text-slate-500 mb-5">Nikmati hak istimewa custom jadwal dan potongan tarif khusus</p>
-
-            <form onsubmit="handleMemberLogin(event)" class="space-y-4 text-left">
-                @csrf
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Nama / WhatsApp / Email</label>
-                    <input type="text" id="inputUser" required placeholder="Contoh: Budi Santoso" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-tosca-500 focus:bg-white focus:ring-2 focus:ring-tosca-400/20">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Password</label>
-                    <input type="password" required placeholder="••••••••" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-tosca-500 focus:bg-white focus:ring-2 focus:ring-tosca-400/20">
-                </div>
-                <button type="submit" class="w-full py-3 bg-gradient-to-r from-tosca-500 via-cyan-600 to-blue-600 hover:opacity-95 text-white font-bold rounded-xl text-xs uppercase tracking-wider shadow-lg shadow-tosca-500/25 transition-all">
-                    MASUK SEBAGAI MEMBER
-                </button>
-            </form>
-        </div>
-    </div>
-
     <!-- Footer Gradasi Navy -->
     <footer class="bg-gradient-to-r from-navy-950 via-slate-900 to-navy-900 text-slate-400 py-6 border-t border-slate-800 mt-12">
         <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-3 text-center md:text-left">
@@ -261,6 +394,11 @@
 
     <!-- Client-Side Scripting -->
     <script>
+        const CREDENTIALS = {
+            admin: { user: 'admin_syafea', pass: 'admin123', redirect: "{{ route('admin.index') }}" },
+            owner: { user: 'pemilik_syafea', pass: 'owner123', redirect: "{{ route('owner.index') }}" }
+        };
+
         document.addEventListener('DOMContentLoaded', () => {
             const savedMember = localStorage.getItem('syafea_member');
             if (savedMember) {
@@ -268,53 +406,100 @@
             }
         });
 
-        function openLoginModal() {
-            const modal = document.getElementById('loginModal');
+        // Kontrol Modal Terpadu
+        function openUnifiedLoginModal() {
+            backToRoleSelect();
+            const modal = document.getElementById('unifiedLoginModal');
             if (modal) {
                 modal.classList.remove('hidden');
                 modal.classList.add('flex');
             }
         }
-        function closeLoginModal() {
-            const modal = document.getElementById('loginModal');
+
+        function closeUnifiedLoginModal() {
+            const modal = document.getElementById('unifiedLoginModal');
             if (modal) {
                 modal.classList.remove('flex');
                 modal.classList.add('hidden');
             }
         }
 
-        function openHistoryModal() {
-            renderHistoryModal();
-            const modal = document.getElementById('historyModal');
-            if (modal) {
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
-            }
-        }
-        function closeHistoryModal() {
-            const modal = document.getElementById('historyModal');
-            if (modal) {
-                modal.classList.remove('flex');
-                modal.classList.add('hidden');
+        function showLoginForm(role) {
+            document.getElementById('loginStepSelectRole').classList.add('hidden');
+            document.getElementById('loginFormMember').classList.add('hidden');
+            document.getElementById('loginFormAdmin').classList.add('hidden');
+            document.getElementById('loginFormOwner').classList.add('hidden');
+
+            if (role === 'member') {
+                document.getElementById('loginFormMember').classList.remove('hidden');
+            } else if (role === 'admin') {
+                document.getElementById('loginFormAdmin').classList.remove('hidden');
+                document.getElementById('errorAdminMsg').classList.add('hidden');
+            } else if (role === 'owner') {
+                document.getElementById('loginFormOwner').classList.remove('hidden');
+                document.getElementById('errorOwnerMsg').classList.add('hidden');
             }
         }
 
-        function handleMemberLogin(e) {
+        function backToRoleSelect() {
+            document.getElementById('loginStepSelectRole').classList.remove('hidden');
+            document.getElementById('loginFormMember').classList.add('hidden');
+            document.getElementById('loginFormAdmin').classList.add('hidden');
+            document.getElementById('loginFormOwner').classList.add('hidden');
+        }
+
+        // Handle Login Member
+        function handleUnifiedMemberSubmit(e) {
             e.preventDefault();
-            const inputVal = document.getElementById('inputUser').value || "Budi Santoso";
+            const inputVal = document.getElementById('inputMemberName').value.trim() || "Budi Santoso";
             localStorage.setItem('syafea_member', inputVal);
             activateMemberUI(inputVal);
             if (typeof renderScheduleTable === "function") {
                 renderScheduleTable();
             }
-            closeLoginModal();
+            closeUnifiedLoginModal();
+        }
+
+        // Handle Login Admin
+        function handleUnifiedAdminSubmit(e) {
+            e.preventDefault();
+            const u = document.getElementById('inputAdminUser').value.trim();
+            const p = document.getElementById('inputAdminPass').value;
+
+            if (u === CREDENTIALS.admin.user && p === CREDENTIALS.admin.pass) {
+                sessionStorage.setItem('admin_logged_in', 'true');
+                window.location.href = CREDENTIALS.admin.redirect;
+            } else {
+                document.getElementById('errorAdminMsg').classList.remove('hidden');
+                document.getElementById('inputAdminPass').value = '';
+                document.getElementById('inputAdminPass').focus();
+            }
+        }
+
+        // Handle Login Pemilik
+        function handleUnifiedOwnerSubmit(e) {
+            e.preventDefault();
+            const u = document.getElementById('inputOwnerUser').value.trim();
+            const p = document.getElementById('inputOwnerPass').value;
+
+            if (u === CREDENTIALS.owner.user && p === CREDENTIALS.owner.pass) {
+                sessionStorage.setItem('owner_logged_in', 'true');
+                window.location.href = CREDENTIALS.owner.redirect;
+            } else {
+                document.getElementById('errorOwnerMsg').classList.remove('hidden');
+                document.getElementById('inputOwnerPass').value = '';
+                document.getElementById('inputOwnerPass').focus();
+            }
         }
 
         function activateMemberUI(name) {
-            const btnLogin = document.getElementById('btnLoginMember');
+            const btnLogin = document.getElementById('btnUnifiedLogin');
             const badge = document.getElementById('memberProfileBadge');
             const nameDisplay = document.getElementById('memberNameDisplay');
-            if (btnLogin) btnLogin.classList.add('hidden');
+            if (btnLogin) {
+                btnLogin.innerText = "Ganti Akun / Role";
+                btnLogin.className = "px-3 py-1.5 text-xs font-semibold text-slate-600 hover:text-navy-950 bg-slate-200/80 rounded-xl transition-all";
+            }
             if (badge) {
                 badge.classList.remove('hidden');
                 badge.classList.add('flex');
@@ -348,6 +533,22 @@
         function logoutMember() {
             localStorage.removeItem('syafea_member');
             location.reload();
+        }
+
+        function openHistoryModal() {
+            renderHistoryModal();
+            const modal = document.getElementById('historyModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+        }
+        function closeHistoryModal() {
+            const modal = document.getElementById('historyModal');
+            if (modal) {
+                modal.classList.remove('flex');
+                modal.classList.add('hidden');
+            }
         }
 
         function renderHistoryModal() {
