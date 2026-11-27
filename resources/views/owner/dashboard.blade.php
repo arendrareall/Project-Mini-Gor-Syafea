@@ -75,6 +75,37 @@
         </div>
     </div>
 
+    <!-- MODAL KONFIRMASI LOGOUT PEMILIK (WAJIB PASSWORD DEMI KEAMANAN) -->
+    <div id="ownerLogoutModal" class="fixed inset-0 bg-navy-950/80 backdrop-blur-md hidden items-center justify-center p-4 z-50">
+        <div class="bg-slate-900 text-white rounded-3xl p-6 sm:p-7 max-w-sm w-full border border-slate-700 shadow-2xl relative text-center space-y-4">
+            <div class="w-12 h-12 bg-blue-500/10 border border-blue-500/30 text-cyan-400 rounded-2xl flex items-center justify-center mx-auto shadow-xs">
+                <i class="fa-solid fa-lock text-xl"></i>
+            </div>
+            <div>
+                <h3 class="text-base font-black text-white">Konfirmasi Kunci Portal Pemilik</h3>
+                <p class="text-xs text-slate-400 mt-1">Masukkan password pemilik (<code class="text-cyan-400 font-bold">owner123</code>) untuk mengunci dan logout dari portal rekap keuangan.</p>
+            </div>
+            <form onsubmit="handleConfirmOwnerLogout(event)" class="space-y-3 text-left">
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Password Pemilik GOR</label>
+                    <input type="password" id="inputOwnerLogoutPass" required placeholder="owner123" class="w-full px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-400/20">
+                    <span class="text-[10px] text-slate-400 mt-0.5 block">*Default: <strong>owner123</strong></span>
+                </div>
+                <div id="errorOwnerLogoutMsg" class="hidden p-2 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-[11px] font-semibold">
+                    ❌ Password pemilik salah! Portal tetap terkunci aman.
+                </div>
+                <div class="flex items-center gap-2 pt-1">
+                    <button type="button" onclick="closeOwnerLogoutModal()" class="w-1/2 py-2.5 rounded-xl text-xs font-bold text-slate-300 bg-slate-800 hover:bg-slate-700 transition-all">
+                        Batal
+                    </button>
+                    <button type="submit" class="w-1/2 py-2.5 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-rose-600 to-rose-700 hover:opacity-95 shadow-md shadow-rose-600/25 transition-all">
+                        Kunci & Keluar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- KONTEN OWNER (TERSEMBUNYI SAMPAI LOGIN BERHASIL) -->
     <div id="ownerContent" style="display:none;" class="w-full flex flex-col md:flex-row flex-grow">
 
@@ -337,13 +368,50 @@
         }
 
         function logoutOwner() {
-            sessionStorage.removeItem('owner_logged_in');
-            document.getElementById('ownerContent').style.display = 'none';
-            document.getElementById('ownerUser').value = '';
-            document.getElementById('ownerPass').value = '';
-            const errEl = document.getElementById('ownerLoginError');
-            if (errEl) errEl.remove();
-            document.getElementById('ownerLoginModal').style.display = 'flex';
+            openOwnerLogoutModal();
+        }
+
+        function openOwnerLogoutModal() {
+            const modal = document.getElementById('ownerLogoutModal');
+            const passInput = document.getElementById('inputOwnerLogoutPass');
+            const errEl = document.getElementById('errorOwnerLogoutMsg');
+            if (errEl) errEl.classList.add('hidden');
+            if (passInput) passInput.value = '';
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                if (passInput) passInput.focus();
+            }
+        }
+
+        function closeOwnerLogoutModal() {
+            const modal = document.getElementById('ownerLogoutModal');
+            if (modal) {
+                modal.classList.remove('flex');
+                modal.classList.add('hidden');
+            }
+        }
+
+        function handleConfirmOwnerLogout(e) {
+            e.preventDefault();
+            const pass = document.getElementById('inputOwnerLogoutPass').value;
+            const errEl = document.getElementById('errorOwnerLogoutMsg');
+
+            if (pass === OWNER_CREDENTIALS.password) {
+                sessionStorage.removeItem('owner_logged_in');
+                closeOwnerLogoutModal();
+                document.getElementById('ownerContent').style.display = 'none';
+                document.getElementById('ownerUser').value = '';
+                document.getElementById('ownerPass').value = '';
+                const errLoginEl = document.getElementById('ownerLoginError');
+                if (errLoginEl) errLoginEl.remove();
+                document.getElementById('ownerLoginModal').style.display = 'flex';
+                alert('✅ Portal Pemilik GOR berhasil dikunci dan dilogout dengan aman.');
+            } else {
+                if (errEl) errEl.classList.remove('hidden');
+                document.getElementById('inputOwnerLogoutPass').value = '';
+                document.getElementById('inputOwnerLogoutPass').focus();
+            }
         }
 
         // Inisialisasi Data Sampel Kaya Rentang Tanggal (Mei, Juni, Juli, dst.)

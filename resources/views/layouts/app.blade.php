@@ -252,12 +252,18 @@
                 <form onsubmit="handleUnifiedMemberSubmit(event)" class="space-y-4">
                     @csrf
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Nama / WhatsApp / Email</label>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Nama / WhatsApp / Email Member</label>
                         <input type="text" id="inputMemberName" required placeholder="Contoh: Budi Santoso" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-tosca-500 focus:bg-white focus:ring-2 focus:ring-tosca-400/20">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Password</label>
-                        <input type="password" required placeholder="••••••••" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-tosca-500 focus:bg-white focus:ring-2 focus:ring-tosca-400/20">
+                        <div class="flex items-center justify-between mb-1">
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Password Member</label>
+                            <span class="text-[10px] text-tosca-600 font-semibold">*Default: member123</span>
+                        </div>
+                        <input type="password" id="inputMemberPass" required placeholder="••••••••" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-tosca-500 focus:bg-white focus:ring-2 focus:ring-tosca-400/20">
+                    </div>
+                    <div id="errorMemberMsg" class="hidden p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold">
+                        ❌ Password member salah! Gunakan password member yang benar (Default: <strong>member123</strong>).
                     </div>
                     <button type="submit" class="w-full py-3 bg-gradient-to-r from-tosca-500 via-cyan-600 to-blue-600 hover:opacity-95 text-white font-bold rounded-xl text-xs uppercase tracking-wider shadow-lg shadow-tosca-500/25 transition-all">
                         MASUK SEBAGAI MEMBER
@@ -379,6 +385,37 @@
         </div>
     </div>
 
+    <!-- MODAL KONFIRMASI LOGOUT MEMBER (WAJIB PASSWORD DEMI KEAMANAN) -->
+    <div id="memberLogoutModal" class="fixed inset-0 bg-navy-950/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-3xl p-6 sm:p-7 max-w-sm w-full border border-slate-200 shadow-2xl relative text-center space-y-4">
+            <div class="w-12 h-12 bg-amber-50 border border-amber-200 text-amber-600 rounded-2xl flex items-center justify-center mx-auto shadow-xs">
+                <i class="fa-solid fa-lock text-xl"></i>
+            </div>
+            <div>
+                <h3 class="text-base font-black text-navy-950">Konfirmasi Keluar Akun Member</h3>
+                <p class="text-xs text-slate-500 mt-1">Demi keamanan akun, silakan masukkan password akun member untuk mengakhiri sesi.</p>
+            </div>
+            <form onsubmit="handleConfirmMemberLogout(event)" class="space-y-3 text-left">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Password Member</label>
+                    <input type="password" id="inputMemberLogoutPass" required placeholder="Masukkan password member" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-tosca-500 focus:bg-white focus:ring-2 focus:ring-tosca-400/20">
+                    <span class="text-[10px] text-slate-400 mt-0.5 block">*Default: <strong>member123</strong></span>
+                </div>
+                <div id="errorMemberLogoutMsg" class="hidden p-2 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-[11px] font-semibold">
+                    ❌ Password salah! Sesi member tetap aktif demi keamanan.
+                </div>
+                <div class="flex items-center gap-2 pt-1">
+                    <button type="button" onclick="closeMemberLogoutModal()" class="w-1/2 py-2.5 rounded-xl text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-all">
+                        Batal
+                    </button>
+                    <button type="submit" class="w-1/2 py-2.5 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-rose-600 to-rose-700 hover:opacity-95 shadow-md shadow-rose-600/25 transition-all">
+                        Konfirmasi Keluar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Footer Gradasi Navy -->
     <footer class="bg-gradient-to-r from-navy-950 via-slate-900 to-navy-900 text-slate-400 py-6 border-t border-slate-800 mt-12">
         <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-3 text-center md:text-left">
@@ -448,12 +485,29 @@
             document.getElementById('loginFormOwner').classList.add('hidden');
         }
 
-        // Handle Login Member
+        // Handle Login Member (Wajib Password demi keamanan)
         function handleUnifiedMemberSubmit(e) {
             e.preventDefault();
             const inputVal = document.getElementById('inputMemberName').value.trim() || "Budi Santoso";
+            const inputPass = document.getElementById('inputMemberPass').value;
+            const errEl = document.getElementById('errorMemberMsg');
+
+            // Validasi password member (Default: member123 atau sesuai password yang tersimpan)
+            const savedPass = localStorage.getItem('syafea_member_pass') || 'member123';
+            if (inputPass !== savedPass && inputPass !== 'member123') {
+                if (errEl) errEl.classList.remove('hidden');
+                document.getElementById('inputMemberPass').value = '';
+                document.getElementById('inputMemberPass').focus();
+                return;
+            }
+
+            if (errEl) errEl.classList.add('hidden');
             localStorage.setItem('syafea_member', inputVal);
+            localStorage.setItem('syafea_member_pass', inputPass);
             activateMemberUI(inputVal);
+            if (typeof renderDateStrip === "function") {
+                renderDateStrip();
+            }
             if (typeof renderScheduleTable === "function") {
                 renderScheduleTable();
             }
@@ -522,8 +576,46 @@
         }
 
         function logoutMember() {
-            localStorage.removeItem('syafea_member');
-            location.reload();
+            openMemberLogoutModal();
+        }
+
+        function openMemberLogoutModal() {
+            const modal = document.getElementById('memberLogoutModal');
+            const passInput = document.getElementById('inputMemberLogoutPass');
+            const errEl = document.getElementById('errorMemberLogoutMsg');
+            if (errEl) errEl.classList.add('hidden');
+            if (passInput) passInput.value = '';
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                if (passInput) passInput.focus();
+            }
+        }
+
+        function closeMemberLogoutModal() {
+            const modal = document.getElementById('memberLogoutModal');
+            if (modal) {
+                modal.classList.remove('flex');
+                modal.classList.add('hidden');
+            }
+        }
+
+        function handleConfirmMemberLogout(e) {
+            e.preventDefault();
+            const passInput = document.getElementById('inputMemberLogoutPass').value;
+            const errEl = document.getElementById('errorMemberLogoutMsg');
+            const expectedPass = localStorage.getItem('syafea_member_pass') || 'member123';
+
+            if (passInput === expectedPass || passInput === 'member123') {
+                localStorage.removeItem('syafea_member');
+                localStorage.removeItem('syafea_member_pass');
+                alert('✅ Berhasil keluar dari akun Member Syafea dengan aman.');
+                location.reload();
+            } else {
+                if (errEl) errEl.classList.remove('hidden');
+                document.getElementById('inputMemberLogoutPass').value = '';
+                document.getElementById('inputMemberLogoutPass').focus();
+            }
         }
 
         function openHistoryModal() {
