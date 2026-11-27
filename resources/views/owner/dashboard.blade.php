@@ -271,6 +271,7 @@
                                     <th class="py-3.5 px-4">Jadwal Sewa Lapangan</th>
                                     <th class="py-3.5 px-4">Nominal</th>
                                     <th class="py-3.5 px-4">Status Verifikasi</th>
+                                    <th class="py-3.5 px-4">Admin Penanggung Jawab</th>
                                 </tr>
                             </thead>
                             <tbody id="ownerHistoryTableBody" class="divide-y divide-slate-100 font-medium text-slate-700">
@@ -359,7 +360,8 @@
                     type: "Member Syafea",
                     price: "Rp 50.000",
                     method: "QRIS",
-                    status: "Aktif / Terverifikasi"
+                    status: "Aktif / Terverifikasi",
+                    verified_by: "Ariel Arendra"
                 },
                 {
                     id: "#GOR-1022",
@@ -369,7 +371,8 @@
                     type: "Member Syafea",
                     price: "Rp 100.000",
                     method: "TRANSFER BANK BCA",
-                    status: "Aktif / Terverifikasi"
+                    status: "Aktif / Terverifikasi",
+                    verified_by: "Ariel Arendra"
                 },
                 {
                     id: "#GOR-1033",
@@ -379,7 +382,8 @@
                     type: "Tamu (Regular)",
                     price: "Rp 150.000",
                     method: "QRIS",
-                    status: "Aktif / Terverifikasi"
+                    status: "Aktif / Terverifikasi",
+                    verified_by: "Ariel Arendra"
                 },
                 {
                     id: "#GOR-1044",
@@ -389,7 +393,8 @@
                     type: "Tamu (Regular)",
                     price: "Rp 50.000",
                     method: "TRANSFER BANK BCA",
-                    status: "Aktif / Terverifikasi"
+                    status: "Aktif / Terverifikasi",
+                    verified_by: "Ariel Arendra"
                 },
                 {
                     id: "#GOR-1055",
@@ -399,7 +404,8 @@
                     type: "Member Syafea",
                     price: "Rp 100.000",
                     method: "QRIS",
-                    status: "Aktif / Terverifikasi"
+                    status: "Aktif / Terverifikasi",
+                    verified_by: "Ariel Arendra"
                 },
                 {
                     id: "#GOR-1066",
@@ -409,7 +415,8 @@
                     type: "Member Syafea",
                     price: "Rp 100.000",
                     method: "MANDIRI TRANSFER",
-                    status: "Aktif / Terverifikasi"
+                    status: "Aktif / Terverifikasi",
+                    verified_by: "Ariel Arendra"
                 },
                 {
                     id: "#GOR-1077",
@@ -419,7 +426,8 @@
                     type: "Member Syafea",
                     price: "Rp 150.000",
                     method: "QRIS",
-                    status: "Aktif / Terverifikasi"
+                    status: "Aktif / Terverifikasi",
+                    verified_by: "Ariel Arendra"
                 },
                 {
                     id: "#GOR-8821",
@@ -429,7 +437,8 @@
                     type: "Member Syafea",
                     price: "Rp 50.000",
                     method: "QRIS",
-                    status: "Aktif / Terverifikasi"
+                    status: "Aktif / Terverifikasi",
+                    verified_by: "Ariel Arendra"
                 }
             ];
 
@@ -594,6 +603,8 @@
                     badgeClass = 'bg-rose-50 text-rose-700 border border-rose-200';
                 }
 
+                const adminResponsible = item.verified_by || (isVerified ? 'Ariel Arendra' : null);
+
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50 transition-colors">
                         <td class="py-3.5 px-4 font-bold text-navy-950">${item.id}</td>
@@ -607,6 +618,15 @@
                                 ${item.status}
                             </span>
                         </td>
+                        <td class="py-3.5 px-4">
+                            ${adminResponsible ? `
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-bold bg-cyan-50 text-cyan-800 border border-cyan-200 shadow-2xs">
+                                    <i class="fa-solid fa-user-shield text-cyan-600"></i> ${adminResponsible}
+                                </span>
+                            ` : `
+                                <span class="text-xs text-slate-400 italic">Belum Diverifikasi</span>
+                            `}
+                        </td>
                     </tr>
                 `;
             });
@@ -614,7 +634,7 @@
             if (ownerFilteredHistory.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="5" class="py-8 text-center text-slate-400 italic">
+                        <td colspan="6" class="py-8 text-center text-slate-400 italic">
                             <i class="fa-regular fa-calendar-xmark text-2xl block mb-1 text-slate-300"></i>
                             Tidak ada data transaksi pada rentang tanggal yang dipilih.
                         </td>
@@ -764,7 +784,8 @@
                     "Jadwal Sewa Lapangan",
                     "Metode Pembayaran",
                     "Nominal (Rp)",
-                    "Status Verifikasi"
+                    "Status Verifikasi",
+                    "Admin Penanggung Jawab"
                 ]
             ];
 
@@ -778,6 +799,8 @@
                     totalOmzetTerverifikasi += numericPrice;
                 }
 
+                const adminResponsible = item.verified_by || (item.status && item.status.includes('Terverifikasi') ? 'Ariel Arendra' : '-');
+
                 dataRows.push([
                     idx + 1,
                     item.id,
@@ -786,15 +809,16 @@
                     item.schedule,
                     (item.method || 'QRIS').toUpperCase(),
                     numericPrice,
-                    item.status
+                    item.status,
+                    adminResponsible
                 ]);
             });
 
             // Baris Ringkasan Akumulasi
             dataRows.push([]); // Baris kosong
-            dataRows.push(["", "", "", "", "", "TOTAL PENDAPATAN TERVERIFIKASI (OMZET)", totalOmzetTerverifikasi, ""]);
-            dataRows.push(["", "", "", "", "", "TOTAL NOMINAL SEMUA TRANSAKSI", totalSemuaTransaksi, ""]);
-            dataRows.push(["", "", "", "", "", "JUMLAH TOTAL TRANSAKSI", ownerFilteredHistory.length + " Transaksi", ""]);
+            dataRows.push(["", "", "", "", "", "TOTAL PENDAPATAN TERVERIFIKASI (OMZET)", totalOmzetTerverifikasi, "", ""]);
+            dataRows.push(["", "", "", "", "", "TOTAL NOMINAL SEMUA TRANSAKSI", totalSemuaTransaksi, "", ""]);
+            dataRows.push(["", "", "", "", "", "JUMLAH TOTAL TRANSAKSI", ownerFilteredHistory.length + " Transaksi", "", ""]);
 
             // Gunakan SheetJS jika pustaka terhubung
             if (typeof XLSX !== "undefined") {
@@ -809,7 +833,8 @@
                     { wch: 32 }, // Jadwal
                     { wch: 22 }, // Metode
                     { wch: 20 }, // Nominal
-                    { wch: 26 }  // Status Verifikasi
+                    { wch: 26 }, // Status Verifikasi
+                    { wch: 26 }  // Admin Penanggung Jawab
                 ];
 
                 const wb = XLSX.utils.book_new();

@@ -676,11 +676,18 @@
                         <div class="row"><span class="label">Jadwal Sewa</span><span class="value">${item.schedule}</span></div>
                         <div class="row"><span class="label">Metode Pembayaran</span><span class="value">${(item.method || 'QRIS').toUpperCase()}</span></div>
                         <div class="row"><span class="label">Status Verifikasi</span><span class="value" style="color:#0f766e;">${item.status}</span></div>
+                        <div class="row"><span class="label">Admin Verifikator</span><span class="value" style="color:#2563eb;">${item.verified_by || 'Ariel Arendra'}</span></div>
                     </div>
 
                     <div class="total-box">
                         <span>TOTAL PEMBAYARAN</span>
                         <span>${item.price}</span>
+                    </div>
+
+                    <div style="margin-top: 20px; text-align: right; font-size: 11px;">
+                        <div>Admin yang Bertanggung Jawab:</div>
+                        <div style="font-weight: bold; margin-top: 25px; text-decoration: underline;">${item.verified_by || 'Ariel Arendra'}</div>
+                        <div style="font-size: 10px; color: #94a3b8;">Admin Pengelola Mini GOR Syafea</div>
                     </div>
 
                     <div class="footer">

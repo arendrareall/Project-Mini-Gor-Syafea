@@ -439,11 +439,18 @@
                     <div class="row"><span class="label">Jadwal Sewa</span><span class="value">${lastBookingReceipt.schedule}</span></div>
                     <div class="row"><span class="label">Metode Pembayaran</span><span class="value">${lastBookingReceipt.method.toUpperCase()}</span></div>
                     <div class="row"><span class="label">Status Verifikasi</span><span class="value" style="color:#0f766e;">${lastBookingReceipt.status}</span></div>
+                    <div class="row"><span class="label">Admin Penanggung Jawab</span><span class="value" style="color:#2563eb;">Ariel Arendra (Admin Pengelola)</span></div>
                 </div>
 
                 <div class="total-box">
                     <span>TOTAL PEMBAYARAN</span>
                     <span>${lastBookingReceipt.price}</span>
+                </div>
+
+                <div style="margin-top: 20px; text-align: right; font-size: 11px;">
+                    <div>Petugas Penanggung Jawab:</div>
+                    <div style="font-weight: bold; margin-top: 25px; text-decoration: underline;">Ariel Arendra</div>
+                    <div style="font-size: 10px; color: #94a3b8;">Admin Pengelola Mini GOR Syafea</div>
                 </div>
 
                 <div class="footer">

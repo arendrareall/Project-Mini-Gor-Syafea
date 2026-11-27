@@ -44,30 +44,59 @@
 
     <!-- KONTROL KHUSUS MEMBER: PANEL CUSTOM JADWAL -->
     <div id="memberScheduleControl" class="hidden white-card p-5 sm:p-6 border border-tosca-200 bg-gradient-to-r from-tosca-50/50 to-cyan-50/50 glow-effect-tosca">
-        <h4 class="text-sm font-bold text-navy-950 flex items-center gap-2 mb-1">
-            <i class="fa-solid fa-sliders text-tosca-600"></i> Panel Custom Jadwal Khusus Member
-        </h4>
-        <p class="text-xs text-slate-600 mb-4">Sebagai member terdaftar, Anda memiliki hak istimewa mengatur tanggal dan durasi jam sewa secara fleksibel.</p>
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+            <div>
+                <h4 class="text-sm font-bold text-navy-950 flex items-center gap-2">
+                    <i class="fa-solid fa-crown text-amber-500"></i> Benefit Member: Custom Durasi Jam & Bebas Pilih Tanggal
+                </h4>
+                <p class="text-xs text-slate-600">Member bebas memilih durasi 1 jam, 2 jam, atau 3 jam serta dapat memesan tanggal berapapun (tanpa batasan 7 hari).</p>
+            </div>
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-tosca-100 text-tosca-800 border border-tosca-300 w-fit">
+                <i class="fa-solid fa-tag text-tosca-600"></i> Tarif Spesial Member Aktif
+            </span>
+        </div>
         
         <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
             <div class="md:col-span-4">
-                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Pilih Tanggal Sewa</label>
-                <input type="date" id="customDate" value="{{ date('Y-m-d') }}" class="w-full px-3.5 py-2 bg-white border border-slate-300 rounded-xl text-xs font-medium focus:outline-none focus:border-tosca-500 focus:ring-2 focus:ring-tosca-400/20">
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Pilih Tanggal Sewa (Bebas Tanggal)</label>
+                <input type="date" id="customDate" value="{{ date('Y-m-d') }}" class="w-full px-3.5 py-2 bg-white border border-slate-300 rounded-xl text-xs font-medium focus:outline-none focus:border-tosca-500 focus:ring-2 focus:ring-tosca-400/20 cursor-pointer">
             </div>
             <div class="md:col-span-5">
-                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Pilih Durasi / Jam Sewa</label>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Pilih Durasi Jam Main</label>
                 <select id="customTime" class="w-full px-3.5 py-2 bg-white border border-slate-300 rounded-xl text-xs font-medium focus:outline-none focus:border-tosca-500 focus:ring-2 focus:ring-tosca-400/20 cursor-pointer">
-                    <option value="08:00 - 11:00 (Paket 3 Jam)">Paket 3 Jam (08:00 - 11:00)</option>
-                    <option value="13:00 - 16:00 (Paket 3 Jam)">Paket 3 Jam (13:00 - 16:00)</option>
-                    <option value="16:00 - 19:00 (Paket 3 Jam)">Paket 3 Jam (16:00 - 19:00)</option>
-                    <option value="19:00 - 22:00 (Paket 3 Jam)">Paket 3 Jam (19:00 - 22:00)</option>
-                    <option value="08:00 - 09:00 (Per Jam)">Per Jam (08:00 - 09:00)</option>
-                    <option value="09:00 - 10:00 (Per Jam)">Per Jam (09:00 - 10:00)</option>
+                    <optgroup label="⚡ Pilihan 1 Jam (Khusus Member: Rp 15.000)">
+                        <option value="08:00 - 09:00 (1 Jam)">08:00 - 09:00 (1 Jam)</option>
+                        <option value="09:00 - 10:00 (1 Jam)">09:00 - 10:00 (1 Jam)</option>
+                        <option value="10:00 - 11:00 (1 Jam)">10:00 - 11:00 (1 Jam)</option>
+                        <option value="13:00 - 14:00 (1 Jam)">13:00 - 14:00 (1 Jam)</option>
+                        <option value="14:00 - 15:00 (1 Jam)">14:00 - 15:00 (1 Jam)</option>
+                        <option value="15:00 - 16:00 (1 Jam)">15:00 - 16:00 (1 Jam)</option>
+                        <option value="16:00 - 17:00 (1 Jam)">16:00 - 17:00 (1 Jam)</option>
+                        <option value="17:00 - 18:00 (1 Jam)">17:00 - 18:00 (1 Jam)</option>
+                        <option value="19:00 - 20:00 (1 Jam)">19:00 - 20:00 (1 Jam)</option>
+                        <option value="20:00 - 21:00 (1 Jam)">20:00 - 21:00 (1 Jam)</option>
+                        <option value="21:00 - 22:00 (1 Jam)">21:00 - 22:00 (1 Jam)</option>
+                    </optgroup>
+                    <optgroup label="🔥 Pilihan 2 Jam (Khusus Member: Rp 28.000)">
+                        <option value="08:00 - 10:00 (2 Jam)">08:00 - 10:00 (2 Jam)</option>
+                        <option value="10:00 - 12:00 (2 Jam)">10:00 - 12:00 (2 Jam)</option>
+                        <option value="13:00 - 15:00 (2 Jam)">13:00 - 15:00 (2 Jam)</option>
+                        <option value="15:00 - 17:00 (2 Jam)">15:00 - 17:00 (2 Jam)</option>
+                        <option value="17:00 - 19:00 (2 Jam)">17:00 - 19:00 (2 Jam)</option>
+                        <option value="19:00 - 21:00 (2 Jam)">19:00 - 21:00 (2 Jam)</option>
+                        <option value="20:00 - 22:00 (2 Jam)">20:00 - 22:00 (2 Jam)</option>
+                    </optgroup>
+                    <optgroup label="⭐ Pilihan 3 Jam Hemat (Khusus Member: Rp 40.000)">
+                        <option value="08:00 - 11:00 (Paket 3 Jam)" selected>08:00 - 11:00 (Paket 3 Jam)</option>
+                        <option value="13:00 - 16:00 (Paket 3 Jam)">13:00 - 16:00 (Paket 3 Jam)</option>
+                        <option value="16:00 - 19:00 (Paket 3 Jam)">16:00 - 19:00 (Paket 3 Jam)</option>
+                        <option value="19:00 - 22:00 (Paket 3 Jam)">19:00 - 22:00 (Paket 3 Jam)</option>
+                    </optgroup>
                 </select>
             </div>
             <div class="md:col-span-3 flex items-end">
                 <button type="button" onclick="applyCustomSchedule()" class="w-full py-2.5 bg-gradient-to-r from-tosca-500 via-cyan-600 to-blue-600 hover:opacity-95 text-white font-bold rounded-xl text-xs uppercase tracking-wider shadow-md shadow-tosca-500/25 transition-all flex items-center justify-center gap-1.5">
-                    <i class="fa-solid fa-check"></i> Terapkan Jadwal
+                    <i class="fa-solid fa-check"></i> Pesan Jadwal Custom
                 </button>
             </div>
         </div>
@@ -84,11 +113,14 @@
             </div>
             
             <!-- FILTER TANGGAL TABEL -->
-            <div class="flex items-center gap-2 bg-white px-3 py-2 rounded-xl border border-slate-200 shadow-sm w-fit">
-                <span class="text-xs font-bold text-slate-600 whitespace-nowrap flex items-center gap-1.5">
-                    <i class="fa-regular fa-calendar text-tosca-600"></i> Tanggal Main:
-                </span>
-                <input type="date" id="tableDateFilter" value="{{ date('Y-m-d') }}" onchange="renderScheduleTable()" class="text-xs font-bold text-navy-950 bg-slate-50 px-2 py-1 rounded-lg border-0 focus:outline-none cursor-pointer">
+            <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+                <div class="flex items-center gap-2 bg-white px-3 py-2 rounded-xl border border-slate-200 shadow-sm w-fit">
+                    <span class="text-xs font-bold text-slate-600 whitespace-nowrap flex items-center gap-1.5">
+                        <i class="fa-regular fa-calendar text-tosca-600"></i> Tanggal Main:
+                    </span>
+                    <input type="date" id="tableDateFilter" value="{{ date('Y-m-d') }}" onchange="renderScheduleTable()" class="text-xs font-bold text-navy-950 bg-slate-50 px-2 py-1 rounded-lg border-0 focus:outline-none cursor-pointer">
+                </div>
+                <div id="bookingLimitBadge"></div>
             </div>
         </div>
 
@@ -132,11 +164,54 @@
     });
 
     function renderScheduleTable() {
-        const dateInput = document.getElementById('tableDateFilter').value;
+        const dateInputEl = document.getElementById('tableDateFilter');
+        const dateInput = dateInputEl.value;
         const formattedDate = dateInput ? dateInput.split('-').reverse().join('-') : "{{ date('d-m-Y') }}";
         const tbody = document.getElementById('scheduleTableBody');
         const isMember = localStorage.getItem('syafea_member');
+        const limitBadge = document.getElementById('bookingLimitBadge');
         let history = JSON.parse(localStorage.getItem('syafea_history')) || [];
+
+        // Hitung batas 7 hari untuk Tamu / Non-Member
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const maxGuest = new Date(today);
+        maxGuest.setDate(today.getDate() + 7);
+
+        const formatYMD = (d) => {
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${y}-${m}-${day}`;
+        };
+
+        const chosenDate = dateInput ? new Date(dateInput + 'T00:00:00') : today;
+        let isOutOfGuestLimit = false;
+
+        if (isMember) {
+            // Member: Bebas booking tanggal berapapun
+            dateInputEl.removeAttribute('min');
+            dateInputEl.removeAttribute('max');
+            if (limitBadge) {
+                limitBadge.innerHTML = `<span class="inline-flex items-center gap-1.5 text-[11px] font-bold text-tosca-700 bg-tosca-50 border border-tosca-200 px-3 py-1.5 rounded-xl"><i class="fa-solid fa-crown text-amber-500"></i> Bebas Pilih Tanggal (Benefit Member)</span>`;
+            }
+        } else {
+            // Tamu: Hanya bisa booking seminggu ke depan (0 s/d 7 hari dari hari ini)
+            dateInputEl.min = formatYMD(today);
+            dateInputEl.max = formatYMD(maxGuest);
+
+            if (chosenDate < today || chosenDate > maxGuest) {
+                isOutOfGuestLimit = true;
+            }
+
+            if (limitBadge) {
+                if (isOutOfGuestLimit) {
+                    limitBadge.innerHTML = `<span class="inline-flex items-center gap-1.5 text-[11px] font-bold text-rose-700 bg-rose-50 border border-rose-200 px-3 py-1.5 rounded-xl"><i class="fa-solid fa-triangle-exclamation"></i> Tanggal Terkunci: Tamu hanya bisa booking maks 7 hari ke depan!</span>`;
+                } else {
+                    limitBadge.innerHTML = `<span class="inline-flex items-center gap-1.5 text-[11px] font-bold text-amber-700 bg-amber-50 border border-amber-200 px-3 py-1.5 rounded-xl"><i class="fa-solid fa-clock"></i> Akses Tamu: Booking tersedia hingga ${maxGuest.toLocaleDateString('id-ID')} (7 hari)</span>`;
+                }
+            }
+        }
 
         tbody.innerHTML = "";
 
@@ -160,16 +235,22 @@
                     : `<span class="font-bold text-navy-950">Rp 20.000</span> <span class="ml-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-600">Umum</span>`;
             }
 
-            let statusHtml = isBooked 
-                ? `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-600 border border-slate-200"><span class="dot-indicator busy"></span> Penuh</span>`
-                : `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold bg-gradient-to-r from-tosca-50 to-cyan-50 text-tosca-700 border border-tosca-200"><span class="dot-indicator online"></span> Tersedia</span>`;
+            let statusHtml, actionHtml;
 
-            let actionHtml = isBooked
-                ? `<button disabled class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 bg-slate-100 cursor-not-allowed uppercase"><i class="fa-solid fa-lock mr-1"></i> Penuh</button>`
-                : `<button onclick="bookSpecificSlot('${formattedDate}', '${time}', '${priceVal}')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-tosca-500 via-cyan-600 to-blue-600 hover:opacity-95 shadow-sm shadow-tosca-500/25 transition-all uppercase"><i class="fa-solid fa-cart-plus mr-1"></i> PESAN SLOT</button>`;
+            if (isOutOfGuestLimit) {
+                // Di luar batas 7 hari bagi Tamu -> abu-abu dan terkunci
+                statusHtml = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold bg-slate-200 text-slate-500 border border-slate-300"><i class="fa-solid fa-lock mr-1 text-slate-400"></i> Khusus Member</span>`;
+                actionHtml = `<button disabled class="px-3.5 py-1.5 rounded-xl text-xs font-bold text-slate-400 bg-slate-200 cursor-not-allowed uppercase"><i class="fa-solid fa-ban mr-1"></i> Khusus Member</button>`;
+            } else if (isBooked) {
+                statusHtml = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-600 border border-slate-200"><span class="dot-indicator busy"></span> Penuh</span>`;
+                actionHtml = `<button disabled class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 bg-slate-100 cursor-not-allowed uppercase"><i class="fa-solid fa-lock mr-1"></i> Penuh</button>`;
+            } else {
+                statusHtml = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold bg-gradient-to-r from-tosca-50 to-cyan-50 text-tosca-700 border border-tosca-200"><span class="dot-indicator online"></span> Tersedia</span>`;
+                actionHtml = `<button onclick="bookSpecificSlot('${formattedDate}', '${time}', '${priceVal}')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-tosca-500 via-cyan-600 to-blue-600 hover:opacity-95 shadow-sm shadow-tosca-500/25 transition-all uppercase"><i class="fa-solid fa-cart-plus mr-1"></i> PESAN SLOT</button>`;
+            }
 
             tbody.innerHTML += `
-                <tr class="hover:bg-slate-50/80 transition-colors ${isBooked ? 'bg-slate-50/40 opacity-70' : ''}">
+                <tr class="hover:bg-slate-50/80 transition-colors ${isOutOfGuestLimit ? 'bg-slate-100/50 opacity-50' : (isBooked ? 'bg-slate-50/40 opacity-70' : '')}">
                     <td class="py-3.5 px-4"><div class="flex items-center gap-2"><i class="fa-regular fa-calendar-days text-tosca-600"></i><span class="font-bold text-navy-950">${formattedDate}</span></div></td>
                     <td class="py-3.5 px-4"><span class="inline-block px-2.5 py-1 rounded-md bg-slate-100 border border-slate-200 text-slate-800 font-mono text-[11px]">${time}</span></td>
                     <td class="py-3.5 px-4">${priceHtml}</td>
@@ -186,9 +267,14 @@
         const formattedDate = selectedDate.split('-').reverse().join('-');
         
         const isMember = localStorage.getItem('syafea_member');
-        let priceVal = selectedTime.includes("Paket 3 Jam") 
-            ? (isMember ? "Rp 40.000" : "Rp 50.000") 
-            : (isMember ? "Rp 15.000" : "Rp 20.000");
+        let priceVal = "Rp 40.000";
+        if (selectedTime.includes("1 Jam")) {
+            priceVal = isMember ? "Rp 15.000" : "Rp 20.000";
+        } else if (selectedTime.includes("2 Jam")) {
+            priceVal = isMember ? "Rp 28.000" : "Rp 35.000";
+        } else if (selectedTime.includes("3 Jam")) {
+            priceVal = isMember ? "Rp 40.000" : "Rp 50.000";
+        }
 
         if (isScheduleBooked(formattedDate, selectedTime)) {
             alert("❌ Maaf, jadwal pada tanggal dan jam tersebut sudah penuh/dipesan! Silakan pilih jam atau tanggal lain.");
