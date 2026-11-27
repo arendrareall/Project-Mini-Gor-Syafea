@@ -283,6 +283,11 @@
                 <form onsubmit="handleUnifiedAdminSubmit(event)" class="space-y-4">
                     @csrf
                     <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Nama Petugas Admin yang Bertugas</label>
+                        <input type="text" id="inputAdminStaffName" required placeholder="Contoh: Ariel Arendra" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-cyan-500 focus:bg-white focus:ring-2 focus:ring-cyan-400/20">
+                        <span class="text-[10px] text-slate-400 mt-0.5 block">*Nama ini akan terkunci sebagai verifikator resmi dan tercetak di nota.</span>
+                    </div>
+                    <div>
                         <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Username Admin</label>
                         <input type="text" id="inputAdminUser" required placeholder="admin_syafea" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-cyan-500 focus:bg-white focus:ring-2 focus:ring-cyan-400/20">
                     </div>
@@ -458,11 +463,13 @@
         // Handle Login Admin
         function handleUnifiedAdminSubmit(e) {
             e.preventDefault();
+            const staffName = document.getElementById('inputAdminStaffName').value.trim() || 'Ariel Arendra';
             const u = document.getElementById('inputAdminUser').value.trim();
             const p = document.getElementById('inputAdminPass').value;
 
             if (u === CREDENTIALS.admin.user && p === CREDENTIALS.admin.pass) {
                 sessionStorage.setItem('admin_logged_in', 'true');
+                sessionStorage.setItem('admin_staff_name', staffName);
                 window.location.href = CREDENTIALS.admin.redirect;
             } else {
                 document.getElementById('errorAdminMsg').classList.remove('hidden');
