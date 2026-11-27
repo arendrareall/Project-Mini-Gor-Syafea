@@ -5,19 +5,19 @@
 @section('content')
 <div class="space-y-6" id="home">
     
-    <!-- BANNER STATUS PENGUNJUNG (GUEST / MEMBER) -->
-    <div id="bannerStatus" class="bg-gradient-to-r from-navy-950 via-slate-900 to-blue-950 text-white p-4 sm:p-5 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg shadow-navy-950/20 border border-slate-800">
+    <!-- BANNER KHUSUS MEMBER AKTIF (HANYA TAMPIL JIKA LOGIN SEBAGAI MEMBER) -->
+    <div id="memberWelcomeBanner" class="hidden bg-gradient-to-r from-tosca-700 via-cyan-800 to-navy-900 text-white p-4 sm:p-5 rounded-2xl flex-col sm:flex-row items-center justify-between gap-4 shadow-lg shadow-tosca-700/20 border border-tosca-500/30">
         <div class="flex items-center gap-3.5">
-            <div id="bannerIcon" class="w-11 h-11 rounded-xl bg-gradient-to-tr from-tosca-500/20 to-cyan-500/20 text-tosca-400 flex items-center justify-center border border-tosca-500/30">
-                <i class="fa-solid fa-user-clock text-xl"></i>
+            <div class="w-11 h-11 rounded-xl bg-white/15 text-tosca-200 flex items-center justify-center border border-white/20">
+                <i class="fa-solid fa-award text-xl"></i>
             </div>
             <div>
-                <h3 id="bannerTitle" class="text-sm font-bold text-white">Akses Tamu (Penyewa Regular)</h3>
-                <p id="bannerDesc" class="text-xs text-slate-300">Pilih slot jadwal lapangan yang tersedia dan periksa riwayat penyewaan Anda.</p>
+                <h3 id="memberWelcomeTitle" class="text-sm font-bold text-white">Halo, Member Syafea!</h3>
+                <p class="text-xs text-tosca-100">Hak istimewa custom jadwal & tarif diskon member telah aktif untuk akun Anda.</p>
             </div>
         </div>
-        <button type="button" onclick="openUnifiedLoginModal()" id="btnActionBanner" class="px-4 py-2 bg-gradient-to-r from-tosca-500 to-cyan-600 hover:from-tosca-600 hover:to-cyan-700 text-white text-xs font-bold rounded-xl shadow-md shadow-tosca-500/25 transition-all whitespace-nowrap">
-            Masuk / Login Member
+        <button type="button" onclick="openHistoryModal()" class="px-4 py-2 bg-white text-tosca-700 hover:bg-slate-100 text-xs font-bold rounded-xl shadow-sm transition-all whitespace-nowrap">
+            <i class="fa-solid fa-receipt mr-1"></i> Riwayat Pesanan Saya
         </button>
     </div>
 
