@@ -602,6 +602,21 @@
 
             tbody.innerHTML = "";
             userHistory.forEach((item, idx) => {
+                const isRejected = item.status && item.status.includes('Ditolak');
+                const statusClass = isRejected 
+                    ? "bg-rose-50 text-rose-700 border border-rose-200" 
+                    : "bg-blue-50 text-blue-700 border border-blue-200";
+
+                const printButtonHtml = isRejected ? `
+                    <button type="button" disabled class="px-3 py-1.5 bg-slate-100 text-slate-400 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 cursor-not-allowed opacity-60 mx-auto" title="Pesanan ditolak - Nota tidak dapat dicetak">
+                        <i class="fa-solid fa-ban text-rose-400"></i> <span>Ditolak</span>
+                    </button>
+                ` : `
+                    <button type="button" onclick="printReceiptDirect(${idx})" class="px-3 py-1.5 bg-gradient-to-r from-tosca-600 to-cyan-600 hover:opacity-95 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm transition-all" title="Cetak Nota Pembayaran">
+                        <i class="fa-solid fa-print"></i> <span>Cetak Nota</span>
+                    </button>
+                `;
+
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50 transition-colors">
                         <td class="py-3 px-3.5">
@@ -614,12 +629,10 @@
                         </td>
                         <td class="py-3 px-3.5 font-bold text-navy-950">${item.price}</td>
                         <td class="py-3 px-3.5">
-                            <span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">${item.status}</span>
+                            <span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold ${statusClass}">${item.status}</span>
                         </td>
                         <td class="py-3 px-3.5 text-center">
-                            <button type="button" onclick="printReceiptDirect(${idx})" class="px-3 py-1.5 bg-gradient-to-r from-tosca-600 to-cyan-600 hover:opacity-95 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm transition-all" title="Cetak Nota Pembayaran">
-                                <i class="fa-solid fa-print"></i> <span>Cetak Nota</span>
-                            </button>
+                            ${printButtonHtml}
                         </td>
                     </tr>
                 `;
@@ -635,6 +648,12 @@
             if (userHistory.length === 0) userHistory = allHistory;
             const item = userHistory[idx];
             if (!item) return;
+
+            // Validasi: Jika status ditolak, tolak pencetakan nota
+            if (item.status && item.status.includes('Ditolak')) {
+                alert('❌ Mohon maaf, pesanan ini telah DITOLAK oleh admin pengelola sehingga nota pembayaran resmi tidak dapat diterbitkan.');
+                return;
+            }
 
             const printWindow = window.open('', '', 'width=650,height=750');
             printWindow.document.write(`
