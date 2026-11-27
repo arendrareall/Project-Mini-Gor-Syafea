@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('title', 'Mini GOR Syafea - Sewa Lapangan Modern')</title>
+    <title>@yield('title', 'Sistem Informasi Pencatatan Penyewaan Mini GOR Syafea')</title>
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -83,23 +83,23 @@
                     <i class="fa-solid fa-volleyball text-xl"></i>
                 </div>
                 <div>
-                    <span class="text-[10px] uppercase tracking-widest text-brand-600 font-bold block leading-none">Mini GOR</span>
-                    <span class="text-xl font-extrabold text-slate-900 tracking-tight">SYAFEA</span>
+                    <span class="text-[10px] uppercase tracking-widest text-brand-600 font-bold block leading-none">Pencatatan Penyewaan</span>
+                    <span class="text-xl font-extrabold text-slate-900 tracking-tight">MINI GOR SYAFEA</span>
                 </div>
             </a>
 
             <!-- Navigation Bar -->
             <nav class="flex flex-wrap items-center gap-1.5 bg-slate-100 p-1.5 rounded-xl border border-slate-200">
                 <a href="{{ route('booking.index') }}" class="px-3.5 py-2 text-xs font-semibold text-white bg-brand-600 rounded-lg shadow-sm transition-all hover:bg-brand-700 flex items-center gap-2">
-                    <i class="fa-solid fa-house text-xs"></i> Home
+                    <i class="fa-solid fa-house text-xs"></i> Beranda
                 </a>
                 
                 <a href="{{ route('booking.index') }}#jadwal" class="px-3.5 py-2 text-xs font-medium text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-200/70 transition-all flex items-center gap-2">
-                    <i class="fa-solid fa-calendar-days text-xs text-slate-500"></i> Jadwal
+                    <i class="fa-solid fa-calendar-days text-xs text-slate-500"></i> Jadwal Lapangan
                 </a>
                 
                 <button type="button" onclick="openHistoryModal()" class="px-3.5 py-2 text-xs font-medium text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-200/70 transition-all flex items-center gap-2">
-                    <i class="fa-solid fa-clock-rotate-left text-xs text-brand-600"></i> Riwayat Pesanan
+                    <i class="fa-solid fa-clock-rotate-left text-xs text-brand-600"></i> Riwayat Penyewaan
                 </button>
                 
                 <!-- Dynamic Member Auth / Nav Container -->
@@ -124,10 +124,10 @@
 
                 <!-- Role Shortcut Links: Admin & Pemilik -->
                 <div class="flex items-center gap-1 pl-2 border-l border-slate-300">
-                    <a href="{{ route('admin.index') }}" class="px-2.5 py-1.5 text-xs font-medium text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-200/70 transition-all flex items-center gap-1" title="Admin Portal">
+                    <a href="{{ route('admin.index') }}" class="px-2.5 py-1.5 text-xs font-medium text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-200/70 transition-all flex items-center gap-1" title="Portal Admin Pengelola">
                         <i class="fa-solid fa-user-gear text-slate-500 text-xs"></i> Admin
                     </a>
-                    <a href="{{ route('owner.index') }}" class="px-2.5 py-1.5 text-xs font-medium text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-200/70 transition-all flex items-center gap-1" title="Pemilik Portal">
+                    <a href="{{ route('owner.index') }}" class="px-2.5 py-1.5 text-xs font-medium text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-200/70 transition-all flex items-center gap-1" title="Portal Pemilik GOR">
                         <i class="fa-solid fa-chart-line text-slate-500 text-xs"></i> Pemilik
                     </a>
                 </div>
@@ -176,7 +176,7 @@
                         <i class="fa-solid fa-clock-rotate-left text-xl"></i>
                     </div>
                     <div>
-                        <h3 class="text-lg font-bold text-slate-900">Riwayat Pemesanan Lapangan</h3>
+                        <h3 class="text-lg font-bold text-slate-900">Riwayat Penyewaan Lapangan</h3>
                         <p id="historySubtitle" class="text-xs text-slate-500">Daftar transaksi sewa lapangan Anda</p>
                     </div>
                 </div>
@@ -194,6 +194,7 @@
                             <th class="py-3 px-3.5">Tipe Akun</th>
                             <th class="py-3 px-3.5">Total</th>
                             <th class="py-3 px-3.5">Status</th>
+                            <th class="py-3 px-3.5 text-center">Nota</th>
                         </tr>
                     </thead>
                     <tbody id="historyTableBody" class="divide-y divide-slate-100 font-medium text-slate-700">
@@ -219,7 +220,7 @@
                 <i class="fa-solid fa-user-shield text-2xl"></i>
             </div>
             <h3 class="text-xl font-black text-slate-900 mb-1">Login Member Syafea</h3>
-            <p class="text-xs text-slate-500 mb-5">Nikmati potongan tarif khusus member resmi</p>
+            <p class="text-xs text-slate-500 mb-5">Nikmati hak istimewa custom jadwal dan potongan tarif khusus</p>
 
             <form onsubmit="handleMemberLogin(event)" class="space-y-4 text-left">
                 @csrf
@@ -247,7 +248,7 @@
                 </div>
                 <span class="text-white font-bold text-sm">Mini GOR Syafea</span>
             </div>
-            <p class="text-xs text-slate-500">&copy; {{ date('Y') }} Mini GOR Syafea. Built with Laravel & Tailwind CSS.</p>
+            <p class="text-xs text-slate-500">&copy; {{ date('Y') }} Sistem Informasi Pencatatan Penyewaan Mini GOR Syafea. Kelompok 404 Founders.</p>
         </div>
     </footer>
 
@@ -359,11 +360,11 @@
 
             tbody.innerHTML = "";
             if (userHistory.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="py-6 text-center text-slate-400 italic">Belum ada riwayat pesanan untuk akun ini.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-slate-400 italic">Belum ada riwayat pesanan untuk akun ini.</td></tr>`;
                 return;
             }
 
-            userHistory.forEach(item => {
+            userHistory.forEach((item, idx) => {
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50 transition-colors">
                         <td class="py-3 px-3.5"><span class="font-bold text-slate-900">${item.id}</span><br><span class="text-[10px] text-slate-400">${item.date}</span></td>
@@ -371,9 +372,75 @@
                         <td class="py-3 px-3.5"><span class="inline-block px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">${item.type}</span></td>
                         <td class="py-3 px-3.5 font-bold text-slate-900">${item.price}</td>
                         <td class="py-3 px-3.5"><span class="inline-block px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">${item.status}</span></td>
+                        <td class="py-3 px-3.5 text-center">
+                            <button type="button" onclick="printReceiptDirect(${idx})" class="px-2 py-1 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-md text-[10px] font-bold text-slate-700" title="Cetak Nota">
+                                <i class="fa-solid fa-print"></i>
+                            </button>
+                        </td>
                     </tr>
                 `;
             });
+        }
+
+        function printReceiptDirect(idx) {
+            const isMember = localStorage.getItem('syafea_member');
+            let allHistory = JSON.parse(localStorage.getItem('syafea_history')) || [];
+            let userHistory = allHistory.filter(item => {
+                return isMember ? item.type.includes(isMember) : item.type.includes("Tamu");
+            });
+            const item = userHistory[idx];
+            if (!item) return;
+
+            const printWindow = window.open('', '', 'width=650,height=750');
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>Nota Pembayaran - ${item.id}</title>
+                    <style>
+                        body { font-family: 'Inter', -apple-system, sans-serif, Arial; padding: 30px; color: #1e293b; max-width: 500px; margin: auto; }
+                        .header { text-align: center; border-bottom: 2px dashed #94a3b8; padding-bottom: 16px; margin-bottom: 20px; }
+                        .brand { font-size: 22px; font-weight: 900; letter-spacing: -0.5px; color: #0f172a; margin: 0; }
+                        .desc { font-size: 11px; color: #64748b; margin-top: 4px; }
+                        .badge { display: inline-block; padding: 4px 12px; background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; border-radius: 999px; font-size: 10px; font-weight: bold; margin-top: 10px; letter-spacing: 1px; }
+                        .details { margin: 16px 0; }
+                        .row { display: flex; justify-content: space-between; font-size: 13px; margin: 8px 0; }
+                        .label { color: #64748b; }
+                        .value { font-weight: bold; color: #0f172a; text-align: right; }
+                        .total-box { border-top: 2px dashed #94a3b8; border-bottom: 2px dashed #94a3b8; padding: 14px 0; margin-top: 18px; display: flex; justify-content: space-between; font-size: 16px; font-weight: 900; color: #2563eb; }
+                        .footer { text-align: center; margin-top: 30px; font-size: 11px; color: #94a3b8; line-height: 1.5; }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <h1 class="brand">MINI GOR SYAFEA</h1>
+                        <p class="desc">Sistem Informasi Pencatatan Penyewaan Lapangan<br>Kelompok 404 Founders - Telkom University</p>
+                        <span class="badge">BUKTI RESMI TRANSAKSI PENYEWAAN</span>
+                    </div>
+                    
+                    <div class="details">
+                        <div class="row"><span class="label">No. Transaksi</span><span class="value">${item.id}</span></div>
+                        <div class="row"><span class="label">Tanggal Booking</span><span class="value">${item.date}</span></div>
+                        <div class="row"><span class="label">Nama Penyewa</span><span class="value">${item.name || (isMember || "Penyewa")}</span></div>
+                        <div class="row"><span class="label">Kategori</span><span class="value">${item.type}</span></div>
+                        <div class="row"><span class="label">Jadwal Sewa</span><span class="value">${item.schedule}</span></div>
+                        <div class="row"><span class="label">Metode Pembayaran</span><span class="value">${(item.method || 'QRIS').toUpperCase()}</span></div>
+                        <div class="row"><span class="label">Status Verifikasi</span><span class="value" style="color:#059669;">${item.status}</span></div>
+                    </div>
+
+                    <div class="total-box">
+                        <span>TOTAL PEMBAYARAN</span>
+                        <span>${item.price}</span>
+                    </div>
+
+                    <div class="footer">
+                        <p>Terima kasih telah melakukan pemesanan di Mini GOR Syafea.</p>
+                        <p>Simpan nota ini dan tunjukkan kepada petugas saat check-in di lapangan.</p>
+                    </div>
+                    <script>window.print();<\/script>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
         }
     </script>
 

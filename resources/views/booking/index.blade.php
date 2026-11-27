@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Jadwal & Sewa Lapangan - Mini GOR Syafea')
+@section('title', 'Jadwal & Pemesanan Lapangan - Mini GOR Syafea')
 
 @section('content')
 <div class="space-y-6" id="home">
@@ -12,8 +12,8 @@
                 <i class="fa-solid fa-user-clock text-xl"></i>
             </div>
             <div>
-                <h3 id="bannerTitle" class="text-sm font-bold text-white">Akses Tamu (Regular)</h3>
-                <p id="bannerDesc" class="text-xs text-slate-300">Anda dapat memesan jadwal yang tersedia dan mengecek riwayat pesanan.</p>
+                <h3 id="bannerTitle" class="text-sm font-bold text-white">Akses Tamu (Penyewa Regular)</h3>
+                <p id="bannerDesc" class="text-xs text-slate-300">Pilih slot jadwal lapangan yang tersedia dan periksa riwayat penyewaan Anda.</p>
             </div>
         </div>
         <button type="button" onclick="openLoginModal()" id="btnActionBanner" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold rounded-xl shadow transition-all whitespace-nowrap">
@@ -25,33 +25,33 @@
     <section class="white-card p-6 sm:p-10 text-center glow-effect-light relative overflow-hidden">
         <div class="relative z-10 max-w-2xl mx-auto space-y-3">
             <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 text-brand-600 border border-brand-100 text-xs font-bold tracking-wide uppercase">
-                <span class="dot-indicator online"></span> Sistem Booking Online Lapangan
+                <span class="dot-indicator online"></span> Sistem Informasi Pencatatan Penyewaan
             </div>
             <h1 class="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight leading-tight">
-                SEWA LAPANGAN <br>
+                PENYEWAAN LAPANGAN <br>
                 <span class="bg-gradient-to-r from-brand-600 to-indigo-600 bg-clip-text text-transparent">MINI GOR SYAFEA</span>
             </h1>
             <p class="text-sm font-medium text-slate-600">
-                <strong class="text-slate-900">Buka Pukul 08.00 - 22.00 WIB</strong> — 
-                <span>Pilih paket atau jam sewa sesuai kebutuhan olahraga Anda.</span>
+                <strong class="text-slate-900">Jam Operasional: 08.00 - 22.00 WIB</strong> — 
+                <span>Pilih paket 3 jam hemat atau per jam sesuai jadwal olahraga Anda.</span>
             </p>
         </div>
     </section>
 
-    <!-- KONTROL KHUSUS MEMBER: PANEL CUSTOM JADWAL -->
+    <!-- KONTROL KHUSUS MEMBER: PANEL CUSTOM JADWAL (Fitur 1.1 / 2.1) -->
     <div id="memberScheduleControl" class="hidden white-card p-5 sm:p-6 border border-brand-200 bg-brand-50/40">
         <h4 class="text-sm font-bold text-slate-900 flex items-center gap-2 mb-1">
-            <i class="fa-solid fa-sliders text-brand-600"></i> Panel Custom Jadwal Member
+            <i class="fa-solid fa-sliders text-brand-600"></i> Panel Custom Jadwal Khusus Member
         </h4>
-        <p class="text-xs text-slate-600 mb-4">Sebagai member resmi, Anda bebas menentukan tanggal dan durasi jam sewa secara fleksibel.</p>
+        <p class="text-xs text-slate-600 mb-4">Sebagai member terdaftar, Anda memiliki hak istimewa mengatur tanggal dan durasi jam sewa secara fleksibel.</p>
         
         <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
             <div class="md:col-span-4">
-                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Pilih Tanggal</label>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Pilih Tanggal Sewa</label>
                 <input type="date" id="customDate" value="{{ date('Y-m-d') }}" class="w-full px-3.5 py-2 bg-white border border-slate-300 rounded-xl text-xs font-medium focus:outline-none focus:border-brand-600">
             </div>
             <div class="md:col-span-5">
-                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Pilih Durasi / Jam</label>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Pilih Durasi / Jam Sewa</label>
                 <select id="customTime" class="w-full px-3.5 py-2 bg-white border border-slate-300 rounded-xl text-xs font-medium focus:outline-none focus:border-brand-600 cursor-pointer">
                     <option value="08:00 - 11:00 (Paket 3 Jam)">Paket 3 Jam (08:00 - 11:00)</option>
                     <option value="13:00 - 16:00 (Paket 3 Jam)">Paket 3 Jam (13:00 - 16:00)</option>
@@ -69,14 +69,14 @@
         </div>
     </div>
 
-    <!-- SECTION JADWAL TERSEDIA & FILTER TANGGAL -->
+    <!-- SECTION JADWAL TERSEDIA & FILTER TANGGAL (Modul 2: Kelola Jadwal & Pemesanan) -->
     <section id="jadwal" class="space-y-4">
         <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
             <div>
                 <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
-                    <i class="fa-solid fa-calendar-check text-brand-600"></i> Cek Ketersediaan & Jadwal
+                    <i class="fa-solid fa-calendar-check text-brand-600"></i> Ketersediaan Jadwal Lapangan
                 </h2>
-                <p class="text-xs text-slate-500">Pilih tanggal untuk melihat ketersediaan slot jam</p>
+                <p class="text-xs text-slate-500">Pilih tanggal untuk melihat ketersediaan slot jam sewa lapangan</p>
             </div>
             
             <!-- FILTER TANGGAL TABEL -->
@@ -94,11 +94,11 @@
                 <table class="w-full text-left text-xs">
                     <thead class="bg-slate-50 text-slate-500 uppercase font-bold tracking-wider border-b border-slate-200">
                         <tr>
-                            <th class="py-3.5 px-4">Tanggal</th>
-                            <th class="py-3.5 px-4">Jam / Paket</th>
-                            <th class="py-3.5 px-4">Harga</th>
-                            <th class="py-3.5 px-4">Status Ketersediaan</th>
-                            <th class="py-3.5 px-4 text-center">Aksi</th>
+                            <th class="py-3.5 px-4">Tanggal Sewa</th>
+                            <th class="py-3.5 px-4">Slot Jam Lapangan</th>
+                            <th class="py-3.5 px-4">Tarif Sewa</th>
+                            <th class="py-3.5 px-4">Status Lapangan</th>
+                            <th class="py-3.5 px-4 text-center">Aksi Pemesanan</th>
                         </tr>
                     </thead>
                     <tbody id="scheduleTableBody" class="divide-y divide-slate-100 font-medium text-slate-700">
