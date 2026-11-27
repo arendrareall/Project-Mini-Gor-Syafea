@@ -558,9 +558,11 @@
                         name: "Budi Santoso",
                         schedule: "{{ date('d-m-Y') }} (08:00 - 11:00)",
                         type: "Member Syafea (Budi Santoso)",
-                        price: "Rp 50.000",
+                        price: "Rp 40.000",
                         method: "QRIS",
-                        status: "Aktif / Terverifikasi"
+                        status: "Pending Verifikasi",
+                        isMember: true,
+                        verified_by: null
                     },
                     {
                         id: "#GOR-5432",
@@ -570,7 +572,9 @@
                         type: "Tamu (Regular)",
                         price: "Rp 50.000",
                         method: "TRANSFER BANK BCA",
-                        status: "Aktif / Terverifikasi"
+                        status: "Pending Verifikasi",
+                        isMember: false,
+                        verified_by: null
                     }
                 ];
                 localStorage.setItem('syafea_history', JSON.stringify(allHistory));

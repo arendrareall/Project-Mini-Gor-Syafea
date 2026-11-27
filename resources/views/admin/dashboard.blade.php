@@ -144,8 +144,11 @@
                 </div>
                 <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
                     <div>
-                        <span class="text-xs font-bold uppercase text-amber-600 block mb-0.5">Menunggu Verifikasi</span>
-                        <h3 id="statPendingOrders" class="text-2xl font-black text-amber-600">0</h3>
+                        <span class="text-xs font-bold uppercase text-amber-600 block mb-0.5">Menunggu ACC Admin</span>
+                        <div class="flex items-baseline gap-2">
+                            <h3 id="statPendingOrders" class="text-2xl font-black text-amber-600">0</h3>
+                            <span id="statMemberPendingSubtext" class="text-[11px] text-amber-700 font-extrabold"></span>
+                        </div>
                     </div>
                     <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold">
                         <i class="fa-solid fa-clock"></i>
@@ -153,7 +156,7 @@
                 </div>
                 <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
                     <div>
-                        <span class="text-xs font-bold uppercase text-tosca-700 block mb-0.5">Pembayaran Terverifikasi</span>
+                        <span class="text-xs font-bold uppercase text-tosca-700 block mb-0.5">Pembayaran Terverifikasi (ACC)</span>
                         <h3 id="statVerifiedOrders" class="text-2xl font-black text-tosca-700">0</h3>
                     </div>
                     <div class="w-10 h-10 rounded-xl bg-tosca-50 text-tosca-600 flex items-center justify-center font-bold">
@@ -166,10 +169,15 @@
             <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                     <div>
-                        <h1 class="text-xl font-bold text-navy-950 flex items-center gap-2">
-                            <i class="fa-solid fa-clipboard-list text-tosca-600"></i> Kelola Penyewaan & Verifikasi Pembayaran
-                        </h1>
-                        <p class="text-xs text-slate-500 mt-1">Daftar transaksi penyewaan lapangan masuk untuk diverifikasi atau diperbarui</p>
+                        <div class="flex flex-wrap items-center gap-2 mb-1">
+                            <h1 class="text-xl font-bold text-navy-950 flex items-center gap-2">
+                                <i class="fa-solid fa-clipboard-list text-tosca-600"></i> Kelola Penyewaan & Verifikasi Pembayaran
+                            </h1>
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-black bg-amber-50 text-amber-800 border border-amber-300">
+                                <i class="fa-solid fa-crown text-amber-500"></i> Prioritas: Booking Member Tampil Paling Atas
+                            </span>
+                        </div>
+                        <p class="text-xs text-slate-500">Seluruh booking wajib di-ACC oleh admin. Pesanan Member otomatis diposisikan paling atas untuk diprioritaskan.</p>
                     </div>
                     <div class="flex items-center gap-2">
                         <input type="date" value="{{ date('Y-m-d') }}" class="px-3 py-1.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-medium focus:outline-none">
@@ -282,11 +290,12 @@
                         date: "{{ date('d-m-Y') }}",
                         name: "Budi Santoso",
                         schedule: "{{ date('d-m-Y') }} (08:00 - 11:00)",
-                        type: "Member Syafea",
-                        price: "Rp 50.000",
+                        type: "Member Syafea (Budi Santoso)",
+                        price: "Rp 40.000",
                         method: "QRIS",
-                        status: "Aktif / Terverifikasi",
-                        verified_by: "Ariel Arendra"
+                        status: "Pending Verifikasi", // Default awal wajib menunggu ACC admin
+                        isMember: true,
+                        verified_by: null
                     },
                     {
                         id: "#GOR-5432",
@@ -297,6 +306,7 @@
                         price: "Rp 50.000",
                         method: "TRANSFER BANK BCA",
                         status: "Pending Verifikasi",
+                        isMember: false,
                         verified_by: null
                     }
                 ];
@@ -306,43 +316,141 @@
             tbody.innerHTML = "";
 
             let pendingCount = 0;
+            let memberPendingCount = 0;
             let verifiedCount = 0;
 
-            history.forEach((item, index) => {
-                const isVerified = item.status && item.status.includes('Terverifikasi');
-                const isRejected = item.status && item.status.includes('Ditolak');
-                if (isVerified) verifiedCount++;
-                else if (item.status && item.status.includes('Pending')) pendingCount++;
+            // Prioritas Urutan Tampil:
+            // 1. Member yang berstatus Pending Verifikasi (Prioritas Utama Paling Atas)
+            // 2. Tamu yang berstatus Pending Verifikasi
+            // 3. Member yang sudah Terverifikasi / Di-ACC
+            // 4. Tamu yang sudah Terverifikasi / Di-ACC
+            // 5. Pesanan Ditolak / Lainnya
+            const getPriorityRank = (item) => {
+                const isMember = !!(item.isMember || (item.type && item.type.toLowerCase().includes('member')));
+                const isPending = !!(item.status && item.status.toLowerCase().includes('pending'));
+                const isVerified = !!(item.status && item.status.includes('Terverifikasi'));
 
-                // Badge warna status
-                let statusBadgeClass = 'bg-amber-50 text-amber-700 border border-amber-200';
-                let dotClass = 'pending';
-                if (isVerified) {
-                    statusBadgeClass = 'bg-tosca-50 text-tosca-700 border border-tosca-200';
-                    dotClass = 'online';
-                } else if (isRejected) {
-                    statusBadgeClass = 'bg-rose-50 text-rose-700 border border-rose-200';
-                    dotClass = 'offline';
+                if (isMember && isPending) return 1; // Prioritas Tertinggi: Member Menunggu ACC (Paling Atas)
+                if (isPending) return 2;              // Tamu Menunggu ACC
+                if (isMember && isVerified) return 3; // Member Selesai di-ACC
+                if (isVerified) return 4;             // Tamu Selesai di-ACC
+                return 5;                             // Ditolak / Lainnya
+            };
+
+            const sortedItems = history.map((item, originalIndex) => ({ item, originalIndex }))
+                .sort((a, b) => {
+                    const rankA = getPriorityRank(a.item);
+                    const rankB = getPriorityRank(b.item);
+                    if (rankA !== rankB) {
+                        return rankA - rankB; // Rank terkecil (1) muncul paling atas
+                    }
+                    return a.originalIndex - b.originalIndex;
+                });
+
+            sortedItems.forEach(({ item, originalIndex }) => {
+                const isMember = !!(item.isMember || (item.type && item.type.toLowerCase().includes('member')));
+                const isPending = !!(item.status && item.status.toLowerCase().includes('pending'));
+                const isVerified = !!(item.status && item.status.includes('Terverifikasi'));
+                const isRejected = !!(item.status && item.status.includes('Ditolak'));
+
+                if (isVerified) verifiedCount++;
+                else if (isPending) {
+                    pendingCount++;
+                    if (isMember) memberPendingCount++;
                 }
 
-                // Tombol cetak nota (jika ditolak, dinonaktifkan / tidak bisa cetak nota)
+                // Row styling: Highlight khusus jika Member Pending
+                let rowClass = 'hover:bg-slate-50 transition-colors';
+                if (isMember && isPending) {
+                    rowClass = 'bg-amber-50/40 hover:bg-amber-50/70 border-l-4 border-l-amber-500 transition-colors';
+                } else if (isPending) {
+                    rowClass = 'bg-slate-50/30 hover:bg-slate-50 border-l-4 border-l-cyan-500 transition-colors';
+                }
+
+                // Badge status
+                let statusBadgeHtml = '';
+                if (isVerified) {
+                    statusBadgeHtml = `
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold bg-tosca-50 text-tosca-700 border border-tosca-200">
+                            <span class="dot-indicator online"></span> Sudah Di-ACC
+                        </span>
+                        ${item.verified_by ? `<span class="block text-[10px] text-slate-400 mt-0.5">Admin: ${item.verified_by}</span>` : ''}
+                    `;
+                } else if (isRejected) {
+                    statusBadgeHtml = `
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
+                            <span class="dot-indicator offline"></span> Ditolak
+                        </span>
+                        ${item.verified_by ? `<span class="block text-[10px] text-rose-400 mt-0.5">${item.verified_by}</span>` : ''}
+                    `;
+                } else {
+                    statusBadgeHtml = `
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-100 text-amber-800 border border-amber-300">
+                            <span class="dot-indicator pending"></span> Menunggu ACC
+                        </span>
+                    `;
+                }
+
+                // Tombol aksi ACC / Verifikasi
+                let actionButtonsHtml = '';
+                if (isPending) {
+                    actionButtonsHtml = `
+                        <div class="inline-flex rounded-xl shadow-xs overflow-hidden border border-slate-200" role="group">
+                            <button type="button" onclick="verifyOrder(${originalIndex}, 'Terverifikasi')" class="px-3 py-1.5 bg-gradient-to-r from-tosca-600 to-cyan-600 hover:opacity-95 text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow-sm" title="ACC & Verifikasi Pembayaran">
+                                <i class="fa-solid fa-circle-check"></i> ACC / Terima
+                            </button>
+                            <button type="button" onclick="verifyOrder(${originalIndex}, 'Ditolak')" class="px-2.5 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border-l border-slate-200 font-bold text-xs flex items-center gap-1 transition-colors" title="Tolak Pesanan">
+                                <i class="fa-solid fa-xmark"></i> Tolak
+                            </button>
+                        </div>
+                    `;
+                } else if (isVerified) {
+                    actionButtonsHtml = `
+                        <div class="inline-flex items-center gap-1.5">
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-xl text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200">
+                                <i class="fa-solid fa-check-double mr-1 text-emerald-600"></i> Ter-ACC
+                            </span>
+                            <button type="button" onclick="verifyOrder(${originalIndex}, 'Ditolak')" class="text-[10px] text-slate-400 hover:text-rose-600 underline font-semibold" title="Batalkan ACC">Batal</button>
+                        </div>
+                    `;
+                } else {
+                    actionButtonsHtml = `
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-xl text-xs font-bold text-rose-700 bg-rose-50 border border-rose-200">
+                            <i class="fa-solid fa-ban mr-1 text-rose-500"></i> Ditolak
+                        </span>
+                    `;
+                }
+
+                // Tombol cetak nota (jika ditolak, dinonaktifkan)
                 const printButtonHtml = isRejected ? `
                     <button type="button" disabled class="px-3 py-1.5 bg-slate-100 text-slate-400 font-bold text-xs rounded-xl border border-slate-200 flex items-center gap-1.5 cursor-not-allowed opacity-60" title="Pesanan berstatus Ditolak tidak dapat mencetak nota">
                         <i class="fa-solid fa-ban text-rose-400"></i>
                         <span>Nota Dibatalkan</span>
                     </button>
                 ` : `
-                    <button type="button" onclick="printAdminReceipt(${index})" class="px-3 py-1.5 bg-gradient-to-r from-slate-100 to-cyan-50 hover:from-cyan-100 hover:to-blue-100 text-slate-800 hover:text-navy-950 font-bold text-xs rounded-xl border border-slate-300 hover:border-cyan-300 flex items-center gap-1.5 transition-all shadow-xs" title="Cetak Nota Transaksi Resmi">
+                    <button type="button" onclick="printAdminReceipt(${originalIndex})" class="px-3 py-1.5 bg-gradient-to-r from-slate-100 to-cyan-50 hover:from-cyan-100 hover:to-blue-100 text-slate-800 hover:text-navy-950 font-bold text-xs rounded-xl border border-slate-300 hover:border-cyan-300 flex items-center gap-1.5 transition-all shadow-xs" title="Cetak Nota Transaksi Resmi">
                         <i class="fa-solid fa-print text-cyan-600"></i>
                         <span>Cetak Nota</span>
                     </button>
                 `;
 
                 tbody.innerHTML += `
-                    <tr class="hover:bg-slate-50 transition-colors">
+                    <tr class="${rowClass}">
                         <td class="py-3.5 px-4">
-                            <span class="font-bold text-navy-950 block">${item.id}</span>
-                            <span class="text-[11px] text-tosca-700 font-bold">${item.name || item.type}</span>
+                            <div class="flex items-center gap-1.5 mb-1">
+                                <span class="font-bold text-navy-950">${item.id}</span>
+                                ${isMember ? `
+                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-xs uppercase tracking-wider ${isPending ? 'animate-pulse' : ''}">
+                                        <i class="fa-solid fa-crown text-[9px]"></i> Prioritas Member
+                                    </span>
+                                ` : `
+                                    <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-semibold bg-slate-100 text-slate-600 border border-slate-200">Tamu</span>
+                                `}
+                            </div>
+                            <span class="text-xs font-bold ${isMember ? 'text-amber-900' : 'text-slate-800'} flex items-center gap-1">
+                                <i class="${isMember ? 'fa-solid fa-user-check text-amber-500' : 'fa-regular fa-user text-slate-400'}"></i>
+                                ${item.name || item.type}
+                            </span>
                         </td>
                         <td class="py-3.5 px-4">
                             <span class="block text-slate-800 font-medium">${item.schedule}</span>
@@ -355,23 +463,11 @@
                             </button>
                         </td>
                         <td class="py-3.5 px-4">
-                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold ${statusBadgeClass}">
-                                <span class="dot-indicator ${dotClass}"></span>
-                                ${item.status}
-                            </span>
+                            ${statusBadgeHtml}
                         </td>
                         <td class="py-3.5 px-4 text-center">
                             <div class="flex items-center justify-center gap-2">
-                                <div class="inline-flex rounded-xl shadow-xs overflow-hidden border border-slate-200" role="group">
-                                    <button type="button" onclick="verifyOrder(${index}, 'Terverifikasi')" class="px-2.5 py-1.5 bg-gradient-to-r from-tosca-600 to-cyan-600 hover:opacity-95 text-white font-bold text-xs flex items-center gap-1 transition-all" title="Verifikasi Pembayaran">
-                                        <i class="fa-solid fa-check"></i> Terima
-                                    </button>
-                                    <button type="button" onclick="verifyOrder(${index}, 'Ditolak')" class="px-2.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs flex items-center gap-1 transition-colors border-l border-rose-500" title="Tolak Pesanan">
-                                        <i class="fa-solid fa-xmark"></i> Tolak
-                                    </button>
-                                </div>
-                                
-                                <!-- FITUR 3.3 CETAK NOTA OLEH ADMIN (TERKUNCI JIKA DITOLAK) -->
+                                ${actionButtonsHtml}
                                 ${printButtonHtml}
                             </div>
                         </td>
@@ -381,6 +477,10 @@
 
             document.getElementById('statTotalOrders').innerText = history.length;
             document.getElementById('statPendingOrders').innerText = pendingCount;
+            const subtextEl = document.getElementById('statMemberPendingSubtext');
+            if (subtextEl) {
+                subtextEl.innerText = memberPendingCount > 0 ? `(${memberPendingCount} Member Prioritas)` : '';
+            }
             document.getElementById('statVerifiedOrders').innerText = verifiedCount;
         }
 

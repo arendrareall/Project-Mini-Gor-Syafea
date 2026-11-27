@@ -275,7 +275,7 @@
             <i class="fa-solid fa-check text-2xl"></i>
         </div>
         <h3 class="text-lg font-bold text-navy-950 mb-1">Pembayaran Berhasil Dikirim!</h3>
-        <p class="text-xs text-slate-500 mb-4">Data penyewaan Anda telah dicatat ke dalam sistem dan siap diverifikasi oleh pihak pengelola.</p>
+        <p class="text-xs text-slate-500 mb-4">Pemesanan Anda telah dicatat dengan status <strong class="text-amber-600 font-bold">Menunggu ACC Admin</strong>. Petugas admin pengelola akan segera memverifikasi pembayaran Anda.</p>
         
         <!-- Fitur 3.3 Cetak Nota Pembayaran -->
         <button type="button" onclick="printReceipt()" class="w-full py-2.5 bg-gradient-to-r from-tosca-600 to-cyan-600 hover:opacity-95 text-white font-bold rounded-xl text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-md shadow-tosca-500/20 mb-2">
@@ -388,7 +388,9 @@
             type: activeBooking.type,
             price: activeBooking.price,
             method: currentMethod,
-            status: activeBooking.isMember ? "Aktif / Terverifikasi" : "Pending Verifikasi"
+            status: "Pending Verifikasi", // SEMUA pesanan (Member maupun Tamu) wajib menunggu verifikasi / ACC admin terlebih dahulu
+            isMember: !!activeBooking.isMember,
+            verified_by: "-"
         };
 
         history.unshift(orderItem);
@@ -438,8 +440,8 @@
                     <div class="row"><span class="label">Tipe Akun</span><span class="value">${lastBookingReceipt.type}</span></div>
                     <div class="row"><span class="label">Jadwal Sewa</span><span class="value">${lastBookingReceipt.schedule}</span></div>
                     <div class="row"><span class="label">Metode Pembayaran</span><span class="value">${lastBookingReceipt.method.toUpperCase()}</span></div>
-                    <div class="row"><span class="label">Status Verifikasi</span><span class="value" style="color:#0f766e;">${lastBookingReceipt.status}</span></div>
-                    <div class="row"><span class="label">Admin Penanggung Jawab</span><span class="value" style="color:#2563eb;">Ariel Arendra (Admin Pengelola)</span></div>
+                    <div class="row"><span class="label">Status Verifikasi</span><span class="value" style="color:#d97706;">Pending (Menunggu ACC Admin)</span></div>
+                    <div class="row"><span class="label">Admin Penanggung Jawab</span><span class="value" style="color:#64748b;">${lastBookingReceipt.verified_by && lastBookingReceipt.verified_by !== '-' ? lastBookingReceipt.verified_by : 'Menunggu ACC Petugas Admin'}</span></div>
                 </div>
 
                 <div class="total-box">
@@ -449,7 +451,7 @@
 
                 <div style="margin-top: 20px; text-align: right; font-size: 11px;">
                     <div>Petugas Penanggung Jawab:</div>
-                    <div style="font-weight: bold; margin-top: 25px; text-decoration: underline;">Ariel Arendra</div>
+                    <div style="font-weight: bold; margin-top: 25px; text-decoration: underline; color: #64748b;">(Menunggu Verifikasi Staf Admin)</div>
                     <div style="font-size: 10px; color: #94a3b8;">Admin Pengelola Mini GOR Syafea</div>
                 </div>
 
