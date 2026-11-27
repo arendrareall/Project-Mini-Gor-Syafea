@@ -1,213 +1,245 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale() ?? 'id') }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale() ?? 'id') }}" class="h-full bg-slate-100 text-slate-800">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Portal Pemilik - Laporan Rekap Transaksi Mini GOR Syafea</title>
 
-    <!-- Bootstrap 5.3 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- Chart.js CDN -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <style> body { font-family: 'Inter', sans-serif; } </style>
 </head>
-<body class="bg-light min-vh-100 d-flex flex-column flex-md-row">
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col md:flex-row">
 
-    <!-- MODAL LOGIN PEMILIK (KUNCI PRIVASI KEUANGAN) BOOTSTRAP 5 -->
-    <div class="modal fade" id="ownerLoginModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content rounded-4 border-0 shadow-lg p-4 text-center">
-                <div class="bg-primary-subtle text-primary rounded-4 d-inline-flex align-items-center justify-content-center mx-auto mb-3" style="width: 56px; height: 56px;">
-                    <i class="fa-solid fa-lock fs-3"></i>
+    <!-- MODAL LOGIN PEMILIK (KUNCI PRIVASI KEUANGAN) -->
+    <div id="ownerLoginModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full border border-slate-200 shadow-2xl relative text-center">
+            <div class="w-14 h-14 bg-indigo-50 border border-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-sm">
+                <i class="fa-solid fa-lock text-2xl"></i>
+            </div>
+            <h2 class="text-2xl font-black text-slate-900 mb-1">Area Private Pemilik</h2>
+            <p class="text-xs text-slate-500 mb-5">Data omzet keuangan & rekap jadwal bersifat rahasia. Masukkan kredensial pemilik GOR.</p>
+            
+            <form onsubmit="handleOwnerLogin(event)" class="space-y-4 text-left">
+                @csrf
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Username Pemilik</label>
+                    <input type="text" id="ownerUser" required placeholder="Contoh: pemilik_syafea" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-indigo-600 focus:bg-white">
                 </div>
-                <h4 class="fw-bold text-dark mb-1">Area Private Pemilik</h4>
-                <p class="text-muted small mb-4">Data omzet keuangan & rekap jadwal bersifat rahasia. Masukkan kredensial pemilik GOR.</p>
-                
-                <form onsubmit="handleOwnerLogin(event)" class="text-start vstack gap-3">
-                    @csrf
-                    <div>
-                        <label class="form-label small fw-bold text-uppercase text-secondary mb-1">Username Pemilik</label>
-                        <input type="text" id="ownerUser" required placeholder="Contoh: pemilik_syafea" class="form-control rounded-3 py-2">
-                    </div>
-                    <div>
-                        <label class="form-label small fw-bold text-uppercase text-secondary mb-1">Password Rahasia</label>
-                        <input type="password" id="ownerPass" required placeholder="••••••••" class="form-control rounded-3 py-2">
-                    </div>
-                    <button type="submit" class="btn btn-primary w-100 rounded-3 py-2.5 fw-bold text-uppercase small shadow-sm mt-2">
-                        BUKA LAPORAN KEUANGAN
-                    </button>
-                </form>
-                
-                <div class="mt-4 pt-3 border-top">
-                    <a href="{{ route('booking.index') }}" class="btn btn-link text-muted fw-bold small text-decoration-none p-0 d-inline-flex align-items-center gap-1">
-                        <i class="fa-solid fa-arrow-left"></i> Kembali ke Beranda Utama
-                    </a>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Password Rahasia</label>
+                    <input type="password" id="ownerPass" required placeholder="••••••••" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-indigo-600 focus:bg-white">
                 </div>
+                <button type="submit" class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs uppercase tracking-wider shadow-lg shadow-indigo-500/25 transition-all">
+                    BUKA LAPORAN KEUANGAN
+                </button>
+            </form>
+            
+            <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
+                <a href="{{ route('booking.index') }}" class="inline-flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors">
+                    <i class="fa-solid fa-arrow-left"></i> Kembali ke Beranda
+                </a>
+                <a href="{{ route('admin.index') }}" class="text-xs font-bold text-indigo-600 hover:underline">Portal Admin &rarr;</a>
             </div>
         </div>
     </div>
 
-    <!-- SIDEBAR (KIRI) BOOTSTRAP 5 -->
-    <aside class="bg-white border-end d-none d-md-flex flex-column justify-content-between p-3" style="width: 260px; min-height: 100vh;">
-        <div>
-            <div class="d-flex align-items-center gap-2 pb-3 mb-3 border-bottom">
-                <div class="bg-primary text-white rounded-3 d-flex align-items-center justify-content-center" style="width: 36px; height: 36px;">
-                    <i class="fa-solid fa-volleyball"></i>
+    <!-- KONTEN OWNER (TERSEMBUNYI SAMPAI LOGIN BERHASIL) -->
+    <div id="ownerContent" style="display:none;" class="w-full flex flex-col md:flex-row flex-grow">
+
+        <!-- SIDEBAR (KIRI) -->
+        <aside class="w-full md:w-64 bg-white border-r border-slate-200 flex flex-col justify-between">
+            <div>
+                <div class="h-16 flex items-center px-6 border-b border-slate-200 gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-black shadow-md shadow-indigo-500/20">
+                        <i class="fa-solid fa-volleyball"></i>
+                    </div>
+                    <div>
+                        <span class="font-extrabold text-slate-900 tracking-tight text-sm block leading-none">MINI GOR SYAFEA</span>
+                        <span class="text-[10px] font-bold text-indigo-600 tracking-wider">PEMILIK PORTAL</span>
+                    </div>
                 </div>
-                <div class="lh-sm">
-                    <span class="fw-bold text-dark fs-6 d-block">MINI GOR SYAFEA</span>
-                    <span class="text-primary fw-bold text-uppercase" style="font-size: 9px; letter-spacing: 1px;">PEMILIK PORTAL</span>
-                </div>
+
+                <nav class="p-4 space-y-1">
+                    <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-100">
+                        <i class="fa-solid fa-chart-pie text-sm"></i> Dashboard & Omzet
+                    </a>
+                    <a href="{{ route('booking.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all">
+                        <i class="fa-solid fa-house text-sm text-slate-400"></i> Halaman Utama (Home)
+                    </a>
+                    <a href="{{ route('admin.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all">
+                        <i class="fa-solid fa-user-gear text-sm text-slate-400"></i> Panel Admin
+                    </a>
+                </nav>
             </div>
 
-            <nav class="nav nav-pills flex-column gap-1">
-                <a href="#" class="nav-link text-secondary fw-semibold rounded-3 py-2 px-3 d-flex align-items-center gap-2.5">
-                    <i class="fa-solid fa-chart-pie"></i> Dashboard
-                </a>
-                <a href="#" class="nav-link active fw-bold rounded-3 py-2 px-3 d-flex align-items-center gap-2.5">
-                    <i class="fa-solid fa-chart-column"></i> Laporan Rekap
-                </a>
-            </nav>
-        </div>
-
-        <!-- NAVIGASI KEMBALI DI SIDEBAR -->
-        <div class="vstack gap-2 pt-3 border-top">
-            <a href="{{ route('admin.index') }}" class="btn btn-sm btn-outline-primary fw-bold rounded-3 py-2 d-flex align-items-center justify-content-center gap-2">
-                <i class="fa-solid fa-user-gear"></i> Portal Admin
-            </a>
-            <a href="{{ route('booking.index') }}" class="btn btn-sm btn-dark fw-bold rounded-3 py-2 d-flex align-items-center justify-content-center gap-2 shadow-sm">
-                <i class="fa-solid fa-arrow-left"></i> Kembali ke Home
-            </a>
-        </div>
-    </aside>
-
-    <!-- MAIN CONTENT (KANAN) -->
-    <div class="flex-grow-1 d-flex flex-column min-vh-100">
-        
-        <!-- HEADER TOP -->
-        <header class="bg-white border-bottom px-4 py-3 d-flex align-items-center justify-content-between shadow-sm sticky-top">
-            <div class="d-flex align-items-center gap-3">
-                <a href="{{ route('booking.index') }}" class="btn btn-sm btn-light border d-md-none">
-                    <i class="fa-solid fa-arrow-left"></i> Home
-                </a>
-                <h5 class="fw-bold text-dark text-uppercase mb-0 fs-6">LAPORAN KEUANGAN & REKAP JADWAL</h5>
-            </div>
-            <div class="d-flex align-items-center gap-2">
-                <button type="button" onclick="logoutOwner()" class="btn btn-sm btn-outline-danger fw-bold rounded-3 px-3 py-1.5 d-flex align-items-center gap-1.5" title="Kunci Kembali">
-                    <i class="fa-solid fa-lock"></i> <span class="d-none d-sm-inline">Lock Owner</span>
+            <div class="p-4 border-t border-slate-200">
+                <button type="button" onclick="logoutOwner()" class="w-full py-2.5 px-3 rounded-xl text-xs font-bold text-rose-700 bg-rose-50 border border-rose-200 hover:bg-rose-100 transition-all flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-lock"></i> Kunci Portal Pemilik
                 </button>
-                <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-3 py-2 d-none d-sm-inline-block">
-                    Private Owner Mode
-                </span>
             </div>
-        </header>
+        </aside>
 
-        <main class="p-4 p-md-5 vstack gap-4 flex-grow-1">
+        <!-- MAIN AREA -->
+        <main class="flex-1 flex flex-col overflow-y-auto">
             
-            <!-- FILTER TANGGAL -->
-            <div class="white-card p-3 p-md-4 rounded-4 shadow-sm d-flex flex-wrap align-items-center justify-content-between gap-3">
-                <div class="d-flex flex-wrap align-items-center gap-2">
-                    <div class="d-flex align-items-center gap-2 bg-light border rounded-3 px-3 py-1.5">
-                        <span class="small text-muted fw-semibold">Tgl Awal:</span>
-                        <input type="date" value="{{ date('Y-m-01') }}" class="border-0 bg-transparent small fw-bold text-dark" style="outline: none;">
-                    </div>
-                    <span class="small text-muted fw-bold">s/d</span>
-                    <div class="d-flex align-items-center gap-2 bg-light border rounded-3 px-3 py-1.5">
-                        <span class="small text-muted fw-semibold">Tgl Akhir:</span>
-                        <input type="date" value="{{ date('Y-m-d') }}" class="border-0 bg-transparent small fw-bold text-dark" style="outline: none;">
-                    </div>
-                    <button type="button" class="btn btn-primary btn-sm rounded-3 px-4 py-2 fw-bold d-flex align-items-center gap-2 shadow-sm">
-                        <i class="fa-solid fa-filter"></i> TAMPILKAN
-                    </button>
+            <!-- TOP BAR -->
+            <header class="h-16 bg-white border-b border-slate-200 px-6 sm:px-8 flex items-center justify-between sticky top-0 z-30">
+                <h1 class="text-base sm:text-lg font-bold text-slate-800 flex items-center gap-2">
+                    <i class="fa-solid fa-chart-line text-indigo-600"></i> Laporan Rekap Keuangan & Jadwal
+                </h1>
+                <div class="flex items-center gap-3">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Live Data
+                    </span>
                 </div>
-            </div>
+            </header>
 
-            <!-- KOTAK BESAR RINGKASAN PENDAPATAN & TRANSAKSI -->
-            <div class="card rounded-4 border-0 text-white shadow-lg p-4 p-md-5" style="background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);">
-                <div class="row g-4 align-items-center">
-                    <div class="col-12 col-md-6 border-end-md">
-                        <span class="small text-uppercase fw-bold text-white-50 d-block mb-1">TOTAL PENDAPATAN (LIVE)</span>
-                        <h2 id="totalRevenue" class="display-6 fw-black fw-bold mb-0">Rp 0</h2>
+            <div class="p-6 sm:p-8 space-y-6 max-w-6xl w-full">
+                
+                <!-- SUMMARY STATS CARDS -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                    
+                    <!-- Card 1: Total Omzet -->
+                    <div class="bg-gradient-to-tr from-indigo-700 to-blue-600 rounded-3xl p-6 text-white shadow-lg shadow-indigo-500/20 relative overflow-hidden">
+                        <div class="relative z-10">
+                            <span class="text-xs font-bold uppercase tracking-wider text-indigo-200 block mb-1">Total Pendapatan</span>
+                            <h2 id="totalRevenue" class="text-2xl sm:text-3xl font-black tracking-tight mb-2">Rp 0</h2>
+                            <p class="text-[11px] text-indigo-100 flex items-center gap-1">
+                                <i class="fa-solid fa-circle-check text-emerald-400"></i> Akumulasi dari pesanan terverifikasi
+                            </p>
+                        </div>
+                        <div class="absolute -right-4 -bottom-4 w-28 h-28 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
                     </div>
-                    <div class="col-12 col-md-6 ps-md-4">
-                        <span class="small text-uppercase fw-bold text-white-50 d-block mb-1">TOTAL TRANSAKSI</span>
-                        <h2 id="totalTransactions" class="display-6 fw-black fw-bold mb-0">0 Transaksi</h2>
+
+                    <!-- Card 2: Total Transaksi -->
+                    <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-1">Total Transaksi</span>
+                            <h2 id="totalTransactions" class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight mb-2">0 Pesanan</h2>
+                        </div>
+                        <p class="text-[11px] text-slate-500 flex items-center gap-1">
+                            <i class="fa-solid fa-clipboard-list text-indigo-600"></i> Semua status pemesanan
+                        </p>
+                    </div>
+
+                    <!-- Card 3: Status Lapangan -->
+                    <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between sm:col-span-2 lg:col-span-1">
+                        <div>
+                            <span class="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-1">Status Operasional</span>
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
+                                <h2 class="text-xl font-black text-slate-900">GOR Buka</h2>
+                            </div>
+                        </div>
+                        <p class="text-[11px] text-slate-500">Operasional reguler 08.00 - 22.00 WIB</p>
+                    </div>
+
+                </div>
+
+                <!-- GRAFIK OMZET -->
+                <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8 space-y-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div>
+                            <h3 class="text-sm sm:text-base font-bold text-slate-900 flex items-center gap-2">
+                                <i class="fa-solid fa-chart-simple text-indigo-600"></i> Grafik Pendapatan Berdasarkan Tanggal
+                            </h3>
+                            <p class="text-xs text-slate-500">Rekap pemasukan harian yang tercatat di sistem</p>
+                        </div>
+                    </div>
+                    <div class="h-64 w-full">
+                        <canvas id="rekapChart"></canvas>
                     </div>
                 </div>
-            </div>
 
-            <!-- TABEL RIWAYAT SELURUH JADWAL PESANAN (MEMBER / NON-MEMBER) -->
-            <div class="white-card p-4 rounded-4 shadow-sm">
-                <div class="d-flex align-items-center justify-content-between mb-3">
-                    <h5 class="fw-bold text-dark d-flex align-items-center gap-2 mb-0 fs-6">
-                        <i class="fa-solid fa-list-check text-primary"></i> Rekap Seluruh Jadwal & Riwayat Pesanan
-                    </h5>
-                    <span class="badge bg-success-subtle text-success">Live Data</span>
-                </div>
-                <div class="table-responsive rounded-3 border">
-                    <table class="table table-hover align-middle mb-0 small">
-                        <thead class="table-light text-uppercase text-secondary">
-                            <tr>
-                                <th class="py-3 px-3">ID / Tgl Booking</th>
-                                <th class="py-3 px-3">Jadwal Main</th>
-                                <th class="py-3 px-3">Tipe Pemesan</th>
-                                <th class="py-3 px-3">Total Biaya</th>
-                                <th class="py-3 px-3">Status Konfirmasi</th>
-                            </tr>
-                        </thead>
-                        <tbody id="ownerHistoryTableBody">
-                            <!-- Diisi via JS -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+                <!-- TABEL DETAIL SEMUA TRANSAKSI -->
+                <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-sm sm:text-base font-bold text-slate-900">Rekap Transaksi Penyewaan</h3>
+                            <p class="text-xs text-slate-500">Data riwayat transaksi dari semua pelanggan</p>
+                        </div>
+                    </div>
 
-            <!-- GRAFIK BATANG TERURUT KRONOLOGIS -->
-            <div class="white-card p-4 rounded-4 shadow-sm">
-                <div class="d-flex align-items-center justify-content-between mb-3">
-                    <h5 class="fw-bold text-dark d-flex align-items-center gap-2 mb-0 fs-6">
-                        <i class="fa-solid fa-chart-line text-primary"></i> Grafik Pendapatan Harian (Urut Tanggal)
-                    </h5>
-                    <small class="text-muted">Berdasarkan Tanggal Jadwal Main</small>
+                    <div class="overflow-x-auto rounded-2xl border border-slate-200">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-slate-50 text-slate-500 uppercase font-bold tracking-wider border-b border-slate-200">
+                                <tr>
+                                    <th class="py-3.5 px-4">ID Transaksi</th>
+                                    <th class="py-3.5 px-4">Tipe Pemesan</th>
+                                    <th class="py-3.5 px-4">Jadwal Sewa</th>
+                                    <th class="py-3.5 px-4">Nominal</th>
+                                    <th class="py-3.5 px-4">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ownerHistoryTableBody" class="divide-y divide-slate-100 font-medium text-slate-700">
+                                <!-- Diisi via JS -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                <div style="height: 280px;">
-                    <canvas id="rekapChart"></canvas>
-                </div>
+
             </div>
 
         </main>
-    </div>
 
-    <!-- Bootstrap 5 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    </div><!-- end #ownerContent -->
 
     <script>
-        let bsOwnerLoginModal = null;
+        const OWNER_CREDENTIALS = { username: 'pemilik_syafea', password: 'owner123' };
+
         let rekapChartInstance = null;
 
         document.addEventListener('DOMContentLoaded', () => {
-            const modalEl = document.getElementById('ownerLoginModal');
-            if (modalEl) {
-                bsOwnerLoginModal = new bootstrap.Modal(modalEl);
-                bsOwnerLoginModal.show();
+            const isLoggedIn = sessionStorage.getItem('owner_logged_in') === 'true';
+            if (isLoggedIn) {
+                showOwnerContent();
+            } else {
+                document.getElementById('ownerContent').style.display = 'none';
+                document.getElementById('ownerLoginModal').style.display = 'flex';
             }
-            loadOwnerData();
         });
 
         function handleOwnerLogin(e) {
             e.preventDefault();
-            if (bsOwnerLoginModal) bsOwnerLoginModal.hide();
+            const user = document.getElementById('ownerUser').value.trim();
+            const pass = document.getElementById('ownerPass').value;
+
+            if (user === OWNER_CREDENTIALS.username && pass === OWNER_CREDENTIALS.password) {
+                sessionStorage.setItem('owner_logged_in', 'true');
+                showOwnerContent();
+            } else {
+                let errEl = document.getElementById('ownerLoginError');
+                if (!errEl) {
+                    errEl = document.createElement('div');
+                    errEl.id = 'ownerLoginError';
+                    errEl.className = 'p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold mt-2';
+                    document.querySelector('#ownerLoginModal form').appendChild(errEl);
+                }
+                errEl.textContent = '❌ Username atau password salah!';
+                document.getElementById('ownerPass').value = '';
+                document.getElementById('ownerPass').focus();
+            }
+        }
+
+        function showOwnerContent() {
+            document.getElementById('ownerLoginModal').style.display = 'none';
+            document.getElementById('ownerContent').style.display = 'flex';
             loadOwnerData();
         }
 
         function logoutOwner() {
-            if (bsOwnerLoginModal) bsOwnerLoginModal.show();
+            sessionStorage.removeItem('owner_logged_in');
+            document.getElementById('ownerContent').style.display = 'none';
+            document.getElementById('ownerUser').value = '';
+            document.getElementById('ownerPass').value = '';
+            const errEl = document.getElementById('ownerLoginError');
+            if (errEl) errEl.remove();
+            document.getElementById('ownerLoginModal').style.display = 'flex';
         }
 
         function loadOwnerData() {
@@ -219,7 +251,7 @@
             if (allHistory.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="5" class="py-4 text-center text-muted fst-italic">Belum ada data jadwal pesanan masuk.</td>
+                        <td colspan="5" class="py-6 text-center text-slate-400 italic">Belum ada data jadwal pesanan masuk.</td>
                     </tr>
                 `;
                 document.getElementById('totalRevenue').innerText = "Rp 0";
@@ -229,44 +261,48 @@
             }
 
             let totalRev = 0;
-            let dateMap = {}; 
+            let dateMap = {};
 
             allHistory.forEach(item => {
-                let cleanPrice = parseInt(item.price.replace(/[^0-9]/g, '')) || 0;
-                totalRev += cleanPrice;
+                const numericPrice = parseInt(item.price.replace(/[^0-9]/g, '')) || 0;
+                const isVerified = item.status.includes('Terverifikasi');
 
-                let scheduleText = item.schedule; 
-                let matchDate = scheduleText.match(/\d{2}-\d{2}-\d{4}/); 
-                let mainDate = matchDate ? matchDate[0] : item.date; 
-
-                if (!dateMap[mainDate]) {
-                    dateMap[mainDate] = 0;
+                if (isVerified) {
+                    totalRev += numericPrice;
                 }
-                dateMap[mainDate] += cleanPrice;
+
+                let bookingDate = item.schedule.split(' ')[0] || item.date;
+                if (!dateMap[bookingDate]) {
+                    dateMap[bookingDate] = 0;
+                }
+                if (isVerified) {
+                    dateMap[bookingDate] += numericPrice;
+                }
 
                 tbody.innerHTML += `
-                    <tr>
-                        <td class="py-3 px-3">
-                            <span class="fw-bold text-dark d-block">${item.id}</span>
-                            <small class="text-muted">${item.date}</small>
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="py-3.5 px-4 font-bold text-slate-900">${item.id}</td>
+                        <td class="py-3.5 px-4"><span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-200">${item.type}</span></td>
+                        <td class="py-3.5 px-4 font-medium text-slate-800">${item.schedule}</td>
+                        <td class="py-3.5 px-4 font-bold text-slate-900">${item.price}</td>
+                        <td class="py-3.5 px-4">
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-semibold ${isVerified ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-amber-50 text-amber-700 border border-amber-200'}">
+                                ${item.status}
+                            </span>
                         </td>
-                        <td class="py-3 px-3">${item.schedule}</td>
-                        <td class="py-3 px-3"><span class="badge bg-primary-subtle text-primary border border-primary-subtle">${item.type}</span></td>
-                        <td class="py-3 px-3 fw-bold text-dark">${item.price}</td>
-                        <td class="py-3 px-3"><span class="badge bg-success-subtle text-success">${item.status}</span></td>
                     </tr>
                 `;
             });
 
-            document.getElementById('totalRevenue').innerText = "Rp " + totalRev.toLocaleString('id-ID');
-            document.getElementById('totalTransactions').innerText = allHistory.length + " Transaksi";
+            document.getElementById('totalRevenue').innerText = 'Rp ' + totalRev.toLocaleString('id-ID');
+            document.getElementById('totalTransactions').innerText = allHistory.length + ' Transaksi';
 
-            // Urutkan tanggal secara kronologis
+            // Urutkan tanggal secara kronologis untuk grafik
             let sortedDates = Object.keys(dateMap).sort((a, b) => {
-                let partsA = a.split('-'); 
+                let partsA = a.split('-');
                 let partsB = b.split('-');
-                let dateA = new Date(partsA[2], partsA[1] - 1, partsA[0]);
-                let dateB = new Date(partsB[2], partsB[1] - 1, partsB[0]);
+                let dateA = new Date(partsA[2] || partsA[0], (partsA[1] || 1) - 1, partsA[0] || partsA[2]);
+                let dateB = new Date(partsB[2] || partsB[0], (partsB[1] || 1) - 1, partsB[0] || partsB[2]);
                 return dateA - dateB;
             });
 
@@ -298,8 +334,8 @@
                     datasets: [{
                         label: 'Pendapatan (Rp)',
                         data: chartData,
-                        backgroundColor: '#2563eb',
-                        borderRadius: 6,
+                        backgroundColor: '#4f46e5',
+                        borderRadius: 8,
                     }]
                 },
                 options: {
